@@ -31,6 +31,8 @@ public:
 	void resize(int w, int h);
 
 protected:
+	// configure opengl render pipeline
+	void initialiseOpenGL();
 	// Renders text (x, y positions, RGB colour of text, string of text to be rendered)
 	void displayText(float x, float y, float r, float g, float b, char* string);
 	// A function to collate all text output in a single location

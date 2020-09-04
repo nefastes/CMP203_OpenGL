@@ -6,16 +6,7 @@ Scene::Scene(Input *in)
 {
 	// Store pointer for input class
 	input = in;
-		
-	//OpenGL settings
-	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.39f, 0.58f, 93.0f, 1.0f);			// Cornflour Blue Background
-	glClearDepth(1.0f);									// Depth Buffer Setup
-	glClearStencil(0);									// Clear stencil buffer
-	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
-	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+	initialiseOpenGL();
 
 	// Other OpenGL / render setting should be applied here.
 	
@@ -60,6 +51,19 @@ void Scene::render() {
 	glutSwapBuffers();
 }
 
+void Scene::initialiseOpenGL()
+{
+	//OpenGL settings
+	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
+	glClearColor(0.39f, 0.58f, 93.0f, 1.0f);			// Cornflour Blue Background
+	glClearDepth(1.0f);									// Depth Buffer Setup
+	glClearStencil(0);									// Clear stencil buffer
+	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
+	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+}
+
 // Handles the resize of the window. If the window changes size the perspective matrix requires re-calculation to match new window size.
 void Scene::resize(int w, int h) 
 {
@@ -89,14 +93,11 @@ void Scene::resize(int w, int h)
 
 	// Get Back to the Modelview
 	glMatrixMode(GL_MODELVIEW);
-
-	
 }
 
 // Calculates FPS
 void Scene::calculateFPS()
 {
-
 	frame++;
 	time = glutGet(GLUT_ELAPSED_TIME);
 

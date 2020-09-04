@@ -1,3 +1,7 @@
+// Vector3 class
+// Repesents a vector 3 object, storing x, y and z. Provided functions for vector maths and manipulation
+// @author Paul Robertson
+
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
 

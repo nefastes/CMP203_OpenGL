@@ -15,19 +15,22 @@ class Input
 	};
 
 public:
+	Input();
 	// Getters and setters for keys
-	void SetKeyDown(unsigned char key);
-	void SetKeyUp(unsigned char key);
-	bool isKeyDown(int);
+	void setKeyDown(unsigned char key);
+	void setKeyUp(unsigned char key);
+	bool isKeyDown(int key);
 
 	// getters and setters for mouse buttons and position.
-	void setMouseX(int);
-	void setMouseY(int);
+	void setMouseX(int lx);
+	void setMouseY(int ly);
 	void setMousePos(int x, int y);
 	int getMouseX();
 	int getMouseY();
-	void setLeftMouseButton(bool b);
-	bool isLeftMouseButtonPressed();
+	void setMouseLDown(bool b);
+	bool isMouseLDown();
+	void setMouseRDown(bool down);
+	bool isMouseRDown();
 
 private:
 	// Boolean array, element per key

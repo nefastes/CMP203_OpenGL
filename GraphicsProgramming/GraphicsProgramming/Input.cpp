@@ -4,19 +4,38 @@
 
 #include "Input.h"
 
-void Input::SetKeyDown(unsigned char key)
+Input::Input()
 {
-	keys[key] = true;
+	// set default values
+	mouse.left = false;
+	mouse.right = false;
+	mouse.x = 0;
+	mouse.y = 0;
 }
 
-void Input::SetKeyUp(unsigned char key)
+void Input::setKeyDown(unsigned char key)
 {
-	keys[key] = false;
+	if (key >= 0)
+	{
+		keys[key] = true;
+	}
+}
+
+void Input::setKeyUp(unsigned char key)
+{
+	if (key >= 0)
+	{
+		keys[key] = false;
+	}
 }
 
 bool Input::isKeyDown(int key)
 {
-	return keys[key];
+	if (key >= 0)
+	{
+		return keys[key];
+	}
+	return false;
 }
 
 void Input::setMouseX(int pos)
@@ -45,13 +64,21 @@ int Input:: getMouseY()
 	return mouse.y;
 }
 
-void Input::setLeftMouseButton(bool b)
+void Input::setMouseLDown(bool b)
 {
 	mouse.left = b;
 }
 
-bool Input::isLeftMouseButtonPressed()
+bool Input::isMouseLDown()
 {
 	return mouse.left;
 }
 
+void Input::setMouseRDown(bool down)
+{
+	mouse.right = down;
+}
+bool Input::isMouseRDown()
+{
+	return mouse.right;
+}

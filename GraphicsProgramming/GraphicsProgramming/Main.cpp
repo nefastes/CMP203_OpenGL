@@ -54,7 +54,7 @@ void processNormalKeys(unsigned char key, int x, int y)
 	if (key == VK_ESCAPE)	// Escape key (in non-windows you can use 27, the ASCII value for escape)
 		exit(0);
 	// Send key down to input class.
-	input->SetKeyDown(key);
+	input->setKeyDown(key);
 }
 
 // Handles keyboard input events from GLUT.
@@ -66,7 +66,7 @@ void processNormalKeys(unsigned char key, int x, int y)
 void processNormalKeysUp(unsigned char key, int x, int y)
 {
 	// Send key up to input class.
-	input->SetKeyUp(key);
+	input->setKeyUp(key);
 }
 
 // Handles keyboard input events from GLUT.
@@ -118,11 +118,21 @@ void processMouseButtons(int button, int state, int x, int y)
 	if (button == GLUT_LEFT_BUTTON) {
 		// when the button is released
 		if (state == GLUT_DOWN) {
-			input->setLeftMouseButton(true);
+			input->setMouseLDown(true);
 		}
 		// else button state == GLUT_UP
 		else  {
-			input->setLeftMouseButton(false);
+			input->setMouseLDown(false);
+		}
+	}
+	else if (button == GLUT_RIGHT_BUTTON) {
+		// when the button is released
+		if (state == GLUT_DOWN) {
+			input->setMouseRDown(true);
+		}
+		// else button state == GLUT_UP
+		else {
+			input->setMouseRDown(false);
 		}
 	}
 }
@@ -139,7 +149,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL);
 	//glutInitWindowPosition(100, 100);
-	glutInitWindowSize(800, 600);
+	glutInitWindowSize(1280, 720);
 	glutCreateWindow("My first triangle");
 	
 	// Register callback functions for change in size and rendering.
