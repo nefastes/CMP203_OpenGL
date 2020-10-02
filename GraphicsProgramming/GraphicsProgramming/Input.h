@@ -35,7 +35,7 @@ public:
 private:
 	// Boolean array, element per key
 	// Mouse struct object.
-	bool keys[256];
+	bool keys[256]{ false };
 	Mouse mouse;
 
 };
