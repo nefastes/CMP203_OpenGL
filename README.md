@@ -1,4 +1,4 @@
 # CMP203-Framework
-Example project for CMP203
+Project for CMP203's 2020/21 Assessment
 
-WARNING - Project may need re-targeted to compile. Check the version of the Windows SDK.
+Justin Syfrig - 1904770@uad.ac.uk

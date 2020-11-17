@@ -28,96 +28,22 @@ void Skybox::setTexture(GLuint& tex)
 void Skybox::draw()
 {
 	glPushMatrix();
-	glTranslatef(position.x - .5f, position.y - .5f, position.z + .5f);
+	glTranslatef(position.x, position.y, position.z);
 	glBindTexture(GL_TEXTURE_2D, *texture);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
-	glBegin(GL_QUADS);
+	
+	//Render using ordered arrays
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, verts);
+	glNormalPointer(GL_FLOAT, 0, norms);
+	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
+	glDrawArrays(GL_QUADS, 0, 24);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	//Front
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, .5f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(.25f, .5f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(.25f, .25f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, .25f);
-	glVertex3f(0.f, 1.f, 0.f);
-
-	//RIGHT
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(.25f, .5f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(.5f, .5f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(.5f, .25f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(.25f, .25f);
-	glVertex3f(1.f, 1.f, 0.f);
-
-	//BACK
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(.5f, .5f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(.75f, .5f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(.75f, .25f);
-	glVertex3f(0.f, 1.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(.5f, .25f);
-	glVertex3f(1.f, 1.f, -1.f);
-
-	//LEFT
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(.75f, .5f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, .5f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, .25f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(.75f, .25f);
-	glVertex3f(0.f, 1.f, -1.f);
-
-	//TOP
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(.25f, .0f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(.25f, .25f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(.5f, .25f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(.5f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-
-	//BOTTOM
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(.25f, .75f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(.5f, .75f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(.5f, .5f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(.25f, .5f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	glEnd();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glPopMatrix();
 }
