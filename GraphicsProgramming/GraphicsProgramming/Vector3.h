@@ -40,6 +40,7 @@ public:
 
 	Vector3 operator+(const Vector3& v2);
 	Vector3 operator-(const Vector3& v2);
+	Vector3 operator*(const float mul);
 
 	Vector3& operator+=(const Vector3& v2);
 	Vector3& operator-=(const Vector3& v2);

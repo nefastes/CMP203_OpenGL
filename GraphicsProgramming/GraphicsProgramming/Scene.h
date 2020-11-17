@@ -15,7 +15,8 @@
 // Further includes should go here:
 #include "SOIL.h"
 #include <vector>
-
+#include "Camera.h"
+#include "Skybox.h"
 
 class Scene{
 
@@ -40,7 +41,8 @@ protected:
 	void calculateFPS();
 
 	// draw primitive functions
-	
+	void drawUnitCube(float, float, float, float);
+	void drawSimpleQuad(float, float, float, float);
 
 	// For access to user input.
 	Input* input;
@@ -53,7 +55,19 @@ protected:
 	int frame = 0, time, timebase = 0;
 	char fps[40];
 	char mouseText[40];
+	char positionText[255];
+	char viewText[255];
 
+	//Camera stuff
+	Camera camera;
+
+	//Skybox stuff
+	Skybox skybox;
+
+	//Textures
+	GLuint boxTexSolid;
+	GLuint boxTexTransparent;
+	GLuint sky;
 };
 
 #endif
