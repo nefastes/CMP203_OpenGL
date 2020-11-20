@@ -116,6 +116,8 @@ void Scene::initialiseOpenGL()
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 // Handles the resize of the window. If the window changes size the perspective matrix requires re-calculation to match new window size.
@@ -212,6 +214,94 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 void Scene::drawUnitCube(float r, float g, float b, float a)
 {
 	glColor4f(r, g, b, a);
+	glBegin(GL_QUADS);
+
+	//Front
+	glNormal3f(0.f, 0.f, 1.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glNormal3f(0.f, 0.f, 1.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glNormal3f(0.f, 0.f, 1.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glNormal3f(0.f, 0.f, 1.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(0.f, 0.f, 0.f);
+
+	//RIGHT
+	glNormal3f(1.f, 0.f, 0.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glNormal3f(1.f, 0.f, 0.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glNormal3f(1.f, 0.f, 0.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glNormal3f(1.f, 0.f, 0.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(1.f, 0.f, 0.f);
+
+	//BACK
+	glNormal3f(0.f, 0.f, -1.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glNormal3f(0.f, 0.f, -1.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	glNormal3f(0.f, 0.f, -1.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	glNormal3f(0.f, 0.f, -1.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+
+	//LEFT
+	glNormal3f(-1.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	glNormal3f(-1.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glNormal3f(-1.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glNormal3f(-1.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(0.f, 0.f, -1.f);
+
+	//TOP
+	glNormal3f(0.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	glNormal3f(0.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glNormal3f(0.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glNormal3f(0.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(0.f, 1.f, 0.f);
+
+	//BOTTOM
+	glNormal3f(0.f, -1.f, 0.f);
+	glTexCoord2f(0.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glNormal3f(0.f, -1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glNormal3f(0.f, -1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	glNormal3f(0.f, -1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);
+	glVertex3f(0.f, 0.f, 0.f);
+
+	glEnd();
+
 	glBegin(GL_QUADS);
 
 	//Front
