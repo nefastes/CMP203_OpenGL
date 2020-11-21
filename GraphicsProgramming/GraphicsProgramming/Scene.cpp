@@ -9,8 +9,12 @@ Scene::Scene(Input *in)
 	initialiseOpenGL();
 
 	// Other OpenGL / render setting should be applied here.
+	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	//Init lights
+	initLights();
 
 	//Init Camera
 	camera.setInput(in);
@@ -56,11 +60,14 @@ void Scene::render() {
 	);
 	
 	// Render geometry/scene here -------------------------------------
+	//Light test
+	drawLights();
+	drawPlane();
+
 	//Render sky first, disable depth sorting
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
-
 	
 	glTranslatef(0.f, 0.f, 4.f);
 	drawUnitCube(0.f, 1.f, 0.f, 1.f);
@@ -213,7 +220,12 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 
 void Scene::drawUnitCube(float r, float g, float b, float a)
 {
+	GLfloat Material_Diffuse[4] = { r, g, b, a };
+	GLfloat Material_Specular[4] = { 1.f, 1.f, 1.f, 1.f };
 	glColor4f(r, g, b, a);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Material_Diffuse);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular);
+	glMateriali(GL_FRONT, GL_SHININESS, 150);
 	glBegin(GL_QUADS);
 
 	//Front
@@ -403,4 +415,127 @@ void Scene::drawSimpleQuad(float r, float g, float b, float a)
 	glVertex3f(0.f, 1.f, 0.f);
 
 	glEnd();
+}
+
+void Scene::drawPlane()
+{
+	glPushMatrix();
+	//Translate
+	glTranslatef(-5.f, 0.f, -5.f);
+	//Scale down
+	glScalef(.2f, 1.f, .2f);
+
+	//Color
+	glColor3f(1.f, 1.f, 1.f);
+
+	//Make a plane of 50x50 quads
+	glBegin(GL_QUADS);
+	for (unsigned z = 0; z < 50; ++z)
+		for (unsigned x = 0; x < 50; ++x)
+		{
+			glNormal3f(0.f, 1.f, 0.f);
+			glVertex3f(0.f + (float)x, -2.f, 0.f + (float)z);
+			glNormal3f(0.f, 1.f, 0.f);
+			glVertex3f(1.f + (float)x, -2.f, 0.f + (float)z);
+			glNormal3f(0.f, 1.f, 0.f);
+			glVertex3f(1.f + (float)x, -2.f, -1.f + (float)z);
+			glNormal3f(0.f, 1.f, 0.f);
+			glVertex3f(0.f + (float)x, -2.f, -1.f + (float)z);
+		}
+	glEnd();
+
+	glPopMatrix();
+}
+
+void Scene::initLights()
+{
+	//Ambient Light (1 max)
+	//ambientLight.makeAmbient({ 0.f, 0.f, .1f, 1.f });
+
+	//Diffuse Light (1 max, would be the sunlight)
+	std::array<GLfloat, 4> Diffuse_Color = {2.f, 0.f, 0.f, 1.f};
+	std::array<GLfloat, 4> Diffuse_Direction = {-1.f, 0.f, 0.f, 0.f};
+	//diffuseLight.makeDiffuse(Diffuse_Color, Diffuse_Direction);
+
+	//Point lights
+	std::array<GLfloat, 4> Point_Color = {1.f, 1.f, 1.f, 1.f};
+	std::array<GLfloat, 4> Point_Position = {0.f, -4.f, 3.f, 1.f};
+	//pointLight.makeDiffuse(Point_Color, Point_Position);
+
+	//Spot lights
+	std::array<GLfloat, 4> Spotlight_Color = { 1.f, 1.f, 1.f, 1.f };
+	std::array<GLfloat, 4> Spotlight_Position = { 0.f, 0.f, 0.f, 1.f };
+	std::array<GLfloat, 3> Spotlight_Direction = { 0.f, -1.f, 0.f };
+	//spotLight.makeSpot(Spotlight_Color, Spotlight_Position, Spotlight_Direction, 25.f, 50.f);
+	
+}
+
+void Scene::drawLights()
+{
+	GLfloat Ambient[4] = { 0.4f, 0.4f, 0.4f, 1.f };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.f);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.f);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.f);
+	//glEnable(GL_LIGHT0);
+
+	GLfloat Diffuse0[4] = { 1.f, 1.f, 1.f, .5f };
+	GLfloat Position0[4] = { -1.f, 1.f, -1.f, 0.f };
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse0);
+	glLightfv(GL_LIGHT1, GL_POSITION, Position0);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.f);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.f);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.f);
+	glEnable(GL_LIGHT1);
+
+	GLfloat Diffuse[4] = { 0.f, 0.f, 1.f, 1.f };
+	GLfloat Position[4] = { 0.f, -1.f, 0.f, 1.f };
+	glPushMatrix();
+	//glRotatef(rotation, 0.f, 1.f, 0.f);
+	//glTranslatef(2.f, -1.f, 0.f);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, Diffuse);
+	glLightfv(GL_LIGHT2, GL_POSITION, Position);
+	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 0.222f);
+	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 1.234f);
+	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, .444f);
+	glEnable(GL_LIGHT2);
+	//Draw a small sphere to indicate our light
+	glPushMatrix();
+	GLfloat Material_Emission[4] = { 1.f, 1.f, 1.f, 1.f };
+	GLfloat Material_No_Emission[4] = { 0.f, 0.f, 0.f, 0.f };
+	glMaterialfv(GL_FRONT, GL_EMISSION, Material_Emission);
+	glTranslatef(0.f, -1.f, 0.f);
+	gluSphere(gluNewQuadric(), .1f, 20, 20);
+	//Reset the material for further geometries
+	glMaterialfv(GL_FRONT, GL_EMISSION, Material_No_Emission);
+	glPopMatrix();
+	glPopMatrix();
+
+
+	GLfloat Diffuse2[4] = { 0.f, 1.f, 0.f, 1.f };
+	GLfloat Position2[4] = { 2.f, 2.f, 0.f, 1.f };
+	GLfloat Direction[3] = { 0.f, -1.f, 0.f };
+	glPushMatrix();
+	//glRotatef(rotation, 0.f, 1.f, 0.f);
+	//glTranslatef(2.f, -1.f, 0.f);
+	glLightfv(GL_LIGHT3, GL_DIFFUSE, Diffuse2);
+	glLightfv(GL_LIGHT3, GL_POSITION, Position2);
+	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, 25.f);
+	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, Direction);
+	glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, 50.f);
+	glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, 0.1f);
+	glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, 0.234f);
+	glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, .444f);
+	glEnable(GL_LIGHT3);
+	//Draw a small sphere to indicate our light
+	glPushMatrix();
+	GLfloat Material_Emission2[4] = { 1.f, 1.f, 1.f, 1.f };
+	GLfloat Material_No_Emission2[4] = { 0.f, 0.f, 0.f, 0.f };
+	glMaterialfv(GL_FRONT, GL_EMISSION, Material_Emission2);
+	glTranslatef(2.f, 2.f, 0.f);
+	gluSphere(gluNewQuadric(), .1f, 20, 20);
+	//Reset the material for further geometries
+	glMaterialfv(GL_FRONT, GL_EMISSION, Material_No_Emission2);
+	glPopMatrix();
+	glPopMatrix();
 }

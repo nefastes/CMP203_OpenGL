@@ -15,6 +15,8 @@
 // Further includes should go here:
 #include "SOIL.h"
 #include <vector>
+#include <array>
+#include "Light.h"
 #include "Camera.h"
 #include "Skybox.h"
 
@@ -43,6 +45,7 @@ protected:
 	// draw primitive functions
 	void drawUnitCube(float, float, float, float);
 	void drawSimpleQuad(float, float, float, float);
+	void drawPlane();
 
 	// For access to user input.
 	Input* input;
@@ -57,6 +60,14 @@ protected:
 	char mouseText[40];
 	char positionText[255];
 	char viewText[255];
+
+	//Light stuff
+	Light ambientLight;
+	Light diffuseLight;
+	Light pointLight;
+	Light spotLight;
+	void initLights();
+	void drawLights();
 
 	//Camera stuff
 	Camera camera;
