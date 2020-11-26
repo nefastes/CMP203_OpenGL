@@ -14,7 +14,7 @@ Scene::Scene(Input *in)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	//Init lights
-	initLights();
+	//initLights();
 
 	//Init Camera
 	camera.setInput(in);
@@ -450,36 +450,36 @@ void Scene::drawPlane()
 void Scene::initLights()
 {
 	//Ambient Light (1 max)
-	//ambientLight.makeAmbient({ 0.f, 0.f, .1f, 1.f });
+	ambientLight.makeAmbient({ 0.f, 0.f, .1f, 1.f });
 
 	//Diffuse Light (1 max, would be the sunlight)
 	std::array<GLfloat, 4> Diffuse_Color = {2.f, 0.f, 0.f, 1.f};
 	std::array<GLfloat, 4> Diffuse_Direction = {-1.f, 0.f, 0.f, 0.f};
-	//diffuseLight.makeDiffuse(Diffuse_Color, Diffuse_Direction);
+	diffuseLight.makeDiffuse(Diffuse_Color, Diffuse_Direction);
 
 	//Point lights
 	std::array<GLfloat, 4> Point_Color = {1.f, 1.f, 1.f, 1.f};
 	std::array<GLfloat, 4> Point_Position = {0.f, -4.f, 3.f, 1.f};
-	//pointLight.makeDiffuse(Point_Color, Point_Position);
+	pointLight.makeDiffuse(Point_Color, Point_Position);
 
 	//Spot lights
 	std::array<GLfloat, 4> Spotlight_Color = { 1.f, 1.f, 1.f, 1.f };
 	std::array<GLfloat, 4> Spotlight_Position = { 0.f, 0.f, 0.f, 1.f };
 	std::array<GLfloat, 3> Spotlight_Direction = { 0.f, -1.f, 0.f };
-	//spotLight.makeSpot(Spotlight_Color, Spotlight_Position, Spotlight_Direction, 25.f, 50.f);
+	spotLight.makeSpot(Spotlight_Color, Spotlight_Position, Spotlight_Direction, 25.f, 50.f);
 	
 }
 
 void Scene::drawLights()
 {
-	GLfloat Ambient[4] = { 0.4f, 0.4f, 0.4f, 1.f };
+	GLfloat Ambient[4] = { 0.015f, 0.015f, 0.015f, 1.f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.f);
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.f);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.f);
 	//glEnable(GL_LIGHT0);
 
-	GLfloat Diffuse0[4] = { 1.f, 1.f, 1.f, .5f };
+	GLfloat Diffuse0[4] = { 1.f, 0.f, 0.f, .5f };
 	GLfloat Position0[4] = { -1.f, 1.f, -1.f, 0.f };
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse0);
 	glLightfv(GL_LIGHT1, GL_POSITION, Position0);
