@@ -18,6 +18,8 @@
 #include <array>
 #include "Camera.h"
 #include "Skybox.h"
+#include "Cylinder.h"
+#include "Sphere.h"
 
 class Scene{
 
@@ -68,6 +70,11 @@ protected:
 
 	//Skybox stuff
 	Skybox skybox;
+
+	//Shapes
+	Disc disc;
+	Cylinder cylinder;
+	Sphere sphere;
 
 	//Textures
 	GLuint boxTexSolid;

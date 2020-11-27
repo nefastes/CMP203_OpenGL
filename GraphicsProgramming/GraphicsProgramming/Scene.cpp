@@ -27,6 +27,18 @@ Scene::Scene(Input *in)
 
 	//Init skybox
 	skybox.setTexture(sky);
+
+	//Init Shapes
+	//Genrate disc
+	disc.setResolution(20);
+	disc.generateShape();
+	//Generate sphere
+	sphere.setResolution(100);
+	sphere.generateShape();
+	//Genrate cylinder
+	cylinder.setResolution(20);
+	cylinder.setStackResolution(4);
+	cylinder.generateShape();
 }
 
 void Scene::handleInput(float dt)
@@ -83,6 +95,25 @@ void Scene::render() {
 		drawUnitCube(1.f, 1.f, 1.f, 1.f);
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -5.f);
+		glScalef(2.f, 2.f, 2.f);
+		glColor3f(0.f, 1.f, 1.f);
+		sphere.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -10.f);
+		glScalef(2.f, 2.f, 2.f);
+		glColor3f(1.f, 0.f, 1.f);
+		disc.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -15.f);
+		glScalef(2.f, 2.f, 2.f);
+		glColor3f(1.f, 1.f, 0.f);
+		cylinder.render();
+	glPopMatrix();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
