@@ -62,12 +62,13 @@ void Scene::render() {
 	// Render geometry/scene here -------------------------------------
 	//Light test
 	drawLights();
-	drawPlane();
 
 	//Render sky first, disable depth sorting
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
+
+	drawPlane();
 	
 	glTranslatef(0.f, 0.f, 4.f);
 	drawUnitCube(0.f, 1.f, 0.f, 1.f);
@@ -472,14 +473,14 @@ void Scene::initLights()
 
 void Scene::drawLights()
 {
-	GLfloat Ambient[4] = { 0.015f, 0.015f, 0.015f, 1.f };
+	GLfloat Ambient[4] = { 0.f, 0.f, 0.5f, 1.f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.f);
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.f);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.f);
 	//glEnable(GL_LIGHT0);
 
-	GLfloat Diffuse0[4] = { 1.f, 0.f, 0.f, .5f };
+	GLfloat Diffuse0[4] = { 1.f, 1.f, 1.f, .5f };
 	GLfloat Position0[4] = { -1.f, 1.f, -1.f, 0.f };
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse0);
 	glLightfv(GL_LIGHT1, GL_POSITION, Position0);
