@@ -16,7 +16,6 @@
 #include "SOIL.h"
 #include <vector>
 #include <array>
-#include "Light.h"
 #include "Camera.h"
 #include "Skybox.h"
 
@@ -62,12 +61,7 @@ protected:
 	char viewText[255];
 
 	//Light stuff
-	Light ambientLight;
-	Light diffuseLight;
-	Light pointLight;
-	Light spotLight;
-	void initLights();
-	void drawLights();
+
 
 	//Camera stuff
 	Camera camera;
