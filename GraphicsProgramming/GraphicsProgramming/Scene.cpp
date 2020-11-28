@@ -41,29 +41,35 @@ Scene::Scene(Input *in)
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	//Genrate disc
 	disc.setResolution(20);
+	disc.setPosition(-5.f, 2.f, -10.f);
 	disc.generateShape();
 	disc2.setResolution(100);
 	disc2.setTransparency(.75f);
 	disc2.setTexture(checkedTex);
+	disc2.setPosition(-10.f, 2.f, -10.f);
 	disc2.generateShape();
 	//Generate sphere
 	sphere.setResolution(10);
-	sphere.setRadius(.5f);
+	sphere.setRadius(1.f);
+	sphere.setPosition(-5.f, 2.f, -5.f);
 	sphere.generateShape();
 	sphere2.setResolution(100);
 	sphere2.setRadius(1.f);
 	sphere2.setTransparency(.5f);
 	sphere2.setTexture(checkedTex);
+	sphere2.setPosition(-10.f, 2.f, -5.f);
 	sphere2.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
 	cylinder.setStackResolution(4);
+	cylinder.setPosition(-5.f, 2.f, -15.f);
 	cylinder.generateShape();
 	cylinder2.setResolution(21);
 	cylinder2.setStackResolution(11);
 	cylinder2.setRadius(2.f);
 	cylinder2.setTexture(checkedTex);
 	cylinder2.setTransparency(.75f);
+	cylinder2.setPosition(-5.f, 2.f, -40.f);
 	cylinder2.generateShape();
 }
 
@@ -136,21 +142,12 @@ void Scene::render() {
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
-	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -5.f);
-		glColor3f(0.f, 1.f, 1.f);
-		sphere.render();
-	glPopMatrix();
-	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -10.f);
-		glColor3f(1.f, 0.f, 1.f);
-		disc.render();
-	glPopMatrix();
-	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -15.f);
-		glColor3f(1.f, 1.f, 0.f);
-		cylinder.render();
-	glPopMatrix();
+	glColor3f(0.f, 1.f, 1.f);
+	sphere.render();
+	glColor3f(1.f, 0.f, 1.f);
+	disc.render();
+	glColor3f(1.f, 1.f, 0.f);
+	cylinder.render();
 	glPushMatrix();
 		glTranslatef(-10.f, 0.f, -15.f);
 		glScalef(5.f, 5.f, 5.f);
@@ -171,15 +168,12 @@ void Scene::render() {
 		cube2.render();
 	glPopMatrix();
 	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -40.f);
 		cylinder2.render();
 	glPopMatrix();
 	glPushMatrix();
-		glTranslatef(-10.f, 2.f, -5.f);
 		sphere2.render();
 	glPopMatrix();
 	glPushMatrix();
-		glTranslatef(-10.f, 2.f, -10.f);
 		disc2.render();
 	glPopMatrix();
 

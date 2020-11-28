@@ -62,9 +62,9 @@ void Cylinder::generateShape()
 		for (unsigned j = 0; j <= resolution; ++j)
 		{
 			//Vertices and normals need 3 coordinates
-			vertices.push_back(radius * cosf(theta));
-			vertices.push_back(0.f + height);
-			vertices.push_back(radius * sinf(theta));
+			vertices.push_back(radius * cosf(theta) + origin.x);
+			vertices.push_back(height + origin.y - (float)stackResolution / 2.f);	//We want the origin the be the center of the shape
+			vertices.push_back(radius * sinf(theta) + origin.z);
 			normals.push_back(cosf(theta));
 			normals.push_back(0.f);
 			normals.push_back(sinf(theta));

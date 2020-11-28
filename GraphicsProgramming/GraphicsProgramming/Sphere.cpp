@@ -21,7 +21,7 @@ void Sphere::render()
 
 	glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
 	glNormalPointer(GL_FLOAT, 0, &normals[0]);
-	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
+	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]); 
 
 	if (transparent)
 	{
@@ -77,10 +77,10 @@ void Sphere::generateShape()
 				float x = cosf(theta) * sinf(gamma);
 				float y = cosf(gamma);
 				float z = sinf(theta) * sinf(gamma);
-				//Vertices and normals need 3 coordinates
-				vertices.push_back(radius * x);
-				vertices.push_back(radius * y);
-				vertices.push_back(radius * z);
+				//Vertices and normals need 3 coordinates, also consider the origin  so we can build the shape in the correct position
+				vertices.push_back(radius * x + origin.x);
+				vertices.push_back(radius * y + origin.y);
+				vertices.push_back(radius * z + origin.z);
 				normals.push_back(x);
 				normals.push_back(y);
 				normals.push_back(z);

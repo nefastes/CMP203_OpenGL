@@ -55,7 +55,9 @@ void Disc::generateShape()
 	for (unsigned j = 0; j < resolution; ++j)
 	{
 		//Center of disc
-		for (unsigned i = 0; i < 3; ++i) i == 2 ? vertices.push_back(1.f) : vertices.push_back(0.f);
+		vertices.push_back(origin.x);
+		vertices.push_back(origin.y);
+		vertices.push_back(origin.z);
 		for (unsigned i = 0; i < 3; ++i) i == 2 ? normals.push_back(1.f) : normals.push_back(0.f);
 		for (unsigned i = 0; i < 2; ++i) texCoordinates.push_back(.5f);
 
@@ -63,9 +65,9 @@ void Disc::generateShape()
 		for (unsigned i = 0; i < 2; ++i)
 		{
 			//Vertices and normals need 3 coordinates
-			vertices.push_back(radius * cosf(theta));
-			vertices.push_back(radius * sinf(theta));
-			vertices.push_back(1.f);
+			vertices.push_back(radius * cosf(theta) + origin.x);
+			vertices.push_back(radius * sinf(theta) + origin.y);
+			vertices.push_back(origin.z);
 			normals.push_back(0.f);
 			normals.push_back(0.f);
 			normals.push_back(1.f);

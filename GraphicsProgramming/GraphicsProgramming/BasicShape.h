@@ -4,6 +4,7 @@
 #include <gl/glu.h>
 #include <math.h>
 #include <vector>
+#include "Vector3.h"
 #define PI 3.1415f
 class BasicShape
 {
@@ -20,6 +21,8 @@ protected:
 	std::vector<float> normals;
 	std::vector<float> texCoordinates;
 	std::vector<GLubyte> indices;
+	//Origin of the shape (the origin is allways in the middle/center of the shape)
+	Vector3 origin;
 
 public:
 	BasicShape();
@@ -37,5 +40,9 @@ public:
 
 	void setTexture(GLuint& tex) { texture = &tex; }
 	GLuint* getTexture() { return texture; }
+
+	void setPosition(Vector3 pos) { origin = pos; }	//Sets the position of the shape, must be called BEFORE generating it.
+	void setPosition(float x, float y, float z) { origin.x = x; origin.y = y; origin.z = z; }	//Sets the position of the shape, must be called BEFORE generating it.
+	Vector3 getPosition() { return origin; }
 };
 
