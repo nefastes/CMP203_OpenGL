@@ -29,16 +29,28 @@ Scene::Scene(Input *in)
 	skybox.setTexture(sky);
 
 	//Init Shapes
+	//Genrate cubes
+	cube.generateShape();
+	cube.setTexture(boxTexSolid);
+	cube.setTransparency(.4f);
+	cube2.generateShape();
+	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	//Genrate disc
 	disc.setResolution(20);
 	disc.generateShape();
 	//Generate sphere
 	sphere.setResolution(100);
+	sphere.setRadius(.5f);
 	sphere.generateShape();
-	//Genrate cylinder
+	//Genrate cylinders
 	cylinder.setResolution(20);
 	cylinder.setStackResolution(4);
 	cylinder.generateShape();
+	cylinder2.setResolution(60);
+	cylinder2.setStackResolution(40);
+	cylinder2.setTexture(boxTexSolid);
+	cylinder2.setTransparency(.75f);
+	cylinder2.generateShape();
 }
 
 void Scene::handleInput(float dt)
@@ -117,6 +129,22 @@ void Scene::render() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -20.f);
+		glScalef(2.f, 2.f, 2.f);
+		cube.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -30.f);
+		glScalef(3.f, 3.f, 3.f);
+		cube2.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-5.f, 2.f, -40.f);
+		glScalef(3.f, 3.f, 3.f);
+		cylinder2.render();
+	glPopMatrix();
 
 	glPushMatrix();
 		glTranslatef(0.f, 0.f, 2.f);

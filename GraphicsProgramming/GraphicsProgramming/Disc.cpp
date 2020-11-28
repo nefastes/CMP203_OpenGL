@@ -58,7 +58,11 @@ void Disc::generateShape()
 			texCoordinates.push_back(cosf(theta) / (2 * radius) + .5f);
 			texCoordinates.push_back(-sinf(theta) / (2 * radius) + .5f);
 			//Increment theta by dtheta for the next position
-			if(i == 0) theta += deltaTheta;
+			if (i == 0)
+			{
+				if (j == resolution - 1) theta = 0;
+				else theta += deltaTheta;
+			}
 		}
 	}
 }

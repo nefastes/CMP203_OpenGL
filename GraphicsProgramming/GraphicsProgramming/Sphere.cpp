@@ -53,8 +53,9 @@ void Sphere::generateShape()
 				case 3:		--latitude;		break;
 				}
 
-				theta = latitude * deltaTheta;
-				gamma = longitude * deltaGamma;
+				//Need this to make sure the last vertices match with the first ones, avoiding a little transparent artefact 
+				latitude == resolution - 1 ? theta = 0 : theta = latitude * deltaTheta;
+				longitude == resolution - 1 ? gamma = 0 : gamma = longitude * deltaGamma;
 
 				//Calaculate normals coordinates (need to do it here since we're also using the values with vertices, avoid calculating it again)
 				float x = cosf(theta) * sinf(gamma);

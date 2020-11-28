@@ -72,8 +72,11 @@ protected:
 	Skybox skybox;
 
 	//Shapes
+	BasicShape cube;
+	BasicShape cube2;
 	Disc disc;
 	Cylinder cylinder;
+	Cylinder cylinder2;
 	Sphere sphere;
 
 	//Textures

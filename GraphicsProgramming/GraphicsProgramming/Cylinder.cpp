@@ -13,6 +13,9 @@ Cylinder::~Cylinder()
 
 void Cylinder::render()
 {
+	//Texture the shape if a texture exists
+	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -26,6 +29,9 @@ void Cylinder::render()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//If a texture has been applied, remove it
+	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
 void Cylinder::generateShape()
