@@ -23,12 +23,15 @@ void BasicShape::render()
 	//Handle transparency (render the object twice, once inside out and a second time normally)
 	if (transparent)
 	{
-		glPushMatrix();
-			glColor4f(red, green, blue, alpha);
+		glColor4f(red, green, blue, alpha);
+		if (renderInside)
+		{
+			glPushMatrix();
 			glScalef(-1.f, -1.f, -1.f);
 			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
 			glDrawArrays(GL_QUADS, 0, 24);
-		glPopMatrix();
+			glPopMatrix();
+		}
 	}
 	glDrawArrays(GL_QUADS, 0, 24);
 	glDisableClientState(GL_VERTEX_ARRAY);

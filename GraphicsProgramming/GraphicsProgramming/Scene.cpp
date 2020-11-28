@@ -38,6 +38,7 @@ Scene::Scene(Input *in)
 	cube.setTransparency(.4f);
 	cube.setPosition(-5.f, 2.f, -20.f);
 	cube.setScale(2.f, 2.f, 2.f);
+	cube.setInsideRendering(true);
 	cube.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	cube2.setScale(3.f, 3.f, 3.f);
@@ -62,6 +63,7 @@ Scene::Scene(Input *in)
 	sphere2.setTransparency(.5f);
 	sphere2.setTexture(checkedTex);
 	sphere2.setPosition(-10.f, 2.f, -5.f);
+	sphere2.setInsideRendering(true);
 	sphere2.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
@@ -74,6 +76,7 @@ Scene::Scene(Input *in)
 	cylinder2.setTexture(checkedTex);
 	cylinder2.setTransparency(.75f);
 	cylinder2.setPosition(-5.f, 2.f, -40.f);
+	cylinder2.setInsideRendering(true);
 	cylinder2.generateShape();
 }
 
@@ -92,8 +95,6 @@ void Scene::handleInput(float dt)
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 	}
-
-	if (input->isKeyDown('m')) cylinder.rescale(5.f, 5.f, 5.f);
 
 	// Handle user input
 	camera.handleInput(dt);
@@ -163,21 +164,11 @@ void Scene::render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glPushMatrix();
-		cube.render();
-	glPopMatrix();
-	glPushMatrix();
-		cube2.render();
-	glPopMatrix();
-	glPushMatrix();
-		cylinder2.render();
-	glPopMatrix();
-	glPushMatrix();
-		sphere2.render();
-	glPopMatrix();
-	glPushMatrix();
-		disc2.render();
-	glPopMatrix();
+	cube.render();
+	cube2.render();
+	cylinder2.render();
+	sphere2.render();
+	disc2.render();
 
 	glPushMatrix();
 		glTranslatef(0.f, 0.f, 2.f);
