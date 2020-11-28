@@ -62,6 +62,9 @@ protected:
 	char positionText[255];
 	char viewText[255];
 
+	//Wireframe mode toggle
+	bool wireframeMode = false;
+
 	//Light stuff
 
 

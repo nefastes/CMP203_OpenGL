@@ -35,6 +35,8 @@ void BasicShape::render()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	//If a texture has been applied, remove it
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	//Reset color
+	glColor4f(1.f, 1.f, 1.f, 1.f);
 }
 
 void BasicShape::generateShape()

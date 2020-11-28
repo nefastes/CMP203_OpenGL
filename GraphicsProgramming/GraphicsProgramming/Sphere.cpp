@@ -12,6 +12,9 @@ Sphere::~Sphere()
 
 void Sphere::render()
 {
+	//Texture the shape if a texture exists
+	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -20,11 +23,24 @@ void Sphere::render()
 	glNormalPointer(GL_FLOAT, 0, &normals[0]);
 	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
 
+	if (transparent)
+	{
+		glPushMatrix();
+		glColor4f(red, green, blue, alpha);
+		glScalef(-1.f, -1.f, -1.f);
+		glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
+		glPopMatrix();
+	}
 	glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//If a texture has been applied, remove it
+	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	//Reset color
+	glColor4f(1.f, 1.f, 1.f, 1.f);
 }
 
 void Sphere::generateShape()
@@ -54,8 +70,8 @@ void Sphere::generateShape()
 				}
 
 				//Need this to make sure the last vertices match with the first ones, avoiding a little transparent artefact 
-				latitude == resolution - 1 ? theta = 0 : theta = latitude * deltaTheta;
-				longitude == resolution - 1 ? gamma = 0 : gamma = longitude * deltaGamma;
+				latitude == resolution ? theta = 0 : theta = latitude * deltaTheta;
+				gamma = longitude * deltaGamma;
 
 				//Calaculate normals coordinates (need to do it here since we're also using the values with vertices, avoid calculating it again)
 				float x = cosf(theta) * sinf(gamma);

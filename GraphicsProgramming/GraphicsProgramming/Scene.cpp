@@ -36,18 +36,19 @@ Scene::Scene(Input *in)
 	cube2.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	//Genrate disc
-	disc.setResolution(20);
+	disc.setResolution(200);
 	disc.generateShape();
 	//Generate sphere
-	sphere.setResolution(100);
+	sphere.setResolution(10);
 	sphere.setRadius(.5f);
 	sphere.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
 	cylinder.setStackResolution(4);
 	cylinder.generateShape();
-	cylinder2.setResolution(60);
-	cylinder2.setStackResolution(40);
+	cylinder2.setResolution(21);
+	cylinder2.setStackResolution(11);
+	cylinder2.setRadius(20.f);
 	cylinder2.setTexture(boxTexSolid);
 	cylinder2.setTransparency(.75f);
 	cylinder2.generateShape();
@@ -55,6 +56,20 @@ Scene::Scene(Input *in)
 
 void Scene::handleInput(float dt)
 {
+	//Toggle wireframe mode
+	if(input->isKeyDown('m') && !wireframeMode)
+	{
+		wireframeMode = true;
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
+	}
+	else if(input->isKeyDown('m') && wireframeMode)
+	{
+		wireframeMode = false;
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_FILL);
+	}
+
 	// Handle user input
 	camera.handleInput(dt);
 }

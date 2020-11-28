@@ -24,6 +24,15 @@ void Cylinder::render()
 	glNormalPointer(GL_FLOAT, 0, &normals[0]);
 	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
 
+	if (transparent)
+	{
+		glPushMatrix();
+		glColor4f(red, green, blue, alpha);
+		glScalef(-1.f, -1.f, -1.f);
+		glTranslatef(0.f, -1.f * stackResolution, 0.f);
+		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
+		glPopMatrix();
+	}
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -32,6 +41,8 @@ void Cylinder::render()
 
 	//If a texture has been applied, remove it
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	//Reset color
+	glColor4f(1.f, 1.f, 1.f, 1.f);
 }
 
 void Cylinder::generateShape()
