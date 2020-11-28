@@ -20,7 +20,7 @@ Scene::Scene(Input *in)
 	camera.setSpeed(10);
 	camera.setSensitivity(10);
 
-	// Initialise scene variables
+	// Initialise textures
 	checkedTex = SOIL_load_OGL_texture("gfx/checked.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexSolid = SOIL_load_OGL_texture("gfx/crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexTransparent = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -28,6 +28,9 @@ Scene::Scene(Input *in)
 
 	//Init skybox
 	skybox.setTexture(sky);
+
+	//Init models
+	spaceship.load("models/spaceship.obj", "gfx/spaceship.jpg");
 
 	//Init Shapes
 	//Genrate cubes
@@ -147,6 +150,11 @@ void Scene::render() {
 		glTranslatef(-5.f, 2.f, -15.f);
 		glColor3f(1.f, 1.f, 0.f);
 		cylinder.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-10.f, 0.f, -15.f);
+		glScalef(5.f, 5.f, 5.f);
+		spaceship.render();
 	glPopMatrix();
 
 	glEnable(GL_BLEND);

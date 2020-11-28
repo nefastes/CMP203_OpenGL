@@ -37,6 +37,12 @@
     <Filter Include="Source Files\Main">
       <UniqueIdentifier>{eb88ce4d-ce7c-4834-a634-b2609126b8c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Model Loader">
+      <UniqueIdentifier>{85680c73-5f6d-4c9a-8697-f13e81411c8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model Loader">
+      <UniqueIdentifier>{68a8a210-1505-4a8f-a052-d697700b462c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicShape.cpp">
@@ -69,6 +75,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Model Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicShape.h">
@@ -97,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Model Loader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

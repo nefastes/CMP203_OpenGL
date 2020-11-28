@@ -20,6 +20,7 @@
 #include "Skybox.h"
 #include "Cylinder.h"
 #include "Sphere.h"
+#include "Model.h"
 
 class Scene{
 
@@ -73,6 +74,9 @@ protected:
 
 	//Skybox stuff
 	Skybox skybox;
+
+	//Models
+	Model spaceship;
 
 	//Shapes
 	BasicShape cube;
