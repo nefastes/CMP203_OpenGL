@@ -29,11 +29,10 @@ void Disc::render()
 	{
 		glPushMatrix();
 		glColor4f(red, green, blue, alpha);
-		glScalef(-1.f, -1.f, -1.f);
 		glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
 		glPopMatrix();
 	}
-	glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
+	else glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);

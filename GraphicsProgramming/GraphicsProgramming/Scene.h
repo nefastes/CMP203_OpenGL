@@ -78,11 +78,14 @@ protected:
 	BasicShape cube;
 	BasicShape cube2;
 	Disc disc;
+	Disc disc2;
 	Cylinder cylinder;
 	Cylinder cylinder2;
 	Sphere sphere;
+	Sphere sphere2;
 
 	//Textures
+	GLuint checkedTex;
 	GLuint boxTexSolid;
 	GLuint boxTexTransparent;
 	GLuint sky;

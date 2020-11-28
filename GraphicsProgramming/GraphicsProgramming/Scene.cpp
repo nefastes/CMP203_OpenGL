@@ -21,6 +21,7 @@ Scene::Scene(Input *in)
 	camera.setSensitivity(10);
 
 	// Initialise scene variables
+	checkedTex = SOIL_load_OGL_texture("gfx/checked.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexSolid = SOIL_load_OGL_texture("gfx/crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexTransparent = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	sky = SOIL_load_OGL_texture("gfx/skybox2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -36,20 +37,29 @@ Scene::Scene(Input *in)
 	cube2.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	//Genrate disc
-	disc.setResolution(200);
+	disc.setResolution(20);
 	disc.generateShape();
+	disc2.setResolution(100);
+	disc2.setTransparency(.75f);
+	disc2.setTexture(checkedTex);
+	disc2.generateShape();
 	//Generate sphere
 	sphere.setResolution(10);
 	sphere.setRadius(.5f);
 	sphere.generateShape();
+	sphere2.setResolution(100);
+	sphere2.setRadius(1.f);
+	sphere2.setTransparency(.5f);
+	sphere2.setTexture(checkedTex);
+	sphere2.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
 	cylinder.setStackResolution(4);
 	cylinder.generateShape();
 	cylinder2.setResolution(21);
 	cylinder2.setStackResolution(11);
-	cylinder2.setRadius(20.f);
-	cylinder2.setTexture(boxTexSolid);
+	cylinder2.setRadius(2.f);
+	cylinder2.setTexture(checkedTex);
 	cylinder2.setTransparency(.75f);
 	cylinder2.generateShape();
 }
@@ -125,19 +135,16 @@ void Scene::render() {
 
 	glPushMatrix();
 		glTranslatef(-5.f, 2.f, -5.f);
-		glScalef(2.f, 2.f, 2.f);
 		glColor3f(0.f, 1.f, 1.f);
 		sphere.render();
 	glPopMatrix();
 	glPushMatrix();
 		glTranslatef(-5.f, 2.f, -10.f);
-		glScalef(2.f, 2.f, 2.f);
 		glColor3f(1.f, 0.f, 1.f);
 		disc.render();
 	glPopMatrix();
 	glPushMatrix();
 		glTranslatef(-5.f, 2.f, -15.f);
-		glScalef(2.f, 2.f, 2.f);
 		glColor3f(1.f, 1.f, 0.f);
 		cylinder.render();
 	glPopMatrix();
@@ -157,8 +164,15 @@ void Scene::render() {
 	glPopMatrix();
 	glPushMatrix();
 		glTranslatef(-5.f, 2.f, -40.f);
-		glScalef(3.f, 3.f, 3.f);
 		cylinder2.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-10.f, 2.f, -5.f);
+		sphere2.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-10.f, 2.f, -10.f);
+		disc2.render();
 	glPopMatrix();
 
 	glPushMatrix();
