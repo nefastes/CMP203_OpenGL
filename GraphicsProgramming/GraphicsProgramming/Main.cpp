@@ -40,6 +40,8 @@ void renderScene(void)
 	scene->handleInput(deltaTime);
 	scene->update(deltaTime);
 	scene->render();
+	//Store the pressed keys of the last frame, so we can press the same key to toggle stuff
+	input->updatePreviousFrameKeys();
 }
 
 // Handles keyboard input events from GLUT.
@@ -77,7 +79,8 @@ void processNormalKeysUp(unsigned char key, int x, int y)
 // Mouse coordinates are handled separately.
 void processSpecialKeys(int key, int x, int y)
 {
-	// TODO: Pass special key press to Input class.
+	// Send key down to input class.
+	input->setKeyDown(key);
 }
 
 // Handles keyboard input events from GLUT.
@@ -88,7 +91,8 @@ void processSpecialKeys(int key, int x, int y)
 // Mouse coordinates are handled separately.
 void processSpecialKeysUp(int key, int x, int y)
 {
-	// TODO: Pass special key release to Input class.
+	// Send key up to input class.
+	input->setKeyUp(key);
 }
 
 // Handles mouse movement events from GLUT.
@@ -150,7 +154,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL);
 	//glutInitWindowPosition(100, 100);
 	glutInitWindowSize(1280, 720);
-	glutCreateWindow("My first triangle");
+	glutCreateWindow("CMP203 Coursework - Justin Syfrig");
 	
 	// Register callback functions for change in size and rendering.
 	glutDisplayFunc(renderScene);
@@ -160,10 +164,10 @@ int main(int argc, char **argv)
 	// Register Input callback functions.
 	glutKeyboardFunc(processNormalKeys);
 	glutKeyboardUpFunc(processNormalKeysUp);
-	glutSpecialFunc(NULL);
+	//glutSpecialFunc(NULL);
 	// Special keys not processed, as currently not required.
-	//glutSpecialFunc(processSpecialKeys);
-	//glutSpecialUpFunc(processSpecialKeysUp);
+	glutSpecialFunc(processSpecialKeys);
+	glutSpecialUpFunc(processSpecialKeysUp);
 	
 	// Mouse callbacks
 	glutMotionFunc(processActiveMouseMove);

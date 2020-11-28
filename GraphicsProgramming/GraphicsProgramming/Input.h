@@ -20,6 +20,8 @@ public:
 	void setKeyDown(unsigned char key);
 	void setKeyUp(unsigned char key);
 	bool isKeyDown(int key);
+	bool isKeyDownOnce(int key);
+	void updatePreviousFrameKeys();
 
 	// getters and setters for mouse buttons and position.
 	void setMouseX(int lx);
@@ -37,7 +39,8 @@ private:
 	// Mouse struct object.
 	bool keys[256]{ false };
 	Mouse mouse;
-
+	// Array of bolleans to check if the keys have been released the previous frame
+	bool released[256]{ false };
 };
 
 #endif

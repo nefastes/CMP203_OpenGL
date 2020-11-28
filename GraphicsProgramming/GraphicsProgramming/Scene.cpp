@@ -67,13 +67,13 @@ Scene::Scene(Input *in)
 void Scene::handleInput(float dt)
 {
 	//Toggle wireframe mode
-	if(input->isKeyDown('m') && !wireframeMode)
+	if(!wireframeMode && input->isKeyDownOnce(GLUT_KEY_F1))
 	{
 		wireframeMode = true;
 		glPolygonMode(GL_FRONT, GL_LINE);
 		glPolygonMode(GL_BACK, GL_LINE);
 	}
-	else if(input->isKeyDown('m') && wireframeMode)
+	else if(wireframeMode && input->isKeyDownOnce(GLUT_KEY_F1))
 	{
 		wireframeMode = false;
 		glPolygonMode(GL_FRONT, GL_FILL);

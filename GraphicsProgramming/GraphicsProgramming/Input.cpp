@@ -38,6 +38,20 @@ bool Input::isKeyDown(int key)
 	return false;
 }
 
+bool Input::isKeyDownOnce(int key)
+{
+	//Returns true if a key is pressed and was released the frame before
+	if (released[key])
+		return keys[key];
+	return false;
+}
+
+void Input::updatePreviousFrameKeys()
+{
+	//Store the inverse of the keys array
+	for (unsigned i = 0; i < 256; ++i) released[i] = !keys[i];
+}
+
 void Input::setMouseX(int pos)
 {
 	mouse.x = pos;
