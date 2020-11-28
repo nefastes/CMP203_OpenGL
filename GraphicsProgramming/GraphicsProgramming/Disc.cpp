@@ -46,6 +46,11 @@ void Disc::render()
 
 void Disc::generateShape()
 {
+	//Clear vectors in case of regeneration
+	vertices.clear();
+	normals.clear();
+	texCoordinates.clear();
+
 	//The least resolution contains 3 vertices to make 1 triangle
 	if (resolution < 3) resolution = 3;
 	//Calculate dtheta
@@ -65,8 +70,8 @@ void Disc::generateShape()
 		for (unsigned i = 0; i < 2; ++i)
 		{
 			//Vertices and normals need 3 coordinates
-			vertices.push_back(radius * cosf(theta) + origin.x);
-			vertices.push_back(radius * sinf(theta) + origin.y);
+			vertices.push_back(radius * cosf(theta) * scale.x + origin.x);
+			vertices.push_back(radius * sinf(theta) * scale.y + origin.y);
 			vertices.push_back(origin.z);
 			normals.push_back(0.f);
 			normals.push_back(0.f);

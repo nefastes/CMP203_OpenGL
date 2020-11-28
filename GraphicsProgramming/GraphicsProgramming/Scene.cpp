@@ -37,9 +37,12 @@ Scene::Scene(Input *in)
 	cube.setTexture(boxTexSolid);
 	cube.setTransparency(.4f);
 	cube.setPosition(-5.f, 2.f, -20.f);
+	cube.setScale(2.f, 2.f, 2.f);
 	cube.generateShape();
-	cube2.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
+	cube2.setScale(3.f, 3.f, 3.f);
+	cube2.setPosition(-5.f, 2.f, -30.f);
+	cube2.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
 	disc.setPosition(-5.f, 2.f, -10.f);
@@ -89,6 +92,8 @@ void Scene::handleInput(float dt)
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 	}
+
+	if (input->isKeyDown('m')) cylinder.rescale(5.f, 5.f, 5.f);
 
 	// Handle user input
 	camera.handleInput(dt);
@@ -159,13 +164,9 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glPushMatrix();
-		//glTranslatef(-5.f, 2.f, -20.f);
-		//glScalef(2.f, 2.f, 2.f);
 		cube.render();
 	glPopMatrix();
 	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -30.f);
-		glScalef(3.f, 3.f, 3.f);
 		cube2.render();
 	glPopMatrix();
 	glPushMatrix();

@@ -46,6 +46,11 @@ void Sphere::render()
 
 void Sphere::generateShape()
 {
+	//Clear vectors in case of regeneration
+	vertices.clear();
+	normals.clear();
+	texCoordinates.clear();
+
 	//The least resolution contains 3 layers of both lats and longs to make a sphere
 	if (resolution < 3) resolution = 3;
 	//Calculate deltaAngles
@@ -79,9 +84,9 @@ void Sphere::generateShape()
 				float y = cosf(gamma);
 				float z = sinf(theta) * sinf(gamma);
 				//Vertices and normals need 3 coordinates, also consider the origin  so we can build the shape in the correct position
-				vertices.push_back(radius * x + origin.x);
-				vertices.push_back(radius * y + origin.y);
-				vertices.push_back(radius * z + origin.z);
+				vertices.push_back(radius * x * scale.x + origin.x);
+				vertices.push_back(radius * y * scale.y + origin.y);
+				vertices.push_back(radius * z * scale.z + origin.z);
 				normals.push_back(x);
 				normals.push_back(y);
 				normals.push_back(z);

@@ -42,43 +42,48 @@ void BasicShape::render()
 
 void BasicShape::generateShape()
 {
+	//Clear vectors in case of regeneration
+	vertices.clear();
+	normals.clear();
+	texCoordinates.clear();
+
 	//Generate vertices for a unit cube
 	float verts[72] = {
 		//Front
-		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
-		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z,
-		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
 
 		//Right
-		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
-		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
 
 		//Back
-		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
-		-1.0 + origin.x,	-1.0 + origin.y,	-1.0 + origin.z,
-		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
 
 		//Left
-		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
-		-1.0 + origin.x,	-1.0 + origin.y,	-1.0 + origin.z,
-		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
-		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
 
 		//Top
-		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
-		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
-		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
-		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
 
 		//Bottom
-		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
-		- 1.0 + origin.x,	 -1.0 + origin.y,	-1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
-		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z
 	};
 	for (unsigned i = 0; i < 72; ++i) vertices.push_back(verts[i]);
 	float norms[72] = {

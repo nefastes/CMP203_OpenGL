@@ -47,6 +47,11 @@ void Cylinder::render()
 
 void Cylinder::generateShape()
 {
+	//Clear vectors in case of regeneration
+	vertices.clear();
+	normals.clear();
+	texCoordinates.clear();
+
 	//We need a minimum of 2 stacks, so we set this to 1 so we make 1 more disc
 	if (stackResolution < 1) stackResolution = 1;
 	//We need a minimum of 3 vertices to make a triangle
@@ -62,9 +67,9 @@ void Cylinder::generateShape()
 		for (unsigned j = 0; j <= resolution; ++j)
 		{
 			//Vertices and normals need 3 coordinates
-			vertices.push_back(radius * cosf(theta) + origin.x);
-			vertices.push_back(height + origin.y - (float)stackResolution / 2.f);	//We want the origin the be the center of the shape
-			vertices.push_back(radius * sinf(theta) + origin.z);
+			vertices.push_back(radius * cosf(theta) * scale.x + origin.x);
+			vertices.push_back((height - (float)stackResolution / 2.f) * scale.y + origin.y);	//We want the origin the be the center of the shape
+			vertices.push_back(radius * sinf(theta) * scale.z + origin.z);
 			normals.push_back(cosf(theta));
 			normals.push_back(0.f);
 			normals.push_back(sinf(theta));

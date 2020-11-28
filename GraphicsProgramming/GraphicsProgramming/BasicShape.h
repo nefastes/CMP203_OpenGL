@@ -23,6 +23,8 @@ protected:
 	std::vector<GLubyte> indices;
 	//Origin of the shape (the origin is allways in the middle/center of the shape)
 	Vector3 origin;
+	//Scale of the shape
+	Vector3 scale = Vector3(1.f, 1.f, 1.f);
 
 public:
 	BasicShape();
@@ -44,5 +46,11 @@ public:
 	void setPosition(Vector3 pos) { origin = pos; }	//Sets the position of the shape, must be called BEFORE generating it.
 	void setPosition(float x, float y, float z) { origin.x = x; origin.y = y; origin.z = z; }	//Sets the position of the shape, must be called BEFORE generating it.
 	Vector3 getPosition() { return origin; }
+
+	void setScale(Vector3 s) { scale = s; }
+	void setScale(float sx, float sy, float sz) { scale.x = sx; scale.y = sy; scale.z = sz; }
+	Vector3 getScale() { return scale; }
+	void rescale(Vector3 s) { scale = s; generateShape(); }	//Need to regenerate the shape when rescaling it
+	void rescale(float sx, float sy, float sz) { scale.x = sx; scale.y = sy; scale.z = sz; generateShape(); }	//Need to regenerate the shape when rescaling it
 };
 
