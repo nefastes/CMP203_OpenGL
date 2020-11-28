@@ -28,8 +28,8 @@ void Disc::render()
 	if (transparent)
 	{
 		glPushMatrix();
-		glColor4f(red, green, blue, alpha);
-		glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
+			glColor4f(red, green, blue, alpha);
+			glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
 		glPopMatrix();
 	}
 	else glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);

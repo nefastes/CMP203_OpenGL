@@ -26,6 +26,7 @@ void BasicShape::render()
 		glPushMatrix();
 			glColor4f(red, green, blue, alpha);
 			glScalef(-1.f, -1.f, -1.f);
+			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
 			glDrawArrays(GL_QUADS, 0, 24);
 		glPopMatrix();
 	}
@@ -44,40 +45,40 @@ void BasicShape::generateShape()
 	//Generate vertices for a unit cube
 	float verts[72] = {
 		//Front
-		-1.0, 1.0, 1.0,
-		-1.0, -1.0, 1.0,
-		1.0,  -1.0, 1.0,
-		1.0,  1.0, 1.0,
+		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
+		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z,
+		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
 
 		//Right
-		1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0,
-		1.0, -1.0, -1.0,
-		1.0, 1.0, -1.0,
+		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
+		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
 
 		//Back
-		1.0, 1.0, -1.0,
-		1.0, -1.0, -1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, -1.0,
+		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
+		-1.0 + origin.x,	-1.0 + origin.y,	-1.0 + origin.z,
+		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
 
 		//Left
-		-1.0, 1.0, -1.0,
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, 1.0,
-		-1.0, 1.0, 1.0,
+		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
+		-1.0 + origin.x,	-1.0 + origin.y,	-1.0 + origin.z,
+		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
+		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
 
 		//Top
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,
+		-1.0 + origin.x,	1.0 + origin.y,		-1.0 + origin.z,
+		-1.0 + origin.x,	1.0 + origin.y,		1.0 + origin.z,
+		1.0 + origin.x,		1.0 + origin.y,		1.0 + origin.z,
+		1.0 + origin.x,		1.0 + origin.y,		-1.0 + origin.z,
 
 		//Bottom
-		-1.0, -1.0, 1.0,
-		- 1.0, -1.0, -1.0,
-		1.0, -1.0, -1.0,
-		1.0, -1.0, 1.0
+		-1.0 + origin.x,	-1.0 + origin.y,	1.0 + origin.z,
+		- 1.0 + origin.x,	 -1.0 + origin.y,	-1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	-1.0 + origin.z,
+		1.0 + origin.x,		-1.0 + origin.y,	1.0 + origin.z
 	};
 	for (unsigned i = 0; i < 72; ++i) vertices.push_back(verts[i]);
 	float norms[72] = {

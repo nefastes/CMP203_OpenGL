@@ -27,10 +27,10 @@ void Cylinder::render()
 	if (transparent)
 	{
 		glPushMatrix();
-		glColor4f(red, green, blue, alpha);
-		glScalef(-1.f, -1.f, -1.f);
-		glTranslatef(0.f, -1.f * stackResolution, 0.f);
-		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
+			glColor4f(red, green, blue, alpha);
+			glScalef(-1.f, -1.f, -1.f);
+			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
+			glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
 		glPopMatrix();
 	}
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);

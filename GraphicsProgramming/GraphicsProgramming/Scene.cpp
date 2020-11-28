@@ -34,9 +34,10 @@ Scene::Scene(Input *in)
 
 	//Init Shapes
 	//Genrate cubes
-	cube.generateShape();
 	cube.setTexture(boxTexSolid);
 	cube.setTransparency(.4f);
+	cube.setPosition(-5.f, 2.f, -20.f);
+	cube.generateShape();
 	cube2.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	//Genrate disc
@@ -158,8 +159,8 @@ void Scene::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glPushMatrix();
-		glTranslatef(-5.f, 2.f, -20.f);
-		glScalef(2.f, 2.f, 2.f);
+		//glTranslatef(-5.f, 2.f, -20.f);
+		//glScalef(2.f, 2.f, 2.f);
 		cube.render();
 	glPopMatrix();
 	glPushMatrix();

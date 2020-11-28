@@ -26,9 +26,10 @@ void Sphere::render()
 	if (transparent)
 	{
 		glPushMatrix();
-		glColor4f(red, green, blue, alpha);
-		glScalef(-1.f, -1.f, -1.f);
-		glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
+			glColor4f(red, green, blue, alpha);
+			glScalef(-1.f, -1.f, -1.f);
+			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
+			glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
 		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
