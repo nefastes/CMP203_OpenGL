@@ -85,7 +85,7 @@ Scene::Scene(Input *in)
 	sphere2.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
-	cylinder.setStackResolution(4);
+	cylinder.setStackResolution(13);
 	cylinder.setPosition(-5.f, 2.f, -15.f);
 	cylinder.setColor3f(1.f, 1.f, 0.f);
 	cylinder.generateShape();
@@ -184,7 +184,8 @@ void Scene::render() {
 
 	// End render geometry --------------------------------------
 
-	// Render text, should be last object rendered.
+	// Render text, should be last object rendered. Lighting should not be applied to HUD elements.
+	glDisable(GL_LIGHTING);
 	renderTextOutput();
 	
 	// Swap buffers, after all objects are rendered.

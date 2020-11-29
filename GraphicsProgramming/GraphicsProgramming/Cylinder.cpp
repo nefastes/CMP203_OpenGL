@@ -35,7 +35,7 @@ void Cylinder::render()
 		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
 		glPopMatrix();
 	}
-	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
+	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);

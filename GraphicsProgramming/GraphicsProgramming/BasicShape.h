@@ -22,7 +22,7 @@ protected:
 	std::vector<float> vertices;
 	std::vector<float> normals;
 	std::vector<float> texCoordinates;
-	std::vector<GLubyte> indices;
+	std::vector<GLuint> indices;
 	//Origin of the shape (the origin is allways in the middle/center of the shape)
 	Vector3 origin;
 	//Scale of the shape
