@@ -11,40 +11,18 @@ Cylinder::~Cylinder()
 
 }
 
-void Cylinder::render()
+void Cylinder::shapeSpecificDrawingMode()
 {
-	//Texture the shape if a texture exists
-	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
-	//Color the shape with its color
-	glColor3f(red, green, blue);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
-	glNormalPointer(GL_FLOAT, 0, &normals[0]);
-	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
-
 	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
 		glPushMatrix();
 		glCullFace(GL_FRONT);
-		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, indices.data());
 		glCullFace(GL_BACK);
 		glPopMatrix();
 	}
-	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	//If a texture has been applied, remove it
-	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	//Reset color
-	glColor4f(1.f, 1.f, 1.f, 1.f);
+	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, indices.data());
 }
 
 void Cylinder::generateShape()

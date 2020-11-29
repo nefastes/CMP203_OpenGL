@@ -16,7 +16,7 @@ public:
 	Disc();
 	~Disc();
 
-	void render() override;
+	void shapeSpecificDrawingMode() override;
 	void generateShape() override;
 	void setRadius(float);
 	void setResolution(unsigned);

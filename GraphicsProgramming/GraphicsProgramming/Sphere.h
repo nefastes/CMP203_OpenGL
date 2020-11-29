@@ -12,7 +12,7 @@ public:
 	Sphere();
 	~Sphere();
 
-	void render() override;
+	void shapeSpecificDrawingMode() override;
 	void generateShape() override;
 };
 

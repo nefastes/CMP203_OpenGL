@@ -32,7 +32,8 @@ public:
 	BasicShape();
 	~BasicShape();
 
-	virtual void render();
+	void render();
+	virtual void shapeSpecificDrawingMode();	//This function will be overwritten by other shapes
 	virtual void generateShape();
 
 	void setTransparent(bool t) { transparent = t; }

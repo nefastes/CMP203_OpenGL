@@ -15,7 +15,7 @@ public:
 	Cylinder();
 	~Cylinder();
 
-	void render() override;
+	void shapeSpecificDrawingMode() override;
 	void generateShape() override;
 	void setStackResolution(unsigned);
 	unsigned getStackResolution();

@@ -22,7 +22,18 @@ void BasicShape::render()
 	glVertexPointer(3, GL_FLOAT, 0, vertices.data());
 	glNormalPointer(GL_FLOAT, 0, normals.data());
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates.data());
-	//Handle transparency (render the object twice, once inside out and a second time normally)
+	shapeSpecificDrawingMode();	//Call the shape's specific render, will differ for every sort of shape.
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	//If a texture has been applied, remove it
+	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	//Reset color
+	glColor4f(1.f, 1.f, 1.f, 1.f);
+}
+
+void BasicShape::shapeSpecificDrawingMode()
+{
 	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
@@ -33,13 +44,6 @@ void BasicShape::render()
 		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 24);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//If a texture has been applied, remove it
-	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	//Reset color
-	glColor4f(1.f, 1.f, 1.f, 1.f);
 }
 
 void BasicShape::generateShape()
