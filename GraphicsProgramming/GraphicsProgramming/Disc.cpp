@@ -27,14 +27,8 @@ void Disc::render()
 	glNormalPointer(GL_FLOAT, 0, &normals[0]);
 	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
 
-	if (transparent)
-	{
-		glPushMatrix();
-			glColor4f(red, green, blue, alpha);
-			glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
-		glPopMatrix();
-	}
-	else glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
+	if (transparent) glColor4f(red, green, blue, alpha);
+	glDrawArrays(GL_TRIANGLES, 0, 3 * resolution);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);

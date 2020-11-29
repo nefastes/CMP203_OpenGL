@@ -39,7 +39,7 @@ public:
 	void setTransparency(float a) { alpha = a; transparent = true; }
 	bool isTranspearent() { return transparent; }
 
-	void setInsideRendering(bool r) { renderInside = r; }
+	void renderInsideShape(bool r) { renderInside = r; }
 	bool isInsideRendered() { return renderInside; }
 
 	void setColor3f(float r, float g, float b) { red = r; green = g; blue = b; }

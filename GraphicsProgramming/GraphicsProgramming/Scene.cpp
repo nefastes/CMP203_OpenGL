@@ -38,7 +38,7 @@ Scene::Scene(Input *in)
 	cube.setTransparency(.4f);
 	cube.setPosition(-5.f, 2.f, -20.f);
 	cube.setScale(2.f, 2.f, 2.f);
-	cube.setInsideRendering(true);
+	cube.renderInsideShape(true);
 	cube.generateShape();
 	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
 	cube2.setScale(3.f, 3.f, 3.f);
@@ -46,19 +46,19 @@ Scene::Scene(Input *in)
 	cube2.generateShape();
 	cube3.setPosition(4.f, 0.f, 0.f);
 	cube3.setTexture(boxTexTransparent);
-	cube3.setInsideRendering(true);
+	cube3.renderInsideShape(true);
 	cube3.generateShape();
 	cube4.setPosition(8.f, 0.f, 0.f);
 	cube4.setTexture(boxTexTransparent);
-	cube4.setInsideRendering(true);
+	cube4.renderInsideShape(true);
 	cube4.generateShape();
 	cube5.setPosition(8.f, 0.f, 4.f);
 	cube5.setTexture(boxTexTransparent);
-	cube5.setInsideRendering(true);
+	cube5.renderInsideShape(true);
 	cube5.generateShape();
 	cube6.setPosition(4.f, 0.f, 4.f);
 	cube6.setTexture(boxTexTransparent);
-	cube6.setInsideRendering(true);
+	cube6.renderInsideShape(true);
 	cube6.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
@@ -81,7 +81,7 @@ Scene::Scene(Input *in)
 	sphere2.setTransparency(.5f);
 	sphere2.setTexture(checkedTex);
 	sphere2.setPosition(-10.f, 2.f, -5.f);
-	sphere2.setInsideRendering(true);
+	sphere2.renderInsideShape(true);
 	sphere2.generateShape();
 	//Genrate cylinders
 	cylinder.setResolution(20);
@@ -95,7 +95,7 @@ Scene::Scene(Input *in)
 	cylinder2.setTexture(checkedTex);
 	cylinder2.setTransparency(.75f);
 	cylinder2.setPosition(-5.f, 2.f, -40.f);
-	cylinder2.setInsideRendering(true);
+	cylinder2.renderInsideShape(true);
 	cylinder2.generateShape();
 
 	//Push references of all transparent shapes into the according vector
@@ -135,10 +135,10 @@ void Scene::update(float dt)
 	// update scene related variables.
 	skybox.setPos(camera.getPosition());
 
-	//Update the transparent shapes order relative to the camera position (furthest to be rendered first, closest to be rendered last)
+	//Update the transparent shapes order of rendering relative to the camera position (furthest to be rendered first, closest to be rendered last)
 	std::sort(transparentShapes.begin(), transparentShapes.end(), [&](BasicShape* s1, BasicShape* s2)
 		{
-			//We want to return true if the first shape is closer to the camera than the second shape
+			//We want to return true if the first shape is further to the camera than the second shape
 			return s1->getPosition() - camera.getPosition() > s2->getPosition() - camera.getPosition();
 		});
 

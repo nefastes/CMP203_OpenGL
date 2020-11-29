@@ -29,9 +29,9 @@ void Sphere::render()
 	if (renderInside)
 	{
 		glPushMatrix();
-		glScalef(-1.f, -1.f, -1.f);
-		glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
+		glCullFace(GL_FRONT);
 		glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
+		glCullFace(GL_BACK);
 		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);

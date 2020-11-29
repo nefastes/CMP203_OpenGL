@@ -30,9 +30,9 @@ void Cylinder::render()
 	if (renderInside)
 	{
 		glPushMatrix();
-		glScalef(-1.f, -1.f, -1.f);
-		glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
-		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
+		glCullFace(GL_FRONT);
+		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+		glCullFace(GL_BACK);
 		glPopMatrix();
 	}
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
