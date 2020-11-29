@@ -98,6 +98,7 @@ protected:
 	GLuint checkedTex;
 	GLuint boxTexSolid;
 	GLuint boxTexTransparent;
+	GLuint marble;
 	GLuint sky;
 };
 

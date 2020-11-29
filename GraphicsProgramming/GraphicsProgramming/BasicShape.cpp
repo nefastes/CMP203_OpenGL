@@ -55,6 +55,7 @@ void BasicShape::generateShape()
 	normals.clear();
 	texCoordinates.clear();
 
+	//TODO: Make things smarter here
 	//Generate vertices for a unit cube
 	float verts[72] = {
 		//Front

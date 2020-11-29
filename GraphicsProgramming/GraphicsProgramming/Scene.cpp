@@ -24,6 +24,7 @@ Scene::Scene(Input *in)
 	checkedTex = SOIL_load_OGL_texture("gfx/checked.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexSolid = SOIL_load_OGL_texture("gfx/crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexTransparent = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	marble = SOIL_load_OGL_texture("gfx/marble1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	sky = SOIL_load_OGL_texture("gfx/skybox2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
@@ -62,9 +63,9 @@ Scene::Scene(Input *in)
 	cube6.generateShape();
 	//Generate platform
 	platform.setPosition(-10.f, -5.f, 0.f);
-	platform.setTexture(checkedTex);
+	platform.setTexture(marble);
 	platform.setScale(5.f, .25f, 5.f);
-	platform.setTextureRepeating(4.f, 4.f, 4.f);
+	platform.setTextureRepeating(2.f, 2.f, 2.f);
 	platform.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
