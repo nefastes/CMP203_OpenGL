@@ -60,6 +60,12 @@ Scene::Scene(Input *in)
 	cube6.setTexture(boxTexTransparent);
 	cube6.renderInsideShape(true);
 	cube6.generateShape();
+	//Generate platform
+	platform.setPosition(-10.f, -5.f, 0.f);
+	platform.setTexture(checkedTex);
+	platform.setScale(5.f, .25f, 5.f);
+	platform.setTextureRepeating(4.f, 4.f, 4.f);
+	platform.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
 	disc.setPosition(-5.f, 2.f, -10.f);
@@ -168,6 +174,7 @@ void Scene::render() {
 
 	drawPlane();
 
+	platform.render();
 	sphere.render();
 	disc.render();
 	cylinder.render();

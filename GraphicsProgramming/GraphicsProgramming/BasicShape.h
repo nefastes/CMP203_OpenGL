@@ -27,6 +27,9 @@ protected:
 	Vector3 origin;
 	//Scale of the shape
 	Vector3 scale = Vector3(1.f, 1.f, 1.f);
+	//A simple bool to track whether we want the texture to fill or to repeat on our shape. By default we will fill
+	bool fillTexture = true;
+	Vector3 textureScale;
 
 public:
 	BasicShape();
@@ -58,5 +61,8 @@ public:
 	Vector3 getScale() { return scale; }
 	void rescale(Vector3 s) { scale = s; generateShape(); }	//Need to regenerate the shape when rescaling it
 	void rescale(float sx, float sy, float sz) { scale.x = sx; scale.y = sy; scale.z = sz; generateShape(); }	//Need to regenerate the shape when rescaling it
+
+	void setTextureRepeating() { fillTexture = false; }
+	void setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ) { textureScale.x = textureScaleX; textureScale.y = textureScaleY; textureScale.z = textureScaleZ; fillTexture = false; }
 };
 
