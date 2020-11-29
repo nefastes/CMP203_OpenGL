@@ -168,7 +168,6 @@ void Scene::render() {
 
 	drawPlane();
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	sphere.render();
 	disc.render();
 	cylinder.render();
@@ -203,10 +202,10 @@ void Scene::initialiseOpenGL()
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	//Blend Function for transparent shapes
-	glutSetCursor(GLUT_CURSOR_NONE);					//Hide cursor
+	glEnable(GL_CULL_FACE);								// Enable face culling
+	glCullFace(GL_BACK);								// Face culling mode
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Blend Function for transparent shapes
+	glutSetCursor(GLUT_CURSOR_NONE);					// Hide cursor
 }
 
 // Handles the resize of the window. If the window changes size the perspective matrix requires re-calculation to match new window size.
