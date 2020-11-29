@@ -15,6 +15,8 @@ void Cylinder::render()
 {
 	//Texture the shape if a texture exists
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+	//Color the shape with its color
+	glColor3f(red, green, blue);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -24,17 +26,14 @@ void Cylinder::render()
 	glNormalPointer(GL_FLOAT, 0, &normals[0]);
 	glTexCoordPointer(2, GL_FLOAT, 0, &texCoordinates[0]);
 
-	if (transparent)
+	if (transparent) glColor4f(red, green, blue, alpha);
+	if (renderInside)
 	{
-		glColor4f(red, green, blue, alpha);
-		if (renderInside)
-		{
-			glPushMatrix();
-			glScalef(-1.f, -1.f, -1.f);
-			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
-			glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
-			glPopMatrix();
-		}
+		glPushMatrix();
+		glScalef(-1.f, -1.f, -1.f);
+		glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
+		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
+		glPopMatrix();
 	}
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_BYTE, &indices[0]);
 

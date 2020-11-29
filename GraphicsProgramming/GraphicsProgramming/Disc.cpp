@@ -16,6 +16,8 @@ void Disc::render()
 {
 	//Texture the shape if a texture exists
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+	//Color the shape with its color
+	glColor3f(red, green, blue);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);

@@ -144,3 +144,9 @@ Vector3& Vector3::operator-=(const Vector3& v2) {
 	this->z -= v2.z;
 	return *this;
 }
+
+bool Vector3::operator>(const Vector3& v2)
+{
+	//Compare the magnitude of both vectors, return result
+	return sqrt((double)this->x * this->x + (double)this->y * this->y + (double)this->z * this->z) > sqrt((double)v2.x * v2.x + (double)v2.y * v2.y + (double)v2.z * v2.z);
+}

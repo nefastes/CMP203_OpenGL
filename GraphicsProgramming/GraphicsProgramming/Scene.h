@@ -45,7 +45,6 @@ protected:
 	void calculateFPS();
 
 	// draw primitive functions
-	void drawUnitCube(float, float, float, float);
 	void drawSimpleQuad(float, float, float, float);
 	void drawPlane();
 
@@ -81,12 +80,18 @@ protected:
 	//Shapes
 	BasicShape cube;
 	BasicShape cube2;
+	BasicShape cube3;
+	BasicShape cube4;
+	BasicShape cube5;
+	BasicShape cube6;
 	Disc disc;
 	Disc disc2;
 	Cylinder cylinder;
 	Cylinder cylinder2;
 	Sphere sphere;
 	Sphere sphere2;
+	//Vector to hold any transparent shape
+	std::vector<BasicShape*> transparentShapes;
 
 	//Textures
 	GLuint checkedTex;

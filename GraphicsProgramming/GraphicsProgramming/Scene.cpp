@@ -44,9 +44,26 @@ Scene::Scene(Input *in)
 	cube2.setScale(3.f, 3.f, 3.f);
 	cube2.setPosition(-5.f, 2.f, -30.f);
 	cube2.generateShape();
+	cube3.setPosition(4.f, 0.f, 0.f);
+	cube3.setTexture(boxTexTransparent);
+	cube3.setInsideRendering(true);
+	cube3.generateShape();
+	cube4.setPosition(8.f, 0.f, 0.f);
+	cube4.setTexture(boxTexTransparent);
+	cube4.setInsideRendering(true);
+	cube4.generateShape();
+	cube5.setPosition(8.f, 0.f, 4.f);
+	cube5.setTexture(boxTexTransparent);
+	cube5.setInsideRendering(true);
+	cube5.generateShape();
+	cube6.setPosition(4.f, 0.f, 4.f);
+	cube6.setTexture(boxTexTransparent);
+	cube6.setInsideRendering(true);
+	cube6.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
 	disc.setPosition(-5.f, 2.f, -10.f);
+	disc.setColor3f(1.f, 0.f, 1.f);
 	disc.generateShape();
 	disc2.setResolution(100);
 	disc2.setTransparency(.75f);
@@ -57,6 +74,7 @@ Scene::Scene(Input *in)
 	sphere.setResolution(10);
 	sphere.setRadius(1.f);
 	sphere.setPosition(-5.f, 2.f, -5.f);
+	sphere.setColor3f(0.f, 1.f, 1.f);
 	sphere.generateShape();
 	sphere2.setResolution(100);
 	sphere2.setRadius(1.f);
@@ -69,6 +87,7 @@ Scene::Scene(Input *in)
 	cylinder.setResolution(20);
 	cylinder.setStackResolution(4);
 	cylinder.setPosition(-5.f, 2.f, -15.f);
+	cylinder.setColor3f(1.f, 1.f, 0.f);
 	cylinder.generateShape();
 	cylinder2.setResolution(21);
 	cylinder2.setStackResolution(11);
@@ -78,6 +97,17 @@ Scene::Scene(Input *in)
 	cylinder2.setPosition(-5.f, 2.f, -40.f);
 	cylinder2.setInsideRendering(true);
 	cylinder2.generateShape();
+
+	//Push references of all transparent shapes into the according vector
+	transparentShapes.push_back(&cube);
+	transparentShapes.push_back(&cube2);
+	transparentShapes.push_back(&cube3);
+	transparentShapes.push_back(&cube4);
+	transparentShapes.push_back(&cube5);
+	transparentShapes.push_back(&cube6);
+	transparentShapes.push_back(&disc2);
+	transparentShapes.push_back(&sphere2);
+	transparentShapes.push_back(&cylinder2);
 }
 
 void Scene::handleInput(float dt)
@@ -105,6 +135,13 @@ void Scene::update(float dt)
 	// update scene related variables.
 	skybox.setPos(camera.getPosition());
 
+	//Update the transparent shapes order relative to the camera position (furthest to be rendered first, closest to be rendered last)
+	std::sort(transparentShapes.begin(), transparentShapes.end(), [&](BasicShape* s1, BasicShape* s2)
+		{
+			//We want to return true if the first shape is closer to the camera than the second shape
+			return s1->getPosition() - camera.getPosition() > s2->getPosition() - camera.getPosition();
+		});
+
 	// Calculate FPS for output
 	calculateFPS();
 }
@@ -130,30 +167,10 @@ void Scene::render() {
 	glEnable(GL_DEPTH_TEST);
 
 	drawPlane();
-	
-	glPushMatrix();
-		glTranslatef(0.f, 0.f, 8.f);
-		drawUnitCube(0.f, 1.f, 0.f, 1.f);
-	glPopMatrix();
 
-	glPushMatrix();
-		glTranslatef(0.f, 0.f, 6.f);
-		glScalef(.5f, .5f, .5f);
-		drawUnitCube(0.f, 0.f, 1.f, 1.f);
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.f, 0.f, 4.f);
-		glBindTexture(GL_TEXTURE_2D, boxTexSolid);
-		drawUnitCube(1.f, 1.f, 1.f, 1.f);
-	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-
-	glColor3f(0.f, 1.f, 1.f);
 	sphere.render();
-	glColor3f(1.f, 0.f, 1.f);
 	disc.render();
-	glColor3f(1.f, 1.f, 0.f);
 	cylinder.render();
 	glPushMatrix();
 		glTranslatef(-10.f, 0.f, -15.f);
@@ -162,45 +179,7 @@ void Scene::render() {
 	glPopMatrix();
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	cube.render();
-	cube2.render();
-	cylinder2.render();
-	sphere2.render();
-	disc2.render();
-
-	glPushMatrix();
-		glTranslatef(0.f, 0.f, 2.f);
-		drawUnitCube(1.f, 0.f, 0.f, .5f);
-	glPopMatrix();
-
-	glBindTexture(GL_TEXTURE_2D, boxTexTransparent);
-	glPushMatrix();
-		glTranslatef(4.f, 0.f, 0.f);
-		glScalef(2.f, 2.f, 2.f);
-		drawUnitCube(1.f, 1.f, 1.f, 1.f);
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(2.f, 0.f, 8.f);
-		glScalef(5.f, 5.f, 5.f);
-		drawUnitCube(1.f, 1.f, 1.f, 1.f);
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(-10.f, 0.f, 2.f);
-		glScalef(5.f, 5.f, 5.f);
-		drawUnitCube(1.f, 1.f, 1.f, 1.f);
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-
-	glPushMatrix();
-		glTranslatef(-2.f, -2.f, -4.f);
-		glScalef(10.f, 10.f, 10.f);
-		drawSimpleQuad(1.f, 0.f, 1.f, 0.5f);
-	glPopMatrix();
-
+	for (unsigned i = 0; i < transparentShapes.size(); ++i) transparentShapes[i]->render();
 	glDisable(GL_BLEND);
 
 	// End render geometry --------------------------------------
@@ -225,6 +204,8 @@ void Scene::initialiseOpenGL()
 	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	//Blend Function for transparent shapes
+	glutSetCursor(GLUT_CURSOR_NONE);					//Hide cursor
 }
 
 // Handles the resize of the window. If the window changes size the perspective matrix requires re-calculation to match new window size.
@@ -316,191 +297,6 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 	glLoadIdentity();
 	gluPerspective(fov, ((float)width/(float)height), nearPlane, farPlane);
 	glMatrixMode(GL_MODELVIEW);
-}
-
-void Scene::drawUnitCube(float r, float g, float b, float a)
-{
-	GLfloat Material_Diffuse[4] = { r, g, b, a };
-	GLfloat Material_Specular[4] = { 1.f, 1.f, 1.f, 1.f };
-	glColor4f(r, g, b, a);
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Material_Diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular);
-	glMateriali(GL_FRONT, GL_SHININESS, 150);
-	glBegin(GL_QUADS);
-
-	//Front
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-
-	//RIGHT
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	//BACK
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(1.f, 0.f, -1.f);
-
-	//LEFT
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-
-	//TOP
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 1.f, 0.f);
-
-	//BOTTOM
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-
-	glEnd();
-
-	glBegin(GL_QUADS);
-
-	//Front
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 0.f, 1.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-
-	//RIGHT
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(1.f, 0.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-
-	//BACK
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-	glNormal3f(0.f, 0.f, -1.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-
-	//LEFT
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(-1.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-
-	//TOP
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 1.f, -1.f);
-	glNormal3f(0.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(0.f, 1.f, -1.f);
-
-	//BOTTOM
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);
-	glVertex3f(0.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);
-	glVertex3f(1.f, 0.f, -1.f);
-	glNormal3f(0.f, -1.f, 0.f);
-	glTexCoord2f(0.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	glEnd();
 }
 
 void Scene::drawSimpleQuad(float r, float g, float b, float a)

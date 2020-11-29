@@ -13,6 +13,8 @@ void BasicShape::render()
 {
 	//Texture the shape if a texture exists
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+	//Color the shape with its color
+	glColor3f(red, green, blue);
 	//Render using ordered arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -21,17 +23,14 @@ void BasicShape::render()
 	glNormalPointer(GL_FLOAT, 0, normals.data());
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates.data());
 	//Handle transparency (render the object twice, once inside out and a second time normally)
-	if (transparent)
+	if (transparent) glColor4f(red, green, blue, alpha);
+	if (renderInside)
 	{
-		glColor4f(red, green, blue, alpha);
-		if (renderInside)
-		{
-			glPushMatrix();
-			glScalef(-1.f, -1.f, -1.f);
-			glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
-			glDrawArrays(GL_QUADS, 0, 24);
-			glPopMatrix();
-		}
+		glPushMatrix();
+		glScalef(-1.f, -1.f, -1.f);
+		glTranslatef(-2.f * origin.x, -2.f * origin.y, -2.f * origin.z);
+		glDrawArrays(GL_QUADS, 0, 24);
+		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 24);
 	glDisableClientState(GL_VERTEX_ARRAY);
