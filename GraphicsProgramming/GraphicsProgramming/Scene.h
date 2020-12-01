@@ -64,9 +64,11 @@ protected:
 
 	//Wireframe mode toggle
 	bool wireframeMode = false;
+	//A fullbright mode toggle
+	bool fullbright = false;
 
 	//Light stuff
-
+	void testLights();
 
 	//Camera stuff
 	Camera camera;

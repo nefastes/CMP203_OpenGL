@@ -1,7 +1,24 @@
 #include "BasicShape.h"
 BasicShape::BasicShape()
 {
-
+	//Color of the shape (default white)
+	red = 1.f, green = 1.f, blue = 1.f;
+	//A trasparency tracker, to be true if we want a transparent shape
+	transparent = false;
+	alpha = 1.f;
+	//A simple bool to track if we want to render the inside of the shape (true)
+	renderInside = false;
+	//The shape's texture, to stay NULL if none is wanted
+	texture = nullptr;
+	//Scale of the shape
+	scale = Vector3(1.f, 1.f, 1.f);
+	//A simple bool to track whether we want the texture to fill or to repeat on our shape. By default we will fill
+	fillTexture = true;
+	textureScale = Vector3(1.f, 1.f, 1.f);;
+	//Track the material properties of our shape, init with default values
+	shininess = 1.f;
+	BasicShape::Material_Diffuse = { red, green, blue, 1.f };	//Initial the material color with the color of the shape
+	Material_Specular.fill(0.f);	//No specular by default
 }
 
 BasicShape::~BasicShape()
@@ -15,6 +32,10 @@ void BasicShape::render()
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
 	//Color the shape with its color
 	glColor3f(red, green, blue);
+	//Setup material
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Material_Diffuse.data());
+	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
+	glMateriali(GL_FRONT, GL_SHININESS, shininess);
 	//Render using ordered arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -30,6 +51,10 @@ void BasicShape::render()
 	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	//Reset color
 	glColor4f(1.f, 1.f, 1.f, 1.f);
+	//Reset materials
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
+	glMateriali(GL_FRONT, GL_SHININESS, 1.f);
 }
 
 void BasicShape::shapeSpecificDrawingMode()
@@ -200,4 +225,23 @@ void BasicShape::generateShape()
 		};
 		for (unsigned i = 0; i < 48; ++i) texCoordinates.push_back(texcoords[i]);
 	}
+}
+
+void BasicShape::setColor3f(float r, float g, float b)
+{
+	red = r, green = g, blue = b;
+	BasicShape::Material_Diffuse = { red, green, blue, 1.f };
+}
+
+void BasicShape::setColor4f(float r, float g, float b, float a)
+{
+	red = r, green = g, blue = b, alpha = a;
+	transparent = true;
+	BasicShape::Material_Diffuse = { red, green, blue, alpha };
+}
+
+void BasicShape::setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ)
+{
+	textureScale.x = textureScaleX, textureScale.y = textureScaleY, textureScale.z = textureScaleZ;
+	fillTexture = false;
 }

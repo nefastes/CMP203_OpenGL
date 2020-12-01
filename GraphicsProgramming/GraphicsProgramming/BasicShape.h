@@ -4,20 +4,21 @@
 #include <gl/glu.h>
 #include <math.h>
 #include <vector>
+#include <array>
 #include "Vector3.h"
 #define PI 3.1415f
 class BasicShape
 {
 protected:
 	//Color of the shape
-	float red = 1.f, green = 1.f, blue = 1.f;
+	float red, green, blue;
 	//A trasparency tracker, to be true if we want a transparent shape
-	bool transparent = false;
-	float alpha = 1.f;
+	bool transparent;
+	float alpha;
 	//A simple bool to track if we want to render the inside of the shape (true)
-	bool renderInside = false;
+	bool renderInside;
 	//The shape's texture, to stay NULL if none is wanted
-	GLuint* texture = nullptr;
+	GLuint* texture;
 	//Vectors used for procedural generation
 	std::vector<float> vertices;
 	std::vector<float> normals;
@@ -26,10 +27,14 @@ protected:
 	//Origin of the shape (the origin is allways in the middle/center of the shape)
 	Vector3 origin;
 	//Scale of the shape
-	Vector3 scale = Vector3(1.f, 1.f, 1.f);
+	Vector3 scale;
 	//A simple bool to track whether we want the texture to fill or to repeat on our shape. By default we will fill
-	bool fillTexture = true;
+	bool fillTexture;
 	Vector3 textureScale;
+	//Track the material properties of our shape, init with default values
+	float shininess;
+	std::array< GLfloat, 4> Material_Diffuse;
+	std::array< GLfloat, 4> Material_Specular;
 
 public:
 	BasicShape();
@@ -40,14 +45,14 @@ public:
 	virtual void generateShape();
 
 	void setTransparent(bool t) { transparent = t; }
-	void setTransparency(float a) { alpha = a; transparent = true; }
+	void setTransparency(float a) { alpha = a; transparent = true; Material_Diffuse[3] = alpha; }
 	bool isTranspearent() { return transparent; }
 
 	void renderInsideShape(bool r) { renderInside = r; }
 	bool isInsideRendered() { return renderInside; }
 
-	void setColor3f(float r, float g, float b) { red = r; green = g; blue = b; }
-	void setColor4f(float r, float g, float b, float a) { red = r; green = g; blue = b; alpha = a; transparent = true; }
+	void setColor3f(float r, float g, float b);					//Function too big to be declared in header file only
+	void setColor4f(float r, float g, float b, float a);		//Function too big to be declared in header file only
 
 	void setTexture(GLuint& tex) { texture = &tex; }
 	GLuint* getTexture() { return texture; }
@@ -63,6 +68,10 @@ public:
 	void rescale(float sx, float sy, float sz) { scale.x = sx; scale.y = sy; scale.z = sz; generateShape(); }	//Need to regenerate the shape when rescaling it
 
 	void setTextureRepeating() { fillTexture = false; }
-	void setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ) { textureScale.x = textureScaleX; textureScale.y = textureScaleY; textureScale.z = textureScaleZ; fillTexture = false; }
+	void setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ);		//Function too big to be declared in header file only
+
+	void setDiffuseMaterial(std::array<GLfloat, 4> diffuseMat) { Material_Diffuse = diffuseMat; };
+	void setSpecularMaterial(std::array<GLfloat, 4> specularMat) { Material_Specular = specularMat; };
+	void setShininess(float s) { shininess = s; };
 };
 

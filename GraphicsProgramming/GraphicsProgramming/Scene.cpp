@@ -9,7 +9,6 @@ Scene::Scene(Input *in)
 	initialiseOpenGL();
 
 	// Other OpenGL / render setting should be applied here.
-	//glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -168,11 +167,17 @@ void Scene::render() {
 	);
 	
 	// Render geometry/scene here -------------------------------------
-	//Render sky first, disable depth sorting
+	//Render sky first, disable depth sorting, the skybox is only lit by the ambient lighting
+	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
 
+	//ENABLE LIGHTING FOR GEOMETRY
+	if(!fullbright) glEnable(GL_LIGHTING);
+	//RENDER LIGHTS
+	testLights();
+	//RENDER GEOMETRY
 	drawPlane();
 
 	platform.render();
@@ -194,6 +199,7 @@ void Scene::render() {
 	// Render text, should be last object rendered. Lighting should not be applied to HUD elements.
 	glDisable(GL_LIGHTING);
 	renderTextOutput();
+	if (!fullbright) glEnable(GL_LIGHTING);
 	
 	// Swap buffers, after all objects are rendered.
 	glutSwapBuffers();
@@ -348,5 +354,28 @@ void Scene::drawPlane()
 		}
 	glEnd();
 
+	glPopMatrix();
+}
+
+void Scene::testLights()
+{
+	GLfloat Ambient[4] = { 0.f, 0.f, 0.2f, 1.f };
+	GLfloat Diffuse[4] = { 1.f, 1.f, 1.f, 1.f };
+	GLfloat Position[4] = { -3.f, 0.f, 0.f, 1.f };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, Position);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.222f);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.234f);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, .444f);
+	glEnable(GL_LIGHT0);
+	glPushMatrix();
+		GLfloat Material_Emission[4] = { 1.f, 1.f, 1.f, 1.f };
+		GLfloat Material_No_Emission[4] = { 0.f, 0.f, 0.f, 0.f };
+		glMaterialfv(GL_FRONT, GL_EMISSION, Material_Emission);
+		glTranslatef(Position[0], Position[1], Position[2]);
+		gluSphere(gluNewQuadric(), .1f, 20, 20);
+		//Reset the material for further geometries
+		glMaterialfv(GL_FRONT, GL_EMISSION, Material_No_Emission);
 	glPopMatrix();
 }

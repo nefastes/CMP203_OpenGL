@@ -5,7 +5,6 @@
 #include <math.h>
 #include <vector>
 #include "BasicShape.h"
-#define PI 3.1415f
 class Disc : public BasicShape
 {
 protected:

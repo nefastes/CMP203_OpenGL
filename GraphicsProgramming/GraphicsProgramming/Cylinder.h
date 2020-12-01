@@ -5,7 +5,6 @@
 #include <math.h>
 #include <vector>
 #include "Disc.h"
-#define PI 3.1415f
 class Cylinder : public Disc
 {
 private:
