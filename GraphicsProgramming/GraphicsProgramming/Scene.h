@@ -69,6 +69,7 @@ protected:
 
 	//Light stuff
 	void testLights();
+	float lightRotation = 0.f;
 
 	//Camera stuff
 	Camera camera;
