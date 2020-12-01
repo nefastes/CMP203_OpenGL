@@ -131,6 +131,8 @@ void Scene::handleInput(float dt)
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 	}
+	if (!fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = true;
+	else if (fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = false;
 
 	// Handle user input
 	camera.handleInput(dt);
@@ -167,14 +169,13 @@ void Scene::render() {
 	);
 	
 	// Render geometry/scene here -------------------------------------
+	//ENABLE LIGHTING FOR GEOMETRY
+	if (!fullbright) glEnable(GL_LIGHTING);
 	//Render sky first, disable depth sorting, the skybox is only lit by the ambient lighting
-	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
 
-	//ENABLE LIGHTING FOR GEOMETRY
-	if(!fullbright) glEnable(GL_LIGHTING);
 	//RENDER LIGHTS
 	testLights();
 	//RENDER GEOMETRY
