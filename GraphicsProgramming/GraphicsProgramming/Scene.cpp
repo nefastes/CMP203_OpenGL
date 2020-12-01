@@ -366,9 +366,9 @@ void Scene::testLights()
 	GLfloat Material_No_Emission[4] = { 0.f, 0.f, 0.f, 0.f };
 
 	//TEST AMBIENT LIGHT
-	//GLfloat Ambient[4] = { 0.0002f, 0.0002f, 0.0002f, 1.f };
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
-	//glEnable(GL_LIGHT0);
+	GLfloat Ambient[4] = { 0.2f, 0.f, 0.f, 1.f };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+	glEnable(GL_LIGHT0);
 
 	//TEST DIFFUSE LIGHT
 	GLfloat Diffuse1[4] = { .5f, .5f, .5f, 1.f };
