@@ -368,11 +368,11 @@ void Scene::testLights()
 	//TEST AMBIENT LIGHT
 	GLfloat Ambient[4] = { 0.2f, 0.f, 0.f, 1.f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT0);
 
 	//TEST DIFFUSE LIGHT
 	GLfloat Diffuse1[4] = { .5f, .5f, .5f, 1.f };
-	GLfloat Position1[4] = { -1.f, 1.f, 0.f, 0.f };
+	GLfloat Position1[4] = { -1.f, 1.f, 1.f, 0.f };
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse1);
 	glLightfv(GL_LIGHT1, GL_POSITION, Position1);
 	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.222f);
