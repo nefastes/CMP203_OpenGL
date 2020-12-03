@@ -33,7 +33,7 @@ void BasicShape::render()
 	//Color the shape with its color
 	glColor3f(red, green, blue);
 	//Setup material
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, Material_Diffuse.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
 	glMateriali(GL_FRONT, GL_SHININESS, shininess);
 	//Render using ordered arrays
@@ -52,7 +52,7 @@ void BasicShape::render()
 	//Reset color
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 	//Reset materials
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
 	glMateriali(GL_FRONT, GL_SHININESS, 1.f);
 }

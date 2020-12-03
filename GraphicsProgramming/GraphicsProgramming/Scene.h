@@ -88,6 +88,7 @@ protected:
 	BasicShape cube5;
 	BasicShape cube6;
 	BasicShape platform;
+	BasicShape room;
 	Disc disc;
 	Disc disc2;
 	Cylinder cylinder;

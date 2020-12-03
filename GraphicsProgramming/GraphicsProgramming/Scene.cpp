@@ -66,6 +66,12 @@ Scene::Scene(Input *in)
 	platform.setScale(5.f, .25f, 5.f);
 	platform.setTextureRepeating(2.f, 2.f, 2.f);
 	platform.generateShape();
+	//Generate room
+	room.setPosition(20.f, 0.f, -20.f);
+	room.setColor3f(0.f, 0.f, 1.f);
+	room.setScale(5.f, 10.f, 10.f);
+	room.renderInsideShape(true);
+	room.generateShape();
 	//Genrate disc
 	disc.setResolution(20);
 	disc.setPosition(-5.f, 2.f, -10.f);
@@ -183,6 +189,7 @@ void Scene::render() {
 	//RENDER GEOMETRY
 	drawPlane();
 
+	room.render();
 	platform.render();
 	sphere.render();
 	disc.render();
@@ -218,7 +225,7 @@ void Scene::initialiseOpenGL()
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
-	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);		// TODO: Find out what this does
 	glEnable(GL_CULL_FACE);								// Enable face culling
 	glCullFace(GL_BACK);								// Face culling mode
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Blend Function for transparent shapes
@@ -366,13 +373,15 @@ void Scene::testLights()
 	GLfloat Material_No_Emission[4] = { 0.f, 0.f, 0.f, 0.f };
 
 	//TEST AMBIENT LIGHT
-	GLfloat Ambient[4] = { 0.2f, 0.f, 0.f, 1.f };
-	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+	//GLfloat Ambient[4] = { .6f, 0.f, 0.f, 1.f };
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
 	//glEnable(GL_LIGHT0);
 
 	//TEST DIFFUSE LIGHT
-	GLfloat Diffuse1[4] = { .5f, .5f, .5f, 1.f };
+	GLfloat Ambient[4] = { .6f, 0.f, 0.f, 1.f };
+	GLfloat Diffuse1[4] = { 1.f, 1.f, 1.f, 1.f };
 	GLfloat Position1[4] = { -1.f, 1.f, 1.f, 0.f };
+	glLightfv(GL_LIGHT1, GL_AMBIENT, Ambient);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse1);
 	glLightfv(GL_LIGHT1, GL_POSITION, Position1);
 	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.222f);
