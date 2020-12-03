@@ -33,6 +33,7 @@ protected:
 	Vector3 textureScale;
 	//Track the material properties of our shape, init with default values
 	float shininess;
+	std::array< GLfloat, 4> Material_Ambient;
 	std::array< GLfloat, 4> Material_Diffuse;
 	std::array< GLfloat, 4> Material_Specular;
 

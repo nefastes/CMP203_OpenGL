@@ -30,6 +30,8 @@ void Skybox::draw()
 	glPushMatrix();
 	glTranslatef(position.x, position.y, position.z);
 	glBindTexture(GL_TEXTURE_2D, *texture);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Material_Ambient.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 	
 	//Render using ordered arrays
@@ -45,5 +47,6 @@ void Skybox::draw()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glPopMatrix();
 }

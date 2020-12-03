@@ -180,6 +180,7 @@ void Scene::render() {
 	//ENABLE LIGHTING FOR GEOMETRY
 	if (!fullbright) glEnable(GL_LIGHTING);
 	//Render sky first, disable depth sorting, the skybox is only lit by the ambient lighting
+	//TODO: make the skybox to interact with ambient light only
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
@@ -187,6 +188,12 @@ void Scene::render() {
 	//RENDER LIGHTS
 	testLights();
 	//RENDER GEOMETRY
+	glPushMatrix();
+		glTranslatef(-10.f, 0.f, -15.f);
+		glScalef(5.f, 5.f, 5.f);
+		spaceship.render();
+	glPopMatrix();
+
 	drawPlane();
 
 	room.render();
@@ -194,11 +201,6 @@ void Scene::render() {
 	sphere.render();
 	disc.render();
 	cylinder.render();
-	glPushMatrix();
-		glTranslatef(-10.f, 0.f, -15.f);
-		glScalef(5.f, 5.f, 5.f);
-		spaceship.render();
-	glPopMatrix();
 
 	glEnable(GL_BLEND);
 	for (unsigned i = 0; i < transparentShapes.size(); ++i) transparentShapes[i]->render();
@@ -347,6 +349,7 @@ void Scene::drawPlane()
 
 	//Color
 	glColor3f(1.f, 1.f, 1.f);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
 
 	//Make a plane of 50x50 quads
 	glBegin(GL_QUADS);
@@ -378,7 +381,7 @@ void Scene::testLights()
 	//glEnable(GL_LIGHT0);
 
 	//TEST DIFFUSE LIGHT
-	GLfloat Ambient[4] = { .6f, 0.f, 0.f, 1.f };
+	GLfloat Ambient[4] = { .2f, .2f, .2f, 1.f };
 	GLfloat Diffuse1[4] = { 1.f, 1.f, 1.f, 1.f };
 	GLfloat Position1[4] = { -1.f, 1.f, 1.f, 0.f };
 	glLightfv(GL_LIGHT1, GL_AMBIENT, Ambient);

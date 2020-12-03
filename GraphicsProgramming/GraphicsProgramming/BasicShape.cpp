@@ -17,6 +17,7 @@ BasicShape::BasicShape()
 	textureScale = Vector3(1.f, 1.f, 1.f);;
 	//Track the material properties of our shape, init with default values
 	shininess = 1.f;
+	BasicShape::Material_Ambient = { red / 5.f, green / 5.f, blue / 5.f, 1.f };
 	BasicShape::Material_Diffuse = { red, green, blue, 1.f };	//Initial the material color with the color of the shape
 	Material_Specular.fill(0.f);	//No specular by default
 }
@@ -33,6 +34,7 @@ void BasicShape::render()
 	//Color the shape with its color
 	glColor3f(red, green, blue);
 	//Setup material
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Material_Ambient.data());
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
 	glMateriali(GL_FRONT, GL_SHININESS, shininess);
@@ -52,6 +54,7 @@ void BasicShape::render()
 	//Reset color
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 	//Reset materials
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
 	glMateriali(GL_FRONT, GL_SHININESS, 1.f);
@@ -231,6 +234,7 @@ void BasicShape::setColor3f(float r, float g, float b)
 {
 	red = r, green = g, blue = b;
 	BasicShape::Material_Diffuse = { red, green, blue, 1.f };
+	BasicShape::Material_Ambient = { red / 5.f, green / 5.f, blue / 5.f, 1.f };
 }
 
 void BasicShape::setColor4f(float r, float g, float b, float a)
@@ -238,6 +242,7 @@ void BasicShape::setColor4f(float r, float g, float b, float a)
 	red = r, green = g, blue = b, alpha = a;
 	transparent = true;
 	BasicShape::Material_Diffuse = { red, green, blue, alpha };
+	BasicShape::Material_Ambient = { red / 5.f, green / 5.f, blue / 5.f, alpha / 5.f };
 }
 
 void BasicShape::setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ)

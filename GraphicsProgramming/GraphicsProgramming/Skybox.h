@@ -1,11 +1,15 @@
 #pragma once
 #include <glut.h>
 #include "Vector3.h"
+#include <array>
 class Skybox
 {
 private:
 	GLuint* texture;
 	Vector3 position;
+
+	std::array<GLfloat, 4> Material_Ambient{ 1.f, 1.f, 1.f, 1.f };
+	std::array<GLfloat, 4> Material_Diffuse{ 0.f, 0.f, 0.f, 0.f };
 
 public:
 	Skybox();
