@@ -15,7 +15,7 @@ Scene::Scene(Input *in)
 	//Init lights
 	ambientLight->makeAmbient(
 		std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data(),
-		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
+		std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
 		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
 		.5f, .25f, .125f);
 	pointLight->makeDiffuse(
@@ -26,7 +26,7 @@ Scene::Scene(Input *in)
 		std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(),
 		std::array<GLfloat, 4>{4.f, -1.75f, 3.f, 1.f}.data(),
 		std::array<GLfloat, 4>{-1.f, 0.f, 0.f, 0.f}.data(),
-		90.f, 15.f, .5f, .125f, .0675f);
+		50.f, 10.f, .5f, .125f, .0675f);
 
 	//Init Camera
 	camera.setInput(in);
@@ -209,9 +209,9 @@ void Scene::render() {
 
 	//RENDER LIGHTS
 	//testLights();
-	//ambientLight->render();
+	ambientLight->render();
 	glPushMatrix();
-		//pointLight->render();
+		pointLight->render();
 		GLfloat* pos = pointLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
 		gluSphere(gluNewQuadric(), .1f, 20, 20);

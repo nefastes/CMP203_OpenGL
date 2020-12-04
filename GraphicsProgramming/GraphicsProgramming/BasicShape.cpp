@@ -67,11 +67,9 @@ void BasicShape::shapeSpecificDrawingMode()
 	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
-		glPushMatrix();
 		glCullFace(GL_FRONT);
 		glDrawArrays(GL_QUADS, 0, 24);
 		glCullFace(GL_BACK);
-		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 24);
 }

@@ -10,6 +10,7 @@ Light::Light(unsigned type)
 	{
 		if (!glIsEnabled(i))
 		{
+			glEnable(i);
 			currentLight = i;
 			return;
 		}
