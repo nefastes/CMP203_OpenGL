@@ -70,7 +70,9 @@ protected:
 	bool fullbright = false;
 
 	//Light stuff
+	Light* ambientLight = new Light(0);
 	Light* pointLight = new Light(2);
+	Light* spotLight = new Light(3);
 	void testLights();
 	float lightRotation = 0.f;
 

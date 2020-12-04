@@ -20,7 +20,7 @@ public:
 	
 	void render();
 
-	void makeAmbient(GLfloat* ambient, GLfloat* diffuse, float constant_attenuation, float linear_attenutation, float quadratic_attenuation);
+	void makeAmbient(GLfloat* ambient, GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation);
 	void makeDiffuse(GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation);
 	void makeSpot(GLfloat* diffuse, GLfloat* position, GLfloat* direction, float cutoff, float exponent, float constant_attenuation, float linear_attenutation, float quadratic_attenuation);
 

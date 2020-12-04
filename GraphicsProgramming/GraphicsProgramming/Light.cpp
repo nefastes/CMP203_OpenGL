@@ -32,9 +32,9 @@ void Light::render()
 	case lightType::POINT:
 		break;
 	case lightType::SPOT:
-		glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, cutoff);
-		glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, Direction.data());
-		glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, exponent);
+		glLightf(currentLight, GL_SPOT_CUTOFF, cutoff);
+		glLightfv(currentLight, GL_SPOT_DIRECTION, Direction.data());
+		glLightf(currentLight, GL_SPOT_EXPONENT, exponent);
 		break;
 	}
 	glLightfv(currentLight, GL_DIFFUSE, Diffuse.data());
@@ -45,12 +45,10 @@ void Light::render()
 	glEnable(currentLight);
 }
 
-void Light::makeAmbient(GLfloat* ambient, GLfloat* diffuse, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)
+void Light::makeAmbient(GLfloat* ambient, GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)
 {
-	this->constant_attenuation = constant_attenuation;
-	this->linear_attenutation = linear_attenutation;
-	this->quadratic_attenuation = quadratic_attenuation;
-
+	for (unsigned char i = 0; i < 4; ++i) Ambient[i] = ambient[i];
+	makeDiffuse(diffuse, position, constant_attenuation, linear_attenutation, quadratic_attenuation);
 }
 
 void Light::makeDiffuse(GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)
@@ -64,12 +62,14 @@ void Light::makeDiffuse(GLfloat* diffuse, GLfloat* position, float constant_atte
 
 void Light::makeSpot(GLfloat* diffuse, GLfloat* position, GLfloat* direction, float cutoff, float exponent, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)
 {
+	for (unsigned char i = 0; i < 4; ++i) Diffuse[i] = diffuse[i];
+	for (unsigned char i = 0; i < 4; ++i) Position[i] = position[i];
+	for (unsigned char i = 0; i < 4; ++i) Direction	[i] = direction[i];
 	this->cutoff = cutoff;
 	this->exponent = exponent;
 	this->constant_attenuation = constant_attenuation;
 	this->linear_attenutation = linear_attenutation;
 	this->quadratic_attenuation = quadratic_attenuation;
-
 }
 
 void Light::setCutoff(float cutoff)

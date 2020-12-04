@@ -13,7 +13,20 @@ Scene::Scene(Input *in)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	//Init lights
-	pointLight->makeDiffuse(std::array<GLfloat, 4>{1.f, 0.f, 0.f, 1.f}.data(), std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(), .5f, .25f, .125f);
+	ambientLight->makeAmbient(
+		std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data(),
+		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
+		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
+		.5f, .25f, .125f);
+	pointLight->makeDiffuse(
+		std::array<GLfloat, 4>{0.f, 0.f, 1.f, 1.f}.data(),
+		std::array<GLfloat, 4>{-3.f, 0.f, -3.f, 1.f}.data(),
+		.5f, .25f, .125f);
+	spotLight->makeSpot(
+		std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(),
+		std::array<GLfloat, 4>{4.f, -1.75f, 3.f, 1.f}.data(),
+		std::array<GLfloat, 4>{-1.f, 0.f, 0.f, 0.f}.data(),
+		90.f, 15.f, .5f, .125f, .0675f);
 
 	//Init Camera
 	camera.setInput(in);
@@ -126,7 +139,9 @@ Scene::Scene(Input *in)
 Scene::~Scene()
 {
 	//Free everything on the heap
+	delete ambientLight;
 	delete pointLight;
+	delete spotLight;
 }
 
 void Scene::handleInput(float dt)
@@ -166,7 +181,7 @@ void Scene::update(float dt)
 	// Calculate FPS for output
 	calculateFPS();
 
-	lightRotation += 10 * dt;
+	//lightRotation += 10 * dt;
 }
 
 void Scene::render() {
@@ -193,13 +208,21 @@ void Scene::render() {
 	glEnable(GL_DEPTH_TEST);
 
 	//RENDER LIGHTS
-	testLights();
+	//testLights();
+	//ambientLight->render();
 	glPushMatrix();
-		pointLight->render();
+		//pointLight->render();
 		GLfloat* pos = pointLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
 		gluSphere(gluNewQuadric(), .1f, 20, 20);
 	glPopMatrix();
+	glPushMatrix();
+		spotLight->render();
+		pos = spotLight->getPosition();
+		glTranslatef(pos[0], pos[1], pos[2]);
+		gluSphere(gluNewQuadric(), .1f, 20, 20);
+	glPopMatrix();
+
 	//RENDER GEOMETRY
 	glPushMatrix();
 		glTranslatef(-10.f, 0.f, -15.f);
