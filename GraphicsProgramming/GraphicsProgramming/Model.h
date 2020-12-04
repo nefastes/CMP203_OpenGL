@@ -14,6 +14,7 @@ using namespace std;
 
 // MY CLASS INCLUDES //
 #include <vector>
+#include <array>
 #include "Vector3.h"
 #include "SOIL.h"
 
