@@ -16,7 +16,7 @@ BasicShape::BasicShape()
 	fillTexture = true;
 	textureScale = Vector3(1.f, 1.f, 1.f);;
 	//Track the material properties of our shape, init with default values
-	shininess = 1.f;
+	shininess = 1;
 	BasicShape::Material_Ambient = { red / 5.f, green / 5.f, blue / 5.f, 1.f };
 	BasicShape::Material_Diffuse = { red, green, blue, 1.f };	//Initial the material color with the color of the shape
 	Material_Specular.fill(0.f);	//No specular by default
@@ -57,7 +57,7 @@ void BasicShape::render()
 	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
-	glMateriali(GL_FRONT, GL_SHININESS, 1.f);
+	glMateriali(GL_FRONT, GL_SHININESS, 1);
 }
 
 void BasicShape::shapeSpecificDrawingMode()
@@ -85,40 +85,40 @@ void BasicShape::generateShape()
 	//Generate vertices for a unit cube
 	float verts[72] = {
 		//Front
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
 
 		//Right
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
 
 		//Back
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
 
 		//Left
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
 
 		//Top
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
 
 		//Bottom
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z,
-		-1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		-1.0 * scale.z + origin.z,
-		1.0 * scale.x + origin.x,		-1.0 * scale.y + origin.y,		1.0 * scale.z + origin.z
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z,
+		-1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		-1.f * scale.z + origin.z,
+		1.f * scale.x + origin.x,		-1.f * scale.y + origin.y,		1.f * scale.z + origin.z
 	};
 	for (unsigned i = 0; i < 72; ++i) vertices.push_back(verts[i]);
 	//Generate normals for a unit cube

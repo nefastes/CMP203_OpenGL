@@ -2,8 +2,13 @@
 Light::Light(unsigned type)
 {
 	this->type = (lightType)type;
-	cutoff = 90.f;
-	exponent = 15.f;
+	cutoff = 90.f, exponent = 15.f;
+	Ambient.fill(0.f);
+	Diffuse.fill(0.f);
+	Position.fill(0.f);
+	Direction.fill(0.f);
+	constant_attenuation = 1.f, linear_attenutation = 0.f, quadratic_attenuation = 0.f;
+	currentLight = 0;
 
 	//Dectect the first available light and assign as current light
 	for (unsigned i = GL_LIGHT0; i <= GL_LIGHT7; ++i)

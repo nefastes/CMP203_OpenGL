@@ -6,7 +6,9 @@
 #include <vector>
 #include <array>
 #include "Vector3.h"
+#ifndef PI
 #define PI 3.1415f
+#endif // !PI
 class BasicShape
 {
 protected:
@@ -32,7 +34,7 @@ protected:
 	bool fillTexture;
 	Vector3 textureScale;
 	//Track the material properties of our shape, init with default values
-	float shininess;
+	GLint shininess;
 	std::array< GLfloat, 4> Material_Ambient;
 	std::array< GLfloat, 4> Material_Diffuse;
 	std::array< GLfloat, 4> Material_Specular;
@@ -73,6 +75,6 @@ public:
 
 	void setDiffuseMaterial(std::array<GLfloat, 4> diffuseMat) { Material_Diffuse = diffuseMat; };
 	void setSpecularMaterial(std::array<GLfloat, 4> specularMat) { Material_Specular = specularMat; };
-	void setShininess(float s) { shininess = s; };
+	void setShininess(GLint s) { shininess = s; };
 };
 

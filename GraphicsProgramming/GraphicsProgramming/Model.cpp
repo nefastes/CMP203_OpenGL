@@ -124,11 +124,7 @@ bool Model::loadModel(char* filename)
 	}
 
 #pragma region unroll_data
-	// "Unroll" the loaded obj information into a list of triangles.
-	// TODO: By this point all model has been read from the file, but is not in the correct order.
-	// You NEED to loop over all the data and sort it into a render ready order/format.
-	//If there are no triangles or no quads, one of these two loops will not perform.
-	//Push all the triangular faces first in order
+	// "Unroll" the loaded obj information into a list of triangles and/or quads.
 	for (unsigned i = 0; i < triFaces.size(); i += 3)
 	{
 		//Get the vertices

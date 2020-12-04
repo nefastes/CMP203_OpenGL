@@ -202,7 +202,6 @@ void Scene::render() {
 	//ENABLE LIGHTING FOR GEOMETRY
 	if (!fullbright) glEnable(GL_LIGHTING);
 	//Render sky first, disable depth sorting, the skybox is only lit by the ambient lighting
-	//TODO: make the skybox to interact with ambient light only
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
