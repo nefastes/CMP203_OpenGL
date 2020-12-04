@@ -19,17 +19,8 @@
     <Filter Include="Source Files\Shapes">
       <UniqueIdentifier>{0780834b-18dc-4427-a5ed-e94b2c597ae9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Frameworks">
-      <UniqueIdentifier>{23d26767-9b38-4bdf-809c-5cca3f8ab09e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Frameworks">
       <UniqueIdentifier>{e0c63efa-ae01-494d-a067-086fc1d2f3b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Camera">
-      <UniqueIdentifier>{b5a6f088-4ab0-4dec-806f-513e0bdd8d60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Camera">
-      <UniqueIdentifier>{172a4d85-0141-4cc3-8b3d-01bda2affe72}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Main">
       <UniqueIdentifier>{6520f1c3-1d08-43e7-811e-7cccc669d795}</UniqueIdentifier>
@@ -42,6 +33,15 @@
     </Filter>
     <Filter Include="Source Files\Model Loader">
       <UniqueIdentifier>{68a8a210-1505-4a8f-a052-d697700b462c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Global Visuals">
+      <UniqueIdentifier>{b5a6f088-4ab0-4dec-806f-513e0bdd8d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Global Visuals">
+      <UniqueIdentifier>{172a4d85-0141-4cc3-8b3d-01bda2affe72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks">
+      <UniqueIdentifier>{23d26767-9b38-4bdf-809c-5cca3f8ab09e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,10 +64,10 @@
       <Filter>Source Files\Frameworks</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Camera</Filter>
+      <Filter>Source Files\Global Visuals</Filter>
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
-      <Filter>Source Files\Camera</Filter>
+      <Filter>Source Files\Global Visuals</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Main</Filter>
@@ -77,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\Model Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Global Visuals</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,16 +102,19 @@
       <Filter>Header Files\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files\Camera</Filter>
+      <Filter>Header Files\Global Visuals</Filter>
     </ClInclude>
     <ClInclude Include="Skybox.h">
-      <Filter>Header Files\Camera</Filter>
+      <Filter>Header Files\Global Visuals</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files\Main</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files\Model Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\Global Visuals</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

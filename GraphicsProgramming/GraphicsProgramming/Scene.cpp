@@ -13,6 +13,7 @@ Scene::Scene(Input *in)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	//Init lights
+	pointLight->makeDiffuse(std::array<GLfloat, 4>{1.f, 0.f, 0.f, 1.f}.data(), std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(), .5f, .25f, .125f);
 
 	//Init Camera
 	camera.setInput(in);
@@ -122,6 +123,12 @@ Scene::Scene(Input *in)
 	transparentShapes.push_back(&cylinder2);
 }
 
+Scene::~Scene()
+{
+	//Free everything on the heap
+	delete pointLight;
+}
+
 void Scene::handleInput(float dt)
 {
 	//Toggle wireframe mode
@@ -187,6 +194,12 @@ void Scene::render() {
 
 	//RENDER LIGHTS
 	testLights();
+	glPushMatrix();
+		pointLight->render();
+		GLfloat* pos = pointLight->getPosition();
+		glTranslatef(pos[0], pos[1], pos[2]);
+		gluSphere(gluNewQuadric(), .1f, 20, 20);
+	glPopMatrix();
 	//RENDER GEOMETRY
 	glPushMatrix();
 		glTranslatef(-10.f, 0.f, -15.f);
@@ -350,6 +363,7 @@ void Scene::drawPlane()
 	//Color
 	glColor3f(1.f, 1.f, 1.f);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 
 	//Make a plane of 50x50 quads
 	glBegin(GL_QUADS);
@@ -399,9 +413,9 @@ void Scene::testLights()
 	glRotatef(lightRotation, 0, 1, 0);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, Diffuse2);
 	glLightfv(GL_LIGHT2, GL_POSITION, Position2);
-	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.f);
-	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, .5f);
-	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, .25f);
+	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, .5f);
+	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, .25f);
+	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, .125f);
 	glEnable(GL_LIGHT2);
 	glPushMatrix();
 		glMaterialfv(GL_FRONT, GL_EMISSION, Diffuse2);

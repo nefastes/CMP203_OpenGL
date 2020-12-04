@@ -21,11 +21,13 @@
 #include "Cylinder.h"
 #include "Sphere.h"
 #include "Model.h"
+#include "Light.h"
 
 class Scene{
 
 public:
 	Scene(Input *in);
+	~Scene();
 	// Main render function
 	void render();
 	// Handle input function that receives delta time from parent.
@@ -68,6 +70,7 @@ protected:
 	bool fullbright = false;
 
 	//Light stuff
+	Light* pointLight = new Light(2);
 	void testLights();
 	float lightRotation = 0.f;
 
