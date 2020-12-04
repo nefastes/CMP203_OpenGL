@@ -181,7 +181,7 @@ void Scene::update(float dt)
 	// Calculate FPS for output
 	calculateFPS();
 
-	//lightRotation += 10 * dt;
+	lightRotation += 10.f * dt;
 }
 
 void Scene::render() {
@@ -208,15 +208,16 @@ void Scene::render() {
 	glEnable(GL_DEPTH_TEST);
 
 	//RENDER LIGHTS
-	//testLights();
 	ambientLight->render();
 	glPushMatrix();
+		glRotatef(lightRotation, 0, 1, 0);
 		pointLight->render();
 		GLfloat* pos = pointLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
 		gluSphere(gluNewQuadric(), .1f, 20, 20);
 	glPopMatrix();
 	glPushMatrix();
+		glRotatef(lightRotation, 0, 0, 1);
 		spotLight->render();
 		pos = spotLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
@@ -404,72 +405,5 @@ void Scene::drawPlane()
 		}
 	glEnd();
 
-	glPopMatrix();
-}
-
-void Scene::testLights()
-{
-	//Material for debug spheres
-	GLfloat Material_No_Emission[4] = { 0.f, 0.f, 0.f, 0.f };
-
-	//TEST AMBIENT LIGHT
-	//GLfloat Ambient[4] = { .6f, 0.f, 0.f, 1.f };
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
-	//glEnable(GL_LIGHT0);
-
-	//TEST DIFFUSE LIGHT
-	GLfloat Ambient[4] = { .2f, .2f, .2f, 1.f };
-	GLfloat Diffuse1[4] = { 1.f, 1.f, 1.f, 1.f };
-	GLfloat Position1[4] = { -1.f, 1.f, 1.f, 0.f };
-	glLightfv(GL_LIGHT1, GL_AMBIENT, Ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, Diffuse1);
-	glLightfv(GL_LIGHT1, GL_POSITION, Position1);
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.222f);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 1.234f);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, .444f);
-	glEnable(GL_LIGHT1);
-
-	//TEST POINT LIGHT
-	GLfloat Diffuse2[4] = { 0.f, 0.f, 1.f, 1.f };
-	GLfloat Position2[4] = { -3.f, 0.f, -3.f, 1.f };
-	glPushMatrix();
-	glRotatef(lightRotation, 0, 1, 0);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, Diffuse2);
-	glLightfv(GL_LIGHT2, GL_POSITION, Position2);
-	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, .5f);
-	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, .25f);
-	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, .125f);
-	glEnable(GL_LIGHT2);
-	glPushMatrix();
-		glMaterialfv(GL_FRONT, GL_EMISSION, Diffuse2);
-		glTranslatef(Position2[0], Position2[1], Position2[2]);
-		gluSphere(gluNewQuadric(), .1f, 20, 20);
-		glMaterialfv(GL_FRONT, GL_EMISSION, Material_No_Emission);
-	glPopMatrix();
-	glPopMatrix();
-
-	//TEST SPOTLIGHT
-	GLfloat Diffuse3[4] = { 0.f, 1.f, 0.f, 1.f };
-	GLfloat Position3[4] = { 4.f, -1.75f, 3.f, 1.f };
-	GLfloat Direction3[4] = { -1.f, 0.f, 0.f, 0.f };
-	float cutoff = 90.f;
-	float exponent = 15.f;
-	glPushMatrix();
-	glRotatef(lightRotation, 0, 0, 1);
-	glLightfv(GL_LIGHT3, GL_DIFFUSE, Diffuse3);
-	glLightfv(GL_LIGHT3, GL_POSITION, Position3);
-	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, cutoff);
-	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, Direction3);
-	glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, exponent);
-	glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, .5f);
-	glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, .125f);
-	glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, .0675f);
-	glEnable(GL_LIGHT3);
-	glPushMatrix();
-		glMaterialfv(GL_FRONT, GL_EMISSION, Diffuse3);
-		glTranslatef(Position3[0], Position3[1], Position3[2]);
-		gluSphere(gluNewQuadric(), .1f, 20, 20);
-		glMaterialfv(GL_FRONT, GL_EMISSION, Material_No_Emission);
-	glPopMatrix();
 	glPopMatrix();
 }
