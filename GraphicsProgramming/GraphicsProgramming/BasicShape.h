@@ -5,6 +5,7 @@
 #include <math.h>
 #include <vector>
 #include <array>
+#include <functional>
 #include "Vector3.h"
 #ifndef PI
 #define PI 3.1415f

@@ -30,7 +30,10 @@ BasicShape::~BasicShape()
 void BasicShape::render()
 {
 	//Texture the shape if a texture exists
-	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, *texture);
+	if (texture != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, *texture);
+	}
 	//Color the shape with its color
 	glColor3f(red, green, blue);
 	//Setup material

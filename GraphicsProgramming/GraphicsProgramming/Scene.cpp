@@ -12,6 +12,10 @@ Scene::Scene(Input *in)
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+	//Init texture filtering as trilinear
+	currentFilter = Filters::TRILINEAR;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 	//Init lights
 	ambientLight->makeAmbient(
 		std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data(),
@@ -37,6 +41,7 @@ Scene::Scene(Input *in)
 	checkedTex = SOIL_load_OGL_texture("gfx/checked.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexSolid = SOIL_load_OGL_texture("gfx/crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	boxTexTransparent = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	grass = SOIL_load_OGL_texture("gfx/grass.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	marble = SOIL_load_OGL_texture("gfx/marble1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	sky = SOIL_load_OGL_texture("gfx/skybox2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
@@ -159,8 +164,16 @@ void Scene::handleInput(float dt)
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 	}
+	//Toggle fullbright mode
 	if (!fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = true;
 	else if (fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = false;
+	//Change texture filtering mode
+	if (input->isKeyDownOnce(GLUT_KEY_F3))
+	{
+		if (currentFilter == Filters::TRILINEAR) currentFilter = Filters::POINT;
+		else currentFilter = static_cast<Filters>((int)currentFilter + 1);
+		applyFilter();
+	}
 
 	// Handle user input
 	camera.handleInput(dt);
@@ -324,10 +337,19 @@ void Scene::renderTextOutput()
 	sprintf_s(mouseText, "Mouse: %i, %i", input->getMouseX(), input->getMouseY());
 	sprintf_s(positionText, "Position: %g, %g, %g", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	sprintf_s(viewText, "View: %g, %g, %g", camera.getYaw(), camera.getPitch(), camera.getRoll());
+	switch (currentFilter)
+	{
+	case Filters::POINT:		sprintf_s(filterMode, "Filter: POINT SAMPLE");	break;
+	case Filters::BILINEAR:		sprintf_s(filterMode, "Filter: BILINEAR");		break;
+	case Filters::MIPMAPING:	sprintf_s(filterMode, "Filter: MIPMAPPING");	break;
+	case Filters::TRILINEAR:	sprintf_s(filterMode, "Filter: TRILINEAR");		break;
+	default:					sprintf_s(filterMode, "Filter: Error");			break;
+	}
 	displayText(-1.f, 0.96f, 1.f, 0.f, 0.f, mouseText);
 	displayText(-1.f, 0.90f, 1.f, 0.f, 0.f, fps);
 	displayText(-1.f, 0.84f, 1.f, 0.f, 0.f, positionText);
 	displayText(-1.f, 0.78f, 1.f, 0.f, 0.f, viewText);
+	displayText(-1.f, 0.72f, 1.f, 0.f, 0.f, filterMode);
 }
 
 // Renders text to screen. Must be called last in render function (before swap buffers)
@@ -361,6 +383,18 @@ void Scene::displayText(float x, float y, float r, float g, float b, char* strin
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void Scene::applyFilter()
+{
+	switch (currentFilter)
+	{
+	case Filters::POINT:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+	case Filters::BILINEAR:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+	case Filters::MIPMAPING:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+	case Filters::TRILINEAR:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+	default:					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+	}
+}
+
 void Scene::drawSimpleQuad(float r, float g, float b, float a)
 {
 	glColor4f(r, g, b, a);
@@ -385,8 +419,11 @@ void Scene::drawPlane()
 
 	//Color
 	glColor3f(1.f, 1.f, 1.f);
-	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	//glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
+	//glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+
+	glBindTexture(GL_TEXTURE_2D, grass);
+	applyFilter();
 
 	//Make a plane of 50x50 quads
 	glBegin(GL_QUADS);
@@ -395,14 +432,19 @@ void Scene::drawPlane()
 		{
 			glNormal3f(0.f, 1.f, 0.f);
 			glVertex3f(0.f + (float)x, -2.f, 0.f + (float)z);
+			glTexCoord2f(0, 1);
 			glNormal3f(0.f, 1.f, 0.f);
 			glVertex3f(1.f + (float)x, -2.f, 0.f + (float)z);
+			glTexCoord2f(1, 1);
 			glNormal3f(0.f, 1.f, 0.f);
 			glVertex3f(1.f + (float)x, -2.f, -1.f + (float)z);
+			glTexCoord2f(1, 0);
 			glNormal3f(0.f, 1.f, 0.f);
 			glVertex3f(0.f + (float)x, -2.f, -1.f + (float)z);
+			glTexCoord2f(0, 0);
 		}
 	glEnd();
 
 	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }

@@ -63,11 +63,17 @@ protected:
 	char mouseText[40];
 	char positionText[255];
 	char viewText[255];
+	char filterMode[40];
 
 	//Wireframe mode toggle
 	bool wireframeMode = false;
 	//A fullbright mode toggle
 	bool fullbright = false;
+
+	//Filtering
+	enum class Filters { POINT, BILINEAR, MIPMAPING, TRILINEAR };
+	Filters currentFilter;
+	void applyFilter();
 
 	//Light stuff
 	Light* ambientLight = new Light(0);
@@ -106,6 +112,7 @@ protected:
 	GLuint checkedTex;
 	GLuint boxTexSolid;
 	GLuint boxTexTransparent;
+	GLuint grass;
 	GLuint marble;
 	GLuint sky;
 };
