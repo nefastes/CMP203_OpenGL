@@ -89,6 +89,7 @@ protected:
 
 	//Models
 	Model spaceship;
+	Model chair;
 
 	//Shapes
 	BasicShape cube;

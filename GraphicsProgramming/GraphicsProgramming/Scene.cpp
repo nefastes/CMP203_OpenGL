@@ -50,6 +50,7 @@ Scene::Scene(Input *in)
 
 	//Init models
 	spaceship.load("models/spaceship.obj", "gfx/spaceship.jpg");
+	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
 
 	//Init Shapes
 	//Genrate cubes
@@ -241,6 +242,12 @@ void Scene::render() {
 		glTranslatef(-10.f, 0.f, -15.f);
 		glScalef(5.f, 5.f, 5.f);
 		spaceship.render();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-15.f, 0.f, -15.f);
+		glRotatef(-90, 1, 0, 0);
+		glScalef(.05f, .05f, .05f);
+		chair.render();
 	glPopMatrix();
 
 	drawPlane();
