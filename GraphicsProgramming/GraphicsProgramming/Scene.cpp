@@ -246,13 +246,15 @@ void Scene::render() {
 	drawPlane();
 
 	room.render();
-	platform.render();
+	platform.render((short unsigned)currentFilter);
 	sphere.render();
 	disc.render();
 	cylinder.render();
 
 	glEnable(GL_BLEND);
-	for (unsigned i = 0; i < transparentShapes.size(); ++i) transparentShapes[i]->render();
+	for (unsigned i = 0; i < transparentShapes.size(); ++i)
+		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
+		else transparentShapes[i]->render();
 	glDisable(GL_BLEND);
 
 	// End render geometry --------------------------------------

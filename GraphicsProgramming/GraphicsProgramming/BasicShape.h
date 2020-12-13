@@ -44,7 +44,7 @@ public:
 	BasicShape();
 	~BasicShape();
 
-	void render();
+	void render(short unsigned textureFilteringMode = 3);
 	virtual void shapeSpecificDrawingMode();	//This function will be overwritten by other shapes
 	virtual void generateShape();
 

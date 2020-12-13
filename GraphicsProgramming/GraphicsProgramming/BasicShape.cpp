@@ -27,13 +27,8 @@ BasicShape::~BasicShape()
 
 }
 
-void BasicShape::render()
+void BasicShape::render(short unsigned textureFilteringMode)
 {
-	//Texture the shape if a texture exists
-	if (texture != nullptr)
-	{
-		glBindTexture(GL_TEXTURE_2D, *texture);
-	}
 	//Color the shape with its color
 	glColor3f(red, green, blue);
 	//Setup material
@@ -41,6 +36,19 @@ void BasicShape::render()
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
 	glMateriali(GL_FRONT, GL_SHININESS, shininess);
+	//Texture the shape if a texture exists
+	if (texture != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, *texture);
+		switch (textureFilteringMode)
+		{
+		case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+		case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+		case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+		default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		}
+	}
 	//Render using ordered arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
