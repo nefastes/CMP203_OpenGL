@@ -24,7 +24,7 @@ Scene::Scene(Input *in)
 		.5f, .25f, .125f);
 	pointLight->makeDiffuse(
 		std::array<GLfloat, 4>{0.f, 0.f, 1.f, 1.f}.data(),
-		std::array<GLfloat, 4>{-3.f, 0.f, -3.f, 1.f}.data(),
+		std::array<GLfloat, 4>{0.f, 2.f, -5.f, 1.f}.data(),
 		.5f, .25f, .125f);
 	spotLight->makeSpot(
 		std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(),
@@ -38,108 +38,21 @@ Scene::Scene(Input *in)
 	camera.setSensitivity(10);
 
 	// Initialise textures
-	checkedTex = SOIL_load_OGL_texture("gfx/checked.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	boxTexSolid = SOIL_load_OGL_texture("gfx/crate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	boxTexTransparent = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	grass = SOIL_load_OGL_texture("gfx/grass.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	marble = SOIL_load_OGL_texture("gfx/marble1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	sky = SOIL_load_OGL_texture("gfx/skybox2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	seriousWallBase = SOIL_load_OGL_texture("gfx/halflife/-0OUT_WALL3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	seriousWallTop = SOIL_load_OGL_texture("gfx/halflife/-1LAB1_W4GAD.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
 	skybox.setTexture(sky);
 
 	//Init models
-	spaceship.load("models/spaceship.obj", "gfx/spaceship.jpg");
 	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
 
 	//Init Shapes
-	//Genrate cubes
-	cube.setTexture(boxTexSolid);
-	cube.setTransparency(.4f);
-	cube.setPosition(-5.f, 2.f, -20.f);
-	cube.setScale(2.f, 2.f, 2.f);
-	cube.renderInsideShape(true);
-	cube.generateShape();
-	cube2.setColor4f(0.f, 1.f, 1.f, .55f);
-	cube2.setScale(3.f, 3.f, 3.f);
-	cube2.setPosition(-5.f, 2.f, -30.f);
-	cube2.generateShape();
-	cube3.setPosition(4.f, 0.f, 0.f);
-	cube3.setTexture(boxTexTransparent);
-	cube3.renderInsideShape(true);
-	cube3.generateShape();
-	cube4.setPosition(8.f, 0.f, 0.f);
-	cube4.setTexture(boxTexTransparent);
-	cube4.renderInsideShape(true);
-	cube4.generateShape();
-	cube5.setPosition(8.f, 0.f, 4.f);
-	cube5.setTexture(boxTexTransparent);
-	cube5.renderInsideShape(true);
-	cube5.generateShape();
-	cube6.setPosition(4.f, 0.f, 4.f);
-	cube6.setTexture(boxTexTransparent);
-	cube6.renderInsideShape(true);
-	cube6.generateShape();
-	//Generate platform
-	platform.setPosition(-10.f, -5.f, 0.f);
-	platform.setTexture(marble);
-	platform.setScale(5.f, .25f, 5.f);
-	platform.setTextureRepeating(2.f, 2.f, 2.f);
-	platform.generateShape();
-	//Generate room
-	room.setPosition(20.f, 0.f, -20.f);
-	room.setColor3f(0.f, 0.f, 1.f);
-	room.setScale(5.f, 10.f, 10.f);
-	room.renderInsideShape(true);
-	room.generateShape();
-	//Genrate disc
-	disc.setResolution(20);
-	disc.setPosition(-5.f, 2.f, -10.f);
-	disc.setColor3f(1.f, 0.f, 1.f);
-	disc.generateShape();
-	disc2.setResolution(100);
-	disc2.setTransparency(.75f);
-	disc2.setTexture(checkedTex);
-	disc2.setPosition(-10.f, 2.f, -10.f);
-	disc2.generateShape();
-	//Generate sphere
-	sphere.setResolution(10);
-	sphere.setRadius(1.f);
-	sphere.setPosition(-5.f, 2.f, -5.f);
-	sphere.setColor3f(0.f, 1.f, 1.f);
-	sphere.generateShape();
-	sphere2.setResolution(100);
-	sphere2.setRadius(1.f);
-	sphere2.setTransparency(.5f);
-	sphere2.setTexture(checkedTex);
-	sphere2.setPosition(-10.f, 2.f, -5.f);
-	sphere2.renderInsideShape(true);
-	sphere2.generateShape();
-	//Genrate cylinders
-	cylinder.setResolution(20);
-	cylinder.setStackResolution(13);
-	cylinder.setPosition(-5.f, 2.f, -15.f);
-	cylinder.setColor3f(1.f, 1.f, 0.f);
-	cylinder.generateShape();
-	cylinder2.setResolution(21);
-	cylinder2.setStackResolution(11);
-	cylinder2.setRadius(2.f);
-	cylinder2.setTexture(checkedTex);
-	cylinder2.setTransparency(.75f);
-	cylinder2.setPosition(-5.f, 2.f, -40.f);
-	cylinder2.renderInsideShape(true);
-	cylinder2.generateShape();
 
 	//Push references of all transparent shapes into the according vector
-	transparentShapes.push_back(&cube);
-	transparentShapes.push_back(&cube2);
-	transparentShapes.push_back(&cube3);
-	transparentShapes.push_back(&cube4);
-	transparentShapes.push_back(&cube5);
-	transparentShapes.push_back(&cube6);
-	transparentShapes.push_back(&disc2);
-	transparentShapes.push_back(&sphere2);
-	transparentShapes.push_back(&cylinder2);
 }
 
 Scene::~Scene()
@@ -223,14 +136,14 @@ void Scene::render() {
 	//RENDER LIGHTS
 	ambientLight->render();
 	glPushMatrix();
-		glRotatef(lightRotation, 0, 1, 0);
+		//glRotatef(lightRotation, 0, 1, 0);
 		pointLight->render();
 		GLfloat* pos = pointLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
 		gluSphere(gluNewQuadric(), .1f, 20, 20);
 	glPopMatrix();
 	glPushMatrix();
-		glRotatef(lightRotation, 0, 0, 1);
+		//glRotatef(lightRotation, 0, 0, 1);
 		spotLight->render();
 		pos = spotLight->getPosition();
 		glTranslatef(pos[0], pos[1], pos[2]);
@@ -238,25 +151,9 @@ void Scene::render() {
 	glPopMatrix();
 
 	//RENDER GEOMETRY
-	glPushMatrix();
-		glTranslatef(-10.f, 0.f, -15.f);
-		glScalef(5.f, 5.f, 5.f);
-		spaceship.render();
-	glPopMatrix();
-	glPushMatrix();
-		glTranslatef(-15.f, 0.f, -15.f);
-		glRotatef(-90, 1, 0, 0);
-		glScalef(.05f, .05f, .05f);
-		chair.render();
-	glPopMatrix();
+	renderSeriousRoom();
 
-	drawPlane();
-
-	room.render();
-	platform.render((short unsigned)currentFilter);
-	sphere.render();
-	disc.render();
-	cylinder.render();
+	
 
 	glEnable(GL_BLEND);
 	for (unsigned i = 0; i < transparentShapes.size(); ++i)
@@ -418,42 +315,350 @@ void Scene::drawSimpleQuad(float r, float g, float b, float a)
 	glEnd();
 }
 
-void Scene::drawPlane()
+void Scene::drawPlane(Vector3 topLeftPos, Vector3 bottomRightPos, Vector3 surfaceNormal)
 {
+	//This function renders a plane of .1f x .1f quads bounded by the two positions as parameters
 	glPushMatrix();
-	//Translate
-	glTranslatef(-5.f, 0.f, -5.f);
-	//Scale down
-	glScalef(.2f, 1.f, .2f);
 
 	//Color
 	glColor3f(1.f, 1.f, 1.f);
 	//glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
 	//glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 
-	glBindTexture(GL_TEXTURE_2D, grass);
-	applyFilter();
-
-	//Make a plane of 50x50 quads
+	//Make a plane of .1f x .1f quads
 	glBegin(GL_QUADS);
-	for (unsigned z = 0; z < 50; ++z)
-		for (unsigned x = 0; x < 50; ++x)
+	for (float z = -10.f; z < 0.f; z += .1f)
+	{
+		for (float x = -5.f; x < 5.f - .1f; x += .1f)
 		{
-			glNormal3f(0.f, 1.f, 0.f);
-			glVertex3f(0.f + (float)x, -2.f, 0.f + (float)z);
-			glTexCoord2f(0, 1);
-			glNormal3f(0.f, 1.f, 0.f);
-			glVertex3f(1.f + (float)x, -2.f, 0.f + (float)z);
-			glTexCoord2f(1, 1);
-			glNormal3f(0.f, 1.f, 0.f);
-			glVertex3f(1.f + (float)x, -2.f, -1.f + (float)z);
-			glTexCoord2f(1, 0);
-			glNormal3f(0.f, 1.f, 0.f);
-			glVertex3f(0.f + (float)x, -2.f, -1.f + (float)z);
-			glTexCoord2f(0, 0);
+			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
+			glTexCoord2f(x + 5.f, z + 10.f);
+			glVertex3f(x, -3.f, z);
+			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
+			glTexCoord2f(x + 5.f, z + 10.1f);
+			glVertex3f(x, -3.f, z + .1f);
+			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
+			glTexCoord2f(x + 5.1f, z + 10.1f);
+			glVertex3f(x + .1f, -3.f, z + .1f);
+			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
+			glTexCoord2f(x + 5.1f, z + 10.f);
+			glVertex3f(x + .1f, -3.f, z);
 		}
+	}
 	glEnd();
 
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+}
+
+void Scene::renderSeriousRoom()
+{
+	//Create the room's walls
+	makeSeriousWalls();
+	glPushMatrix();
+	{
+		glTranslatef(4.f, -3.f, -9.f);
+		glRotatef(-90, 1, 0, 0);
+		glScalef(.05f, .05f, .05f);
+		chair.render();
+	}
+	glPopMatrix();
+}
+
+void Scene::makeSeriousWalls()
+{
+	//Left wall
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, -2.f, 0.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -3.f, 0.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(-5.f, -3.f, -10.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(-5.f, -2.f, -10.f);
+		}
+		glEnd();
+		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, 3.f, 0.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -2.f, 0.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(-5.f, -2.f, -10.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(-5.f, 3.f, -10.f);
+		}
+		glEnd();
+	}
+	glPopMatrix();
+
+	//Right wall
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, -2.f, -10.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(5.f, -3.f, -10.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(5.f, -3.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(5.f, -2.f, -2.f);
+		}
+		glEnd();
+		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(8, 0);
+			glVertex3f(5.f, 3.f, -10.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(8, 1);
+			glVertex3f(5.f, -2.f, -10.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(5.f, -2.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(5.f, 3.f, -2.f);
+
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(2, 0);
+			glVertex3f(5.f, 3.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(2, .4f);
+			glVertex3f(5.f, 1.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, .4f);
+			glVertex3f(5.f, 1.f, 0.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(5.f, 3.f, 0.f);
+		}
+		glEnd();
+	}
+	glPopMatrix();
+
+	//Front wall
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -3.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(5.f, -3.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, -2.f, -10.f);
+		}
+		glEnd();
+		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, 3.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(5.f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, 3.f, -10.f);
+		}
+		glEnd();
+	}
+	glPopMatrix();
+
+	//Back wall
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, -2.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(5.f, -3.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -3.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, -2.f, 0.f);
+		}
+		glEnd();
+		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, 3.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(10, 1);
+			glVertex3f(5.f, -2.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-5.f, -2.f, 0.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, 3.f, 0.f);
+		}
+		glEnd();
+	}
+	glPopMatrix();
+
+	//Floor
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousFloor);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//drawPlane(Vector3(-5.f, -3.f, -10.f), Vector3(5.f, -3.f, 0.f), Vector3(0.f, 1.f, 0.f));
+		glBegin(GL_QUADS);
+		for (float z = -10.f; z < 0.f; z += .1f)
+		{
+			for (float x = -5.f; x < 5.f - .1f; x += .1f)
+			{
+				glNormal3f(0.f, 1.f, 0.f);
+				glTexCoord2f(x + 5.f, z + 10.f);
+				glVertex3f(x, -3.f, z);
+				glNormal3f(0.f, 1.f, 0.f);
+				glTexCoord2f(x + 5.f, z + 10.1f);
+				glVertex3f(x, -3.f, z + .1f);
+				glNormal3f(0.f, 1.f, 0.f);
+				glTexCoord2f(x + 5.1f, z + 10.1f);
+				glVertex3f(x + .1f, -3.f, z + .1f);
+				glNormal3f(0.f, 1.f, 0.f);
+				glTexCoord2f(x + 5.1f, z + 10.f);
+				glVertex3f(x + .1f, -3.f, z);
+			}
+		}
+		glEnd();
+		/*glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 1.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-5.f, -3.f, -10.f);
+			glNormal3f(0.f, 1.f, 0.f);
+			glTexCoord2f(0, 10);
+			glVertex3f(-5.f, -3.f, 0.f);
+			glNormal3f(0.f, 1.f, 0.f);
+			glTexCoord2f(10, 10);
+			glVertex3f(5.f, -3.f, 0.f);
+			glNormal3f(0.f, 1.f, 0.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(5.f, -3.f, -10.f);
+		}
+		glEnd();*/
+	}
+	glPopMatrix();
+
+	//Ceiling
+	glPushMatrix();
+	{
+		glBindTexture(GL_TEXTURE_2D, seriousCeiling);
+		applyFilter();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glBegin(GL_QUADS);
+		for (float z = 0.f; z > -10.f; z -= .1f)
+		{
+			for (float x = 5.f; x > -5.f + .1f; x -= .1f)
+			{
+				glNormal3f(0.f, -1.f, 0.f);
+				glTexCoord2f(x - 5.1f, z - 10.f);
+				glVertex3f(x - .1f, 3.f, z);
+				glNormal3f(0.f, -1.f, 0.f);
+				glTexCoord2f(x - 5.1f, z - 10.1f);
+				glVertex3f(x - .1f, 3.f, z - .1f);
+				glNormal3f(0.f, -1.f, 0.f);
+				glTexCoord2f(x - 5.f, z - 10.1f);
+				glVertex3f(x, 3.f, z - .1f);
+				glNormal3f(0.f, -1.f, 0.f);
+				glTexCoord2f(x - 5.f, z - 10.f);
+				glVertex3f(x, 3.f, z);
+			}
+		}
+		glEnd();
+		/*glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, -1.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(5.f, 3.f, -10.f);
+			glNormal3f(0.f, -1.f, 0.f);
+			glTexCoord2f(0, 10);
+			glVertex3f(5.f, 3.f, 0.f);
+			glNormal3f(0.f, -1.f, 0.f);
+			glTexCoord2f(10, 10);
+			glVertex3f(-5.f, 3.f, 0.f);
+			glNormal3f(0.f, -1.f, 0.f);
+			glTexCoord2f(10, 0);
+			glVertex3f(-5.f, 3.f, -10.f);
+		}
+		glEnd();*/
+	}
+	glPopMatrix();
+}
+
+void Scene::renderTropicalIsland()
+{
+
 }

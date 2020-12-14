@@ -48,7 +48,7 @@ protected:
 
 	// draw primitive functions
 	void drawSimpleQuad(float, float, float, float);
-	void drawPlane();
+	void drawPlane(Vector3 topLeftPos, Vector3 bottomRightPos, Vector3 surfaceNormal);
 
 	// For access to user input.
 	Input* input;
@@ -88,34 +88,23 @@ protected:
 	Skybox skybox;
 
 	//Models
-	Model spaceship;
 	Model chair;
 
-	//Shapes
-	BasicShape cube;
-	BasicShape cube2;
-	BasicShape cube3;
-	BasicShape cube4;
-	BasicShape cube5;
-	BasicShape cube6;
-	BasicShape platform;
-	BasicShape room;
-	Disc disc;
-	Disc disc2;
-	Cylinder cylinder;
-	Cylinder cylinder2;
-	Sphere sphere;
-	Sphere sphere2;
+	//Functions that will render their according rooms
+	void renderSeriousRoom();
+		void makeSeriousWalls();
+	void renderTropicalIsland();
+
+
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;
 
 	//Textures
-	GLuint checkedTex;
-	GLuint boxTexSolid;
-	GLuint boxTexTransparent;
-	GLuint grass;
-	GLuint marble;
 	GLuint sky;
+	GLuint seriousWallBase;
+	GLuint seriousWallTop;
+	GLuint seriousFloor;
+	GLuint seriousCeiling;
 };
 
 #endif
