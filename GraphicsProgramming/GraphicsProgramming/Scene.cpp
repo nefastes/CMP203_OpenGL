@@ -17,20 +17,20 @@ Scene::Scene(Input *in)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	//Init lights
-	ambientLight->makeAmbient(
-		std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data(),
+	ambientLight->makeAmbient(std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data());
+	/*ambientLight->makeDiffuse(
 		std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
 		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
-		.5f, .25f, .125f);
+		.5f, .25f, .125f);*/
 	pointLight->makeDiffuse(
 		std::array<GLfloat, 4>{0.f, 0.f, 1.f, 1.f}.data(),
 		std::array<GLfloat, 4>{0.f, 2.f, -5.f, 1.f}.data(),
 		.5f, .25f, .125f);
 	spotLight->makeSpot(
-		std::array<GLfloat, 4>{0.f, 1.f, 0.f, 1.f}.data(),
-		std::array<GLfloat, 4>{4.f, -1.75f, 3.f, 1.f}.data(),
-		std::array<GLfloat, 4>{-1.f, 0.f, 0.f, 0.f}.data(),
-		50.f, 10.f, .5f, .125f, .0675f);
+		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
+		std::array<GLfloat, 4>{0.f, 2.f, -5.f, 1.f}.data(),
+		std::array<GLfloat, 4>{0.f, -1.f, 0.f, 0.f}.data(),
+		50.f, 5.f, .5f, .125f, .0675f);
 
 	//Init Camera
 	camera.setInput(in);
@@ -43,12 +43,15 @@ Scene::Scene(Input *in)
 	seriousWallTop = SOIL_load_OGL_texture("gfx/halflife/-1LAB1_W4GAD.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
 	skybox.setTexture(sky);
 
 	//Init models
 	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
+	table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
+	lamp.load("models/HangingLight_triangles.obj", "gfx/OldFlorecentLight.jpg");
 
 	//Init Shapes
 
@@ -132,23 +135,6 @@ void Scene::render() {
 	glDisable(GL_DEPTH_TEST);
 	skybox.draw();
 	glEnable(GL_DEPTH_TEST);
-
-	//RENDER LIGHTS
-	ambientLight->render();
-	glPushMatrix();
-		//glRotatef(lightRotation, 0, 1, 0);
-		pointLight->render();
-		GLfloat* pos = pointLight->getPosition();
-		glTranslatef(pos[0], pos[1], pos[2]);
-		gluSphere(gluNewQuadric(), .1f, 20, 20);
-	glPopMatrix();
-	glPushMatrix();
-		//glRotatef(lightRotation, 0, 0, 1);
-		spotLight->render();
-		pos = spotLight->getPosition();
-		glTranslatef(pos[0], pos[1], pos[2]);
-		gluSphere(gluNewQuadric(), .1f, 20, 20);
-	glPopMatrix();
 
 	//RENDER GEOMETRY
 	renderSeriousRoom();
@@ -353,14 +339,54 @@ void Scene::drawPlane(Vector3 topLeftPos, Vector3 bottomRightPos, Vector3 surfac
 
 void Scene::renderSeriousRoom()
 {
+	//RENDER LIGHTS
+	ambientLight->render();
+	glPushMatrix();
+	{
+		spotLight->render();
+		GLfloat* pos = spotLight->getPosition();
+		glTranslatef(pos[0], pos[1], pos[2]);
+		gluSphere(gluNewQuadric(), .1f, 20, 20);
+	}
+	glPopMatrix();
 	//Create the room's walls
 	makeSeriousWalls();
 	glPushMatrix();
 	{
-		glTranslatef(4.f, -3.f, -9.f);
+		glPushMatrix();
+		{
+			glTranslatef(4.f, -3.f, -8.f);
+			glRotatef(-90, 1, 0, 0);
+			glRotatef(-45, 0, 0, 1);
+			glScalef(.075f, .075f, .075f);
+			chair.render();
+		}
+		glPopMatrix();
+		glPushMatrix();
+		{
+			glTranslatef(3.f, -3.f, -9.f);
+			glRotatef(-90, 1, 0, 0);
+			glRotatef(-90, 0, 0, 1);
+			glScalef(.075f, .075f, .075f);
+			chair.render();
+		}
+		glPopMatrix();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(0.f, -3.f, -5.f);
 		glRotatef(-90, 1, 0, 0);
-		glScalef(.05f, .05f, .05f);
-		chair.render();
+		glScalef(.025f, .025f, .025f);
+		table.render();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(0.f, 2.95f, -5.f);
+		glRotatef(-90, 0, 1, 0);
+		glScalef(20.f, 20.f, 20.f);
+		lamp.render();
 	}
 	glPopMatrix();
 }
@@ -467,6 +493,24 @@ void Scene::makeSeriousWalls()
 			glNormal3f(-1.f, 0.f, 0.f);
 			glTexCoord2f(0, 0);
 			glVertex3f(5.f, 3.f, 0.f);
+		}
+		glEnd();
+		glBindTexture(GL_TEXTURE_2D, seriousDoor);
+		applyFilter();
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(5.f, 1.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(5.f, -3.f, -2.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(1, 1);
+			glVertex3f(5.f, -3.f, 0.f);
+			glNormal3f(-1.f, 0.f, 0.f);
+			glTexCoord2f(1, 0);
+			glVertex3f(5.f, 1.f, 0.f);
 		}
 		glEnd();
 	}
@@ -618,7 +662,7 @@ void Scene::makeSeriousWalls()
 		applyFilter();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
+		/*glBegin(GL_QUADS);
 		for (float z = 0.f; z > -10.f; z -= .1f)
 		{
 			for (float x = 5.f; x > -5.f + .1f; x -= .1f)
@@ -637,8 +681,8 @@ void Scene::makeSeriousWalls()
 				glVertex3f(x, 3.f, z);
 			}
 		}
-		glEnd();
-		/*glBegin(GL_QUADS);
+		glEnd();*/
+		glBegin(GL_QUADS);
 		{
 			glNormal3f(0.f, -1.f, 0.f);
 			glTexCoord2f(0, 0);
@@ -653,7 +697,7 @@ void Scene::makeSeriousWalls()
 			glTexCoord2f(10, 0);
 			glVertex3f(-5.f, 3.f, -10.f);
 		}
-		glEnd();*/
+		glEnd();
 	}
 	glPopMatrix();
 }

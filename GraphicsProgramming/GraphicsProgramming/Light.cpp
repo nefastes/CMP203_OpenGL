@@ -51,10 +51,9 @@ void Light::render()
 	glEnable(currentLight);
 }
 
-void Light::makeAmbient(GLfloat* ambient, GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)
+void Light::makeAmbient(GLfloat* ambient)
 {
 	for (unsigned char i = 0; i < 4; ++i) Ambient[i] = ambient[i];
-	makeDiffuse(diffuse, position, constant_attenuation, linear_attenutation, quadratic_attenuation);
 }
 
 void Light::makeDiffuse(GLfloat* diffuse, GLfloat* position, float constant_attenuation, float linear_attenutation, float quadratic_attenuation)

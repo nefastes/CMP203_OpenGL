@@ -89,12 +89,18 @@ protected:
 
 	//Models
 	Model chair;
+	Model table;
+	Model lamp;
 
-	//Functions that will render their according rooms
+	//Geometry for serious room
+	Cylinder mirrorLeftEdge;
+	Cylinder mirrorRightEdge;
+	BasicShape mirrorBottomEdge;
+	BasicShape mirroTopEdge;
+
+	//Functions that will render their according room
 	void renderSeriousRoom();
 		void makeSeriousWalls();
-	void renderTropicalIsland();
-
 
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;
@@ -105,6 +111,7 @@ protected:
 	GLuint seriousWallTop;
 	GLuint seriousFloor;
 	GLuint seriousCeiling;
+	GLuint seriousDoor;
 };
 
 #endif
