@@ -39,6 +39,11 @@ protected:
 	std::array< GLfloat, 4> Material_Ambient;
 	std::array< GLfloat, 4> Material_Diffuse;
 	std::array< GLfloat, 4> Material_Specular;
+	//A tracker to track if this object is scriptable/dynamic
+	bool scriptable;
+	//When the object is scriptable, will need to store the current transformation matrix in here
+	std::array<GLfloat, 16> transformationMatrix;
+
 
 public:
 	BasicShape();
@@ -77,5 +82,18 @@ public:
 	void setDiffuseMaterial(std::array<GLfloat, 4> diffuseMat) { Material_Diffuse = diffuseMat; };
 	void setSpecularMaterial(std::array<GLfloat, 4> specularMat) { Material_Specular = specularMat; };
 	void setShininess(GLint s) { shininess = s; };
+
+	void makeScriptObject() { scriptable = true; }
+	void assignCurrentTransformationMatrix() { 
+		//Get the transformation matrix for this object
+		glGetFloatv(GL_MODELVIEW_MATRIX, &transformationMatrix[0]);
+		//Update the position accordingly with a 1x4 by 4x4 matrix multiplication
+		std::array<GLfloat, 4> temppos;
+		for(unsigned char i = 0; i < 4; ++i)
+			temppos[i] = origin.x * transformationMatrix[i] + origin.y * transformationMatrix[4 + i] + origin.z * transformationMatrix[8 + i] + transformationMatrix[12 + i];
+		origin.x = temppos[0] / temppos[3];
+		origin.y = temppos[1] / temppos[3];
+		origin.z = temppos[2] / temppos[3];
+	}
 };
 

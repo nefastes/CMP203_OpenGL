@@ -105,8 +105,39 @@ Scene::Scene(Input *in)
 	windowBottomEdge.setTextureRepeating();
 	windowBottomEdge.setTexture(wood);
 	windowBottomEdge.generateShape();
+	//Init spheres for solar system (i'm not initialising a position, as it would then be difficult to rotate, translate and scale the shapes, so their center is at 0,0,0)
+	sun.setRadius(.5f);
+	sun.setResolution(50);
+	sun.setColor4f(1.f, .65f, 0.f, .875f);		//Orange
+	sun.makeScriptObject();
+	sun.generateShape();
+	planet1.setRadius(.125f);
+	planet1.setResolution(25);
+	planet1.setColor4f(.2f, .73f, 1.f, .25f);	//Cyan
+	planet1.makeScriptObject();
+	planet1.generateShape();
+	planet2.setRadius(.25f);
+	planet2.setResolution(20);
+	planet2.setColor4f(.4f, 0.f, .6f, .75f);	//Purple
+	planet2.makeScriptObject();
+	planet2.generateShape();
+	moon1.setRadius(.0675f);
+	moon1.setResolution(10);
+	moon1.setColor4f(0.f, 1.f, 0.f, .625f);	//Green
+	moon1.makeScriptObject();
+	moon1.generateShape();
+	moonsMoon1.setRadius(.05f);
+	moonsMoon1.setResolution(10);
+	moonsMoon1.setColor4f(1.f, 1.f, .2f, .375f);	//Yellow
+	moonsMoon1.makeScriptObject();
+	moonsMoon1.generateShape();
 
 	//Push references of all transparent shapes into the according vector
+	transparentShapes.push_back(&sun);
+	transparentShapes.push_back(&planet1);
+	transparentShapes.push_back(&planet2);
+	transparentShapes.push_back(&moon1);
+	transparentShapes.push_back(&moonsMoon1);
 }
 
 Scene::~Scene()
@@ -189,12 +220,6 @@ void Scene::render() {
 
 	//RENDER GEOMETRY
 	renderSeriousRoom();
-
-	glEnable(GL_BLEND);
-	for (unsigned i = 0; i < transparentShapes.size(); ++i)
-		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
-		else transparentShapes[i]->render();
-	glDisable(GL_BLEND);
 
 	// End render geometry --------------------------------------
 
@@ -397,6 +422,9 @@ void Scene::renderSeriousRoom()
 		lamp.render();
 	}
 	glPopMatrix();
+
+	//Render solar system
+	drawSolarSystem();
 }
 
 void Scene::makeSeriousWalls()
@@ -802,4 +830,52 @@ void Scene::makeSeriousWalls()
 void Scene::drawMirrorQuad()
 {
 
+}
+
+void Scene::drawSolarSystem()
+{
+	glPushMatrix();
+	{
+		glTranslatef(0.f, -.5f, -5.f);
+		glPushMatrix();
+		{
+			glRotatef(4 * lightRotation, 0, 1, 0);
+			sun.assignCurrentTransformationMatrix();
+		}
+		glPopMatrix();
+		glPushMatrix();
+		{
+			glRotatef(lightRotation, 0, 1, 0);
+			glTranslatef(-1.f, 0.f, 0.f);
+			planet2.assignCurrentTransformationMatrix();
+		}
+		glPopMatrix();
+		glPushMatrix();
+		{
+			glRotatef(lightRotation, 0, 1, 0);
+			glTranslatef(1.f, 0.f, 0.f);
+			planet1.assignCurrentTransformationMatrix();
+			glPushMatrix();
+			{
+				glRotatef(2 * lightRotation, 0, 0, 1);
+				glTranslatef(-0.25f, 0.f, 0.f);
+				moon1.assignCurrentTransformationMatrix();
+				glPushMatrix();
+				{
+					glRotatef(4 * lightRotation, 1, 1, 1);
+					glTranslatef(-.125f, 0.f, 0.f);
+					moonsMoon1.assignCurrentTransformationMatrix();
+				}
+				glPopMatrix();
+			}
+			glPopMatrix();
+		}
+		glPopMatrix();
+	}
+	glPopMatrix();
+	glEnable(GL_BLEND);
+	for (unsigned i = 0; i < transparentShapes.size(); ++i)
+		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
+		else transparentShapes[i]->render();
+	glDisable(GL_BLEND);
 }

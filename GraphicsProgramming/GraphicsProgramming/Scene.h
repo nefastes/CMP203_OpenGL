@@ -98,10 +98,16 @@ protected:
 	BasicShape windowRightEdge;
 	BasicShape windowTopEdge;
 	BasicShape windowBottomEdge;
+	Sphere sun;
+	Sphere planet1;
+	Sphere planet2;
+	Sphere moon1;
+	Sphere moonsMoon1;
+	void drawSolarSystem();
 
 	//Functions that will render their according room
 	void renderSeriousRoom();
-		void makeSeriousWalls();
+	void makeSeriousWalls();
 
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;

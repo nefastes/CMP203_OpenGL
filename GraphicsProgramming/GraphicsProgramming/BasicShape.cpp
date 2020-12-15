@@ -56,7 +56,13 @@ void BasicShape::render(short unsigned textureFilteringMode)
 	glVertexPointer(3, GL_FLOAT, 0, vertices.data());
 	glNormalPointer(GL_FLOAT, 0, normals.data());
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates.data());
-	shapeSpecificDrawingMode();	//Call the shape's specific render, will differ for every sort of shape.
+	glPushMatrix();
+	{
+		if (scriptable)
+			glLoadMatrixf(transformationMatrix.data());
+		shapeSpecificDrawingMode();	//Call the shape's specific render, will differ for every sort of shape.
+	}
+	glPopMatrix();
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
