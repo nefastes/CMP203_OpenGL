@@ -93,6 +93,11 @@ protected:
 	Cylinder mirrorRightEdge;
 	BasicShape mirrorBottomEdge;
 	BasicShape mirrorTopEdge;
+	void drawMirrorQuad();
+	BasicShape windowLeftEdge;
+	BasicShape windowRightEdge;
+	BasicShape windowTopEdge;
+	BasicShape windowBottomEdge;
 
 	//Functions that will render their according room
 	void renderSeriousRoom();
@@ -102,13 +107,14 @@ protected:
 	std::vector<BasicShape*> transparentShapes;
 
 	//Textures
-	GLuint sky;
+	GLuint sky[6];
 	GLuint seriousWallBase;
 	GLuint seriousWallTop;
 	GLuint seriousFloor;
 	GLuint seriousCeiling;
 	GLuint seriousDoor;
 	GLuint wood;
+	GLuint glass;
 };
 
 #endif

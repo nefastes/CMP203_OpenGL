@@ -20,16 +20,15 @@ Vector3& Skybox::getPos()
 	return position;
 }
 
-void Skybox::setTexture(GLuint& tex)
+void Skybox::setTexture(GLuint* tex)
 {
-	texture = &tex;
+	texture = tex;
 }
 
-void Skybox::draw()
+void Skybox::draw(short unsigned textureFilteringMode)
 {
 	glPushMatrix();
 	glTranslatef(position.x, position.y, position.z);
-	glBindTexture(GL_TEXTURE_2D, *texture);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, Material_Ambient.data());
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
 	glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -41,7 +40,19 @@ void Skybox::draw()
 	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glNormalPointer(GL_FLOAT, 0, norms);
 	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
-	glDrawArrays(GL_QUADS, 0, 24);
+	for (unsigned i = 0; i < 6; ++i)
+	{
+		glBindTexture(GL_TEXTURE_2D, texture[i]);
+		switch (textureFilteringMode)
+		{
+		case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+		case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+		case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+		default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		}
+		glDrawArrays(GL_QUADS, i * 4, 4 + i * 4);
+	}
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

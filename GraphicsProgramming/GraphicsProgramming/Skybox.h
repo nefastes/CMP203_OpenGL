@@ -17,8 +17,8 @@ public:
 
 	void setPos(Vector3);
 	Vector3& getPos();
-	void setTexture(GLuint&);
-	void draw();
+	void setTexture(GLuint*);
+	void draw(short unsigned textureFilteringMode = 3);
 
 	//Declare the vertices, normals and texture coordinates to make a unit cube skybox
 	float verts[72] = {
@@ -92,7 +92,7 @@ public:
 	};
 
 
-	float texcoords[48] = {
+	/*float texcoords[48] = {
 		.5f, .25f,
 		.5f, .5f,
 		.25f, .5f,
@@ -122,6 +122,38 @@ public:
 		.5f, .75f,
 		.25f, .75f,
 		.25f, .5f
+	};*/
+
+	float texcoords[48] = {
+		0, 0,
+		0, 1,
+		1, 1,
+		1, 0,
+
+		0, 0,
+		0, 1,
+		1, 1,
+		1, 0,
+
+		0, 0,
+		0, 1,
+		1, 1,
+		1, 0,
+
+		0, 0,
+		0, 1,
+		1, 1,
+		1, 0,
+
+		0, 1,
+		1, 1,
+		1, 0,
+		0, 0,
+
+		1, 0,
+		0, 0,
+		0, 1,
+		1, 1
 	};
 
 	//Should not require anything else, as we just need to give it a texture and update its position

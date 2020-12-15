@@ -38,13 +38,19 @@ Scene::Scene(Input *in)
 	camera.setSensitivity(10);
 
 	// Initialise textures
-	sky = SOIL_load_OGL_texture("gfx/skybox2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[0] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_ft.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[1] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_rt.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[2] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_bk.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[3] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_lf.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[4] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_up.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	sky[5] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_dn.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousWallBase = SOIL_load_OGL_texture("gfx/halflife/-0OUT_WALL3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousWallTop = SOIL_load_OGL_texture("gfx/halflife/-1LAB1_W4GAD.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	wood = SOIL_load_OGL_texture("gfx/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	glass = SOIL_load_OGL_texture("gfx/halflife/GLASS_BRIGHT.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
 	skybox.setTexture(sky);
@@ -55,6 +61,7 @@ Scene::Scene(Input *in)
 	lamp.load("models/HangingLight_triangles.obj", "gfx/OldFlorecentLight.jpg");
 
 	//Init Shapes
+	//Init mirror
 	mirrorLeftEdge.setPosition(-5.f, 0.f, -2.5f);
 	mirrorLeftEdge.setRadius(.25f);
 	mirrorLeftEdge.setResolution(10);
@@ -77,6 +84,27 @@ Scene::Scene(Input *in)
 	mirrorBottomEdge.setTextureRepeating();
 	mirrorBottomEdge.setTexture(wood);
 	mirrorBottomEdge.generateShape();
+	//Init window
+	windowLeftEdge.setPosition(-1.375f, 0.5f, -10.f);
+	windowLeftEdge.setScale(.125f, 1.5f, .125f);
+	windowLeftEdge.setTextureRepeating();
+	windowLeftEdge.setTexture(wood);
+	windowLeftEdge.generateShape();
+	windowRightEdge.setPosition(1.375f, 0.5f, -10.f);
+	windowRightEdge.setScale(.125f, 1.5f, .125f);
+	windowRightEdge.setTextureRepeating();
+	windowRightEdge.setTexture(wood);
+	windowRightEdge.generateShape();
+	windowTopEdge.setPosition(0.f, 1.875f, -10.f);
+	windowTopEdge.setScale(1.25f, .125f, .125f);
+	windowTopEdge.setTextureRepeating();
+	windowTopEdge.setTexture(wood);
+	windowTopEdge.generateShape();
+	windowBottomEdge.setPosition(0.f, -0.875f, -10.f);
+	windowBottomEdge.setScale(1.25f, .125f, .125f);
+	windowBottomEdge.setTextureRepeating();
+	windowBottomEdge.setTexture(wood);
+	windowBottomEdge.generateShape();
 
 	//Push references of all transparent shapes into the according vector
 }
@@ -156,7 +184,7 @@ void Scene::render() {
 	if (!fullbright) glEnable(GL_LIGHTING);
 	//Render sky first, disable depth sorting, the skybox is only lit by the ambient lighting
 	glDisable(GL_DEPTH_TEST);
-	skybox.draw();
+	skybox.draw((short unsigned)currentFilter);
 	glEnable(GL_DEPTH_TEST);
 
 	//RENDER GEOMETRY
@@ -314,23 +342,22 @@ void Scene::renderSeriousRoom()
 {
 	//RENDER LIGHTS
 	ambientLight->render();
-	glPushMatrix();
-	{
-		spotLight->render();
-		GLfloat* pos = spotLight->getPosition();
-		glTranslatef(pos[0], pos[1], pos[2]);
-		gluSphere(gluNewQuadric(), .1f, 20, 20);
-	}
-	glPopMatrix();
+	spotLight->render();
 
 	//Create the room's walls
 	makeSeriousWalls();
 
 	//Render mirror
-	mirrorLeftEdge.render();
-	mirrorRightEdge.render();
-	mirrorTopEdge.render();
-	mirrorBottomEdge.render();
+	mirrorLeftEdge.render((short unsigned)currentFilter);
+	mirrorRightEdge.render((short unsigned)currentFilter);
+	mirrorTopEdge.render((short unsigned)currentFilter);
+	mirrorBottomEdge.render((short unsigned)currentFilter);
+
+	//Render window
+	windowLeftEdge.render((short unsigned)currentFilter);
+	windowRightEdge.render((short unsigned)currentFilter);
+	windowTopEdge.render((short unsigned)currentFilter);
+	windowBottomEdge.render((short unsigned)currentFilter);
 
 	//Render models
 	glPushMatrix();
@@ -410,6 +437,32 @@ void Scene::makeSeriousWalls()
 			glNormal3f(1.f, 0.f, 0.f);
 			glTexCoord2f(0, 1);
 			glVertex3f(-5.f, -2.f, 0.f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(2.5f, 1);
+			glVertex3f(-5.f, -2.f, -2.5f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(2.5f, 0);
+			glVertex3f(-5.f, 3.f, -2.5f);
+
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(2.5f, 0);
+			glVertex3f(-5.f, 3.f, -2.5f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(2.5f, .2f);
+			glVertex3f(-5.f, 2.f, -2.5f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(7.5f, .2f);
+			glVertex3f(-5.f, 2.f, -7.5f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(7.5f, 0);
+			glVertex3f(-5.f, 3.f, -7.5f);
+
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(7.5f, 0);
+			glVertex3f(-5.f, 3.f, -7.5f);
+			glNormal3f(1.f, 0.f, 0.f);
+			glTexCoord2f(7.5f, 1);
+			glVertex3f(-5.f, -2.f, -7.5f);
 			glNormal3f(1.f, 0.f, 0.f);
 			glTexCoord2f(10, 1);
 			glVertex3f(-5.f, -2.f, -10.f);
@@ -534,6 +587,45 @@ void Scene::makeSeriousWalls()
 			glTexCoord2f(0, 1);
 			glVertex3f(-5.f, -2.f, -10.f);
 			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, 1);
+			glVertex3f(-1.5f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, 0);
+			glVertex3f(-1.5f, 3.f, -10.f);
+
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, 0);
+			glVertex3f(-1.5f, 3.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, .2f);
+			glVertex3f(-1.5f, 2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, .2f);
+			glVertex3f(1.5f, 2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, 0);
+			glVertex3f(1.5f, 3.f, -10.f);
+
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, .8f);
+			glVertex3f(-1.5f, -1.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(3.5f, 1);
+			glVertex3f(-1.5f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, 1);
+			glVertex3f(1.5f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, .8f);
+			glVertex3f(1.5f, -1.f, -10.f);
+
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, 0);
+			glVertex3f(1.5f, 3.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(6.5f, 1);
+			glVertex3f(1.5f, -2.f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
 			glTexCoord2f(10, 1);
 			glVertex3f(5.f, -2.f, -10.f);
 			glNormal3f(0.f, 0.f, 1.f);
@@ -541,6 +633,28 @@ void Scene::makeSeriousWalls()
 			glVertex3f(5.f, 3.f, -10.f);
 		}
 		glEnd();
+
+		glBindTexture(GL_TEXTURE_2D, glass);
+		glEnable(GL_BLEND);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ .2f, .2f, .2f, .4f }.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
+		glBegin(GL_QUADS);
+		{
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 0);
+			glVertex3f(-1.25f, 1.75f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(0, 1);
+			glVertex3f(-1.25f, -0.75f, -10.f);
+			glNormal3f(0.f, 0.f, -1.f);
+			glTexCoord2f(1, 1);
+			glVertex3f(1.25f, -0.75f, -10.f);
+			glNormal3f(0.f, 0.f, 1.f);
+			glTexCoord2f(1, 0);
+			glVertex3f(1.25f, 1.75f, -10.f);
+		}
+		glEnd();
+		glDisable(GL_BLEND);
 	}
 	glPopMatrix();
 
@@ -682,4 +796,9 @@ void Scene::makeSeriousWalls()
 		glEnd();
 	}
 	glPopMatrix();
+}
+
+void Scene::drawMirrorQuad()
+{
+
 }
