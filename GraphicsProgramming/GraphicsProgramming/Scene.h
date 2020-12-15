@@ -46,10 +46,6 @@ protected:
 	void renderTextOutput();
 	void calculateFPS();
 
-	// draw primitive functions
-	void drawSimpleQuad(float, float, float, float);
-	void drawPlane(Vector3 topLeftPos, Vector3 bottomRightPos, Vector3 surfaceNormal);
-
 	// For access to user input.
 	Input* input;
 		
@@ -96,7 +92,7 @@ protected:
 	Cylinder mirrorLeftEdge;
 	Cylinder mirrorRightEdge;
 	BasicShape mirrorBottomEdge;
-	BasicShape mirroTopEdge;
+	BasicShape mirrorTopEdge;
 
 	//Functions that will render their according room
 	void renderSeriousRoom();
@@ -112,6 +108,7 @@ protected:
 	GLuint seriousFloor;
 	GLuint seriousCeiling;
 	GLuint seriousDoor;
+	GLuint wood;
 };
 
 #endif

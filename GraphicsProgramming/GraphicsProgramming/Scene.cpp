@@ -17,7 +17,7 @@ Scene::Scene(Input *in)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	//Init lights
-	ambientLight->makeAmbient(std::array<GLfloat, 4>{.2f, .2f, .2f, 1.f}.data());
+	ambientLight->makeAmbient(std::array<GLfloat, 4>{.1f, .1f, .1f, 1.f}.data());
 	/*ambientLight->makeDiffuse(
 		std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
 		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
@@ -44,6 +44,7 @@ Scene::Scene(Input *in)
 	seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	wood = SOIL_load_OGL_texture("gfx/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
 	skybox.setTexture(sky);
@@ -54,6 +55,28 @@ Scene::Scene(Input *in)
 	lamp.load("models/HangingLight_triangles.obj", "gfx/OldFlorecentLight.jpg");
 
 	//Init Shapes
+	mirrorLeftEdge.setPosition(-5.f, 0.f, -2.5f);
+	mirrorLeftEdge.setRadius(.25f);
+	mirrorLeftEdge.setResolution(10);
+	mirrorLeftEdge.setStackResolution(5);
+	mirrorLeftEdge.setTexture(wood);
+	mirrorLeftEdge.generateShape();
+	mirrorRightEdge.setPosition(-5.f, 0.f, -7.5f);
+	mirrorRightEdge.setRadius(.25f);
+	mirrorRightEdge.setResolution(10);
+	mirrorRightEdge.setStackResolution(5);
+	mirrorRightEdge.setTexture(wood);
+	mirrorRightEdge.generateShape();
+	mirrorTopEdge.setPosition(-5.f, 2.125f, -5.f);
+	mirrorTopEdge.setScale(.25f, .125f, 2.75f);
+	mirrorTopEdge.setTextureRepeating();
+	mirrorTopEdge.setTexture(wood);
+	mirrorTopEdge.generateShape();
+	mirrorBottomEdge.setPosition(-5.f, -2.125f, -5.f);
+	mirrorBottomEdge.setScale(.25f, .125f, 2.75f);
+	mirrorBottomEdge.setTextureRepeating();
+	mirrorBottomEdge.setTexture(wood);
+	mirrorBottomEdge.generateShape();
 
 	//Push references of all transparent shapes into the according vector
 }
@@ -102,7 +125,7 @@ void Scene::update(float dt)
 	skybox.setPos(camera.getPosition());
 
 	//Update the transparent shapes order of rendering relative to the camera position (furthest to be rendered first, closest to be rendered last)
-	std::sort(transparentShapes.begin(), transparentShapes.end(), [&](BasicShape* s1, BasicShape* s2)
+	std::sort(transparentShapes.begin(), transparentShapes.end(), [=](BasicShape* s1, BasicShape* s2)
 		{
 			//We want to return true if the first shape is further to the camera than the second shape
 			return s1->getPosition() - camera.getPosition() > s2->getPosition() - camera.getPosition();
@@ -287,56 +310,6 @@ void Scene::applyFilter()
 	}
 }
 
-void Scene::drawSimpleQuad(float r, float g, float b, float a)
-{
-	glColor4f(r, g, b, a);
-	glBegin(GL_QUADS);
-
-	//FRONT
-	glVertex3f(0.f, 1.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glVertex3f(0.f, 0.f, 0.f);
-
-	glEnd();
-}
-
-void Scene::drawPlane(Vector3 topLeftPos, Vector3 bottomRightPos, Vector3 surfaceNormal)
-{
-	//This function renders a plane of .1f x .1f quads bounded by the two positions as parameters
-	glPushMatrix();
-
-	//Color
-	glColor3f(1.f, 1.f, 1.f);
-	//glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
-	//glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
-
-	//Make a plane of .1f x .1f quads
-	glBegin(GL_QUADS);
-	for (float z = -10.f; z < 0.f; z += .1f)
-	{
-		for (float x = -5.f; x < 5.f - .1f; x += .1f)
-		{
-			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
-			glTexCoord2f(x + 5.f, z + 10.f);
-			glVertex3f(x, -3.f, z);
-			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
-			glTexCoord2f(x + 5.f, z + 10.1f);
-			glVertex3f(x, -3.f, z + .1f);
-			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
-			glTexCoord2f(x + 5.1f, z + 10.1f);
-			glVertex3f(x + .1f, -3.f, z + .1f);
-			glNormal3f(surfaceNormal.x, surfaceNormal.y, surfaceNormal.z);
-			glTexCoord2f(x + 5.1f, z + 10.f);
-			glVertex3f(x + .1f, -3.f, z);
-		}
-	}
-	glEnd();
-
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-}
-
 void Scene::renderSeriousRoom()
 {
 	//RENDER LIGHTS
@@ -349,8 +322,17 @@ void Scene::renderSeriousRoom()
 		gluSphere(gluNewQuadric(), .1f, 20, 20);
 	}
 	glPopMatrix();
+
 	//Create the room's walls
 	makeSeriousWalls();
+
+	//Render mirror
+	mirrorLeftEdge.render();
+	mirrorRightEdge.render();
+	mirrorTopEdge.render();
+	mirrorBottomEdge.render();
+
+	//Render models
 	glPushMatrix();
 	{
 		glPushMatrix();
@@ -700,9 +682,4 @@ void Scene::makeSeriousWalls()
 		glEnd();
 	}
 	glPopMatrix();
-}
-
-void Scene::renderTropicalIsland()
-{
-
 }
