@@ -28,7 +28,7 @@ Scene::Scene(Input *in)
 		.5f, .25f, .125f);
 	spotLight->makeSpot(
 		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
-		std::array<GLfloat, 4>{0.f, 2.f, -5.f, 1.f}.data(),
+		std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
 		std::array<GLfloat, 4>{0.f, -1.f, 0.f, 0.f}.data(),
 		50.f, 5.f, .5f, .125f, .0675f);
 
@@ -190,8 +190,6 @@ void Scene::render() {
 	//RENDER GEOMETRY
 	renderSeriousRoom();
 
-	
-
 	glEnable(GL_BLEND);
 	for (unsigned i = 0; i < transparentShapes.size(); ++i)
 		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
@@ -352,6 +350,7 @@ void Scene::renderSeriousRoom()
 	mirrorRightEdge.render((short unsigned)currentFilter);
 	mirrorTopEdge.render((short unsigned)currentFilter);
 	mirrorBottomEdge.render((short unsigned)currentFilter);
+	drawMirrorQuad();
 
 	//Render window
 	windowLeftEdge.render((short unsigned)currentFilter);
@@ -655,6 +654,8 @@ void Scene::makeSeriousWalls()
 		}
 		glEnd();
 		glDisable(GL_BLEND);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
 	}
 	glPopMatrix();
 
