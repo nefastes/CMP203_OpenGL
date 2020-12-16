@@ -1,0 +1,5 @@
+skybox2 : made by NH'AlterEgo and given to me as part of another project.
+earth-diffuse: http://www.softwaresamurai.org/wp-content/uploads/2017/12/earth-diffuse.jpg
+moon-diffuse: https://st.depositphotos.com/1017411/1565/i/950/depositphotos_15659203-stock-photo-seamless-texture-surface-of-the.jpg
+transparent-glass: https://3.bp.blogspot.com/-QUJUQeD-vx8/WHYDXkA9NZI/AAAAAAAABKg/uuRfmQ7uWdwXsE87_qzuGZmpET6EJxfHQCLcB/s1600/Transparent%2Bglass%2Bseamless%2Btexture%2B1.png
+mars-diffuse: https://opengameart.org/sites/default/files/Mars%20CH16.png
