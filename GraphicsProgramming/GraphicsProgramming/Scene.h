@@ -93,6 +93,7 @@ protected:
 	Model chair;
 	Model table;
 	Model lamp;
+	Model trump;
 
 	//Geometry for serious room
 	//Mirror stuff

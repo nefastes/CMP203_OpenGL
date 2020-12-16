@@ -74,6 +74,7 @@ Scene::Scene(Input *in)
 	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
 	table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
 	lamp.load("models/HangingLight_triangles.obj", "gfx/OldFlorecentLight.jpg");
+	trump.load("models/trump_centerfixed.obj", "gfx/trump.png");
 
 	//Init Shapes
 	//Init mirror
@@ -501,6 +502,16 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 
 	//Render solar system hierchical animations
 	drawSolarSystem();
+
+	//Render trump based on the camera position
+	glPushMatrix();
+	{
+		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		glRotatef(180-camera.getYaw(), 0, 1, 0);
+		glScalef(2.f, 2.f, 2.f);
+		trump.render();
+	}
+	glPopMatrix();
 
 	//Render all transparent shapes once everything else is rendered
 	glEnable(GL_BLEND);
