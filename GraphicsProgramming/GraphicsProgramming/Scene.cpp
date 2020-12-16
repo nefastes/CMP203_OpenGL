@@ -20,167 +20,187 @@ Scene::Scene(Input *in)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	//Init lights
-	ambientLight->makeAmbient(std::array<GLfloat, 4>{.1f, .1f, .1f, 1.f}.data());
-	/*ambientLight->makeDiffuse(
-		std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
-		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
-		.5f, .25f, .125f);*/
-	Scene::pointLightPosition = { 0.f, -2.f, -8.5f, 1.f };
-	pointLight->makeDiffuse(
-		std::array<GLfloat, 4>{0.f, .5f, .5f, 1.f}.data(),
-		pointLightPosition.data(),
-		1.f, .75f, .5f);
-	spotLight->makeSpot(
-		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
-		std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
-		std::array<GLfloat, 4>{0.f, -1.f, 0.f, 0.f}.data(),
-		50.f, 5.f, .5f, .125f, .0675f);
-	pointLightSphere.setRadius(.125f);
-	pointLightSphere.setResolution(10);
-	pointLightSphere.setColor3f(0.f, 0.f, 1.f);
-	pointLightSphere.generateShape();
-	timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
-	flickerTimer = 0.f;
+	{
+		ambientLight->makeAmbient(std::array<GLfloat, 4>{.1f, .1f, .1f, 1.f}.data());
+		/*ambientLight->makeDiffuse(
+			std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
+			std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
+			.5f, .25f, .125f);*/
+		Scene::pointLightPosition = { 0.f, -2.f, -8.5f, 1.f };
+		pointLight->makeDiffuse(
+			std::array<GLfloat, 4>{0.f, .25f, .25f, 1.f}.data(),
+			pointLightPosition.data(),
+			1.f, .875f, .75f);
+		spotLight->makeSpot(
+			std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
+			std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
+			std::array<GLfloat, 4>{0.f, -1.f, 0.f, 0.f}.data(),
+			50.f, 5.f, .5f, .125f, .0675f);
+		pointLightSphere.setRadius(.125f);
+		pointLightSphere.setResolution(10);
+		pointLightSphere.setColor3f(0.f, 0.f, 1.f);
+		pointLightSphere.generateShape();
+		timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
+		flickerTimer = 0.f;
+	}
 
 	//Init Camera
-	camera.setInput(in);
-	camera.setSpeed(10);
-	camera.setSensitivity(10);
+	{
+		camera.setInput(in);
+		camera.setSpeed(10);
+		camera.setSensitivity(10);
+	}
 
 	// Initialise textures
-	sky[0] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_ft.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	sky[1] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_rt.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	sky[2] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_bk.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	sky[3] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_lf.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	sky[4] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_up.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	sky[5] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_dn.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	seriousWallBase = SOIL_load_OGL_texture("gfx/halflife/-0OUT_WALL3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	seriousWallTop = SOIL_load_OGL_texture("gfx/halflife/-1LAB1_W4GAD.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	wood = SOIL_load_OGL_texture("gfx/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	glass = SOIL_load_OGL_texture("gfx/halflife/GLASS_BRIGHT.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	glass2 = SOIL_load_OGL_texture("gfx/transparent-glass.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	earthTexture = SOIL_load_OGL_texture("gfx/earth-diffuse.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	moonTexture = SOIL_load_OGL_texture("gfx/moon-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	marsTexture = SOIL_load_OGL_texture("gfx/mars-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-	transparentBox = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	{
+		sky[0] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_ft.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		sky[1] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_rt.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		sky[2] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_bk.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		sky[3] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_lf.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		sky[4] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_up.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		sky[5] = SOIL_load_OGL_texture("gfx/skybox2/skybox_fartsky_dn.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		seriousWallBase = SOIL_load_OGL_texture("gfx/halflife/-0OUT_WALL3.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		seriousWallTop = SOIL_load_OGL_texture("gfx/halflife/-1LAB1_W4GAD.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		seriousFloor = SOIL_load_OGL_texture("gfx/halflife/-1LAB3_FLR1B.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		seriousCeiling = SOIL_load_OGL_texture("gfx/halflife/-2FREEZER_PAN2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		wood = SOIL_load_OGL_texture("gfx/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		glass = SOIL_load_OGL_texture("gfx/halflife/GLASS_BRIGHT.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		glass2 = SOIL_load_OGL_texture("gfx/transparent-glass.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		earthTexture = SOIL_load_OGL_texture("gfx/earth-diffuse.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		moonTexture = SOIL_load_OGL_texture("gfx/moon-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		marsTexture = SOIL_load_OGL_texture("gfx/mars-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		transparentBox = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		grassBillboardTexture = SOIL_load_OGL_texture("gfx/bush-billboard.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		treeBillboardTexture = SOIL_load_OGL_texture("gfx/tree-billboard.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	}
 
 	//Init skybox
 	skybox.setTexture(sky);
 
 	//Init models
-	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
-	table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
-	lamp_struct.load("models/HangingLight_triangles_struct.obj", "gfx/OldFlorecentLight.jpg");
-	lamp_neons.load("models/HangingLight_triangles_neons.obj", "gfx/OldFlorecentLight.jpg");
-	lamp_neons.setAsLight(true);
-	trump.load("models/trump_centerfixed.obj", "gfx/trump.png");
+	{
+		chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
+		table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
+		lamp_struct.load("models/HangingLight_triangles_struct.obj", "gfx/OldFlorecentLight.jpg");
+		lamp_neons.load("models/HangingLight_triangles_neons.obj", "gfx/OldFlorecentLight.jpg");
+		lamp_neons.setAsLight(true);
+		trump.load("models/trump_centerfixed.obj", "gfx/trump.png");
+	}
 
 	//Init Shapes
 	//Init mirror
-	mirrorLeftEdge.setPosition(-5.f, 0.f, -2.5f);
-	mirrorLeftEdge.setRadius(.25f);
-	mirrorLeftEdge.setResolution(10);
-	mirrorLeftEdge.setStackResolution(5);
-	mirrorLeftEdge.setTexture(wood);
-	mirrorLeftEdge.generateShape();
-	mirrorRightEdge.setPosition(-5.f, 0.f, -7.5f);
-	mirrorRightEdge.setRadius(.25f);
-	mirrorRightEdge.setResolution(10);
-	mirrorRightEdge.setStackResolution(5);
-	mirrorRightEdge.setTexture(wood);
-	mirrorRightEdge.generateShape();
-	mirrorTopEdge.setPosition(-5.f, 2.125f, -5.f);
-	mirrorTopEdge.setScale(.25f, .125f, 2.75f);
-	mirrorTopEdge.setTextureRepeating();
-	mirrorTopEdge.setTexture(wood);
-	mirrorTopEdge.generateShape();
-	mirrorBottomEdge.setPosition(-5.f, -2.125f, -5.f);
-	mirrorBottomEdge.setScale(.25f, .125f, 2.75f);
-	mirrorBottomEdge.setTextureRepeating();
-	mirrorBottomEdge.setTexture(wood);
-	mirrorBottomEdge.generateShape();
+	{
+		mirrorLeftEdge.setPosition(-5.f, 0.f, -2.5f);
+		mirrorLeftEdge.setRadius(.25f);
+		mirrorLeftEdge.setResolution(10);
+		mirrorLeftEdge.setStackResolution(5);
+		mirrorLeftEdge.setTexture(wood);
+		mirrorLeftEdge.generateShape();
+		mirrorRightEdge.setPosition(-5.f, 0.f, -7.5f);
+		mirrorRightEdge.setRadius(.25f);
+		mirrorRightEdge.setResolution(10);
+		mirrorRightEdge.setStackResolution(5);
+		mirrorRightEdge.setTexture(wood);
+		mirrorRightEdge.generateShape();
+		mirrorTopEdge.setPosition(-5.f, 2.125f, -5.f);
+		mirrorTopEdge.setScale(.25f, .125f, 2.75f);
+		mirrorTopEdge.setTextureRepeating();
+		mirrorTopEdge.setTexture(wood);
+		mirrorTopEdge.generateShape();
+		mirrorBottomEdge.setPosition(-5.f, -2.125f, -5.f);
+		mirrorBottomEdge.setScale(.25f, .125f, 2.75f);
+		mirrorBottomEdge.setTextureRepeating();
+		mirrorBottomEdge.setTexture(wood);
+		mirrorBottomEdge.generateShape();
+	}
 	//Init window
-	windowLeftEdge.setPosition(-1.375f, 0.5f, -10.f);
-	windowLeftEdge.setScale(.125f, 1.5f, .125f);
-	windowLeftEdge.setTextureRepeating();
-	windowLeftEdge.setTexture(wood);
-	windowLeftEdge.generateShape();
-	windowRightEdge.setPosition(1.375f, 0.5f, -10.f);
-	windowRightEdge.setScale(.125f, 1.5f, .125f);
-	windowRightEdge.setTextureRepeating();
-	windowRightEdge.setTexture(wood);
-	windowRightEdge.generateShape();
-	windowTopEdge.setPosition(0.f, 1.875f, -10.f);
-	windowTopEdge.setScale(1.25f, .125f, .125f);
-	windowTopEdge.setTextureRepeating();
-	windowTopEdge.setTexture(wood);
-	windowTopEdge.generateShape();
-	windowBottomEdge.setPosition(0.f, -0.875f, -10.f);
-	windowBottomEdge.setScale(1.25f, .125f, .125f);
-	windowBottomEdge.setTextureRepeating();
-	windowBottomEdge.setTexture(wood);
-	windowBottomEdge.generateShape();
+	{
+		windowLeftEdge.setPosition(-1.375f, 0.5f, -10.f);
+		windowLeftEdge.setScale(.125f, 1.5f, .125f);
+		windowLeftEdge.setTextureRepeating();
+		windowLeftEdge.setTexture(wood);
+		windowLeftEdge.generateShape();
+		windowRightEdge.setPosition(1.375f, 0.5f, -10.f);
+		windowRightEdge.setScale(.125f, 1.5f, .125f);
+		windowRightEdge.setTextureRepeating();
+		windowRightEdge.setTexture(wood);
+		windowRightEdge.generateShape();
+		windowTopEdge.setPosition(0.f, 1.875f, -10.f);
+		windowTopEdge.setScale(1.25f, .125f, .125f);
+		windowTopEdge.setTextureRepeating();
+		windowTopEdge.setTexture(wood);
+		windowTopEdge.generateShape();
+		windowBottomEdge.setPosition(0.f, -0.875f, -10.f);
+		windowBottomEdge.setScale(1.25f, .125f, .125f);
+		windowBottomEdge.setTextureRepeating();
+		windowBottomEdge.setTexture(wood);
+		windowBottomEdge.generateShape();
+	}
 	//Init spheres for solar system (i'm not initialising a position except for the sun, as it would then be difficult to rotate, translate and scale the shapes, so their center is at 0,0,0)
-	sun.setRadius(.5f);
-	sun.setResolution(50);
-	sun.setColor4f(1.f, .65f, 0.f, .875f);		//Orange
-	sun.setPosition(0.f, -.5f, -5.f);
-	sun.generateShape();
-	planet1.setRadius(.125f);
-	planet1.setResolution(50);
-	planet1.setTexture(earthTexture);
-	planet1.generateShape();
-	planet2.setRadius(.25f);
-	planet2.setResolution(50);
-	planet2.setTexture(marsTexture);
-	planet2.generateShape();
-	moon1.setRadius(.0675f);
-	moon1.setResolution(25);
-	moon1.setTexture(moonTexture);
-	moon1.generateShape();
-	moonsMoon1.setRadius(.05f);
-	moonsMoon1.setResolution(25);
-	moonsMoon1.setColor3f(1.f, 1.f, .2f);	//Yellow
-	moonsMoon1.generateShape();
+	{
+		sun.setRadius(.5f);
+		sun.setResolution(50);
+		sun.setColor4f(1.f, .65f, 0.f, .875f);		//Orange
+		sun.setPosition(0.f, -.5f, -5.f);
+		sun.generateShape();
+		planet1.setRadius(.125f);
+		planet1.setResolution(50);
+		planet1.setTexture(earthTexture);
+		planet1.generateShape();
+		planet2.setRadius(.25f);
+		planet2.setResolution(50);
+		planet2.setTexture(marsTexture);
+		planet2.generateShape();
+		moon1.setRadius(.0675f);
+		moon1.setResolution(25);
+		moon1.setTexture(moonTexture);
+		moon1.generateShape();
+		moonsMoon1.setRadius(.05f);
+		moonsMoon1.setResolution(25);
+		moonsMoon1.setColor3f(1.f, 1.f, .2f);	//Yellow
+		moonsMoon1.generateShape();
+	}
 	//Init transparent shapes
-	transparentCube1.setPosition(-1.125f, -1.f, -7.5f);
-	transparentCube1.setColor4f(.6f, .2f, .2f, .875f);
-	transparentCube1.setScale(.125f, .125f, .125f);
-	transparentCube1.generateShape();
-	transparentCube2.setPosition(1.f, -.875f, -2.675f);
-	transparentCube2.setTexture(glass2);
-	transparentCube2.setScale(.25f, .25f, .25f);
-	transparentCube2.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
-	transparentCube2.generateShape();	//I did not set the transparency as the png file already contains this information
-	transparentCube3.setPosition(.375f, -.875f, -6.875f);
-	transparentCube3.setTexture(transparentBox);
-	transparentCube3.setScale(.25f, .25f, .25f);
-	transparentCube3.renderInsideShape(true);
-	transparentCube3.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
-	transparentCube3.generateShape();	//I did not set the transparency as the png file already contains this information
-	transparentCylinder1.setRadius(.125f);
-	transparentCylinder1.setStackResolution(2);
-	transparentCylinder1.setResolution(20);
-	transparentCylinder1.setColor4f(0.125f, .875f, .5f, .375f);
-	transparentCylinder1.setPosition(-1.f, -.625f, -4.f);
-	transparentCylinder1.generateShape();
-	transparentCylinderCap.setRadius(.125f);
-	transparentCylinderCap.setResolution(20);
-	transparentCylinderCap.setColor4f(.125f, .875f, .5f, .375f);
-	transparentCylinderCap.setPosition(-1.f, -.125f, -4.f);
-	transparentCylinderCap.renderInsideShape(true);
-	transparentCylinderCap.generateShape();
+	{
+		transparentCube1.setPosition(-1.125f, -1.f, -7.5f);
+		transparentCube1.setColor4f(.6f, .2f, .2f, .875f);
+		transparentCube1.setScale(.125f, .125f, .125f);
+		transparentCube1.generateShape();
+		transparentCube2.setPosition(1.f, -.875f, -2.675f);
+		transparentCube2.setTexture(glass2);
+		transparentCube2.setScale(.25f, .25f, .25f);
+		transparentCube2.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
+		transparentCube2.generateShape();	//I did not set the transparency as the png file already contains this information
+		transparentCube3.setPosition(.375f, -.875f, -6.875f);
+		transparentCube3.setTexture(transparentBox);
+		transparentCube3.setScale(.25f, .25f, .25f);
+		transparentCube3.renderInsideShape(true);
+		transparentCube3.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
+		transparentCube3.generateShape();	//I did not set the transparency as the png file already contains this information
+		transparentCylinder1.setRadius(.125f);
+		transparentCylinder1.setStackResolution(2);
+		transparentCylinder1.setResolution(20);
+		transparentCylinder1.setColor4f(0.125f, .875f, .5f, .375f);
+		transparentCylinder1.setPosition(-1.f, -.625f, -4.f);
+		transparentCylinder1.generateShape();
+		transparentCylinderCap.setRadius(.125f);
+		transparentCylinderCap.setResolution(20);
+		transparentCylinderCap.setColor4f(.125f, .875f, .5f, .375f);
+		transparentCylinderCap.setPosition(-1.f, -.125f, -4.f);
+		transparentCylinderCap.renderInsideShape(true);
+		transparentCylinderCap.generateShape();
+	}
 
 	//Push references of all transparent shapes into the according vector
-	transparentShapes.push_back(&sun);
-	transparentShapes.push_back(&transparentCube1);
-	transparentShapes.push_back(&transparentCube2);
-	transparentShapes.push_back(&transparentCube3);
-	transparentShapes.push_back(&transparentCylinder1);
-	transparentShapes.push_back(&transparentCylinderCap);
+	{
+		transparentShapes.push_back(&sun);
+		transparentShapes.push_back(&transparentCube1);
+		transparentShapes.push_back(&transparentCube2);
+		transparentShapes.push_back(&transparentCube3);
+		transparentShapes.push_back(&transparentCylinder1);
+		transparentShapes.push_back(&transparentCylinderCap);
+	}
 }
 
 Scene::~Scene()
@@ -445,6 +465,45 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		glPopMatrix();
 		spotLight->render();
 	}
+
+	//Render billboards
+	//Render in order since this will never change
+	glPushMatrix();
+	{
+		glTranslatef(0.f, 0.f, -15.f);
+		drawTreeBillboard();
+		glPushMatrix();
+		{
+			glTranslatef(-3.5f, 0.f, 2.f);
+			glRotatef(22.5f, 0, 1, 0);
+			drawTreeBillboard();
+		}
+		glPopMatrix();
+		glTranslatef(3.5f, 0.f, 2.f);
+		glRotatef(-22.5f, 0, 1, 0);
+		drawTreeBillboard();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(0.f, 0.f, -12.5f);
+		glPushMatrix();
+		{
+			glPushMatrix();
+			{
+				glTranslatef(-3.f, 0.f, .5f);
+				glRotatef(22.5f, 0, 1, 0);
+				drawGrassBillboard();
+			}
+			glPopMatrix();
+			glTranslatef(3.f, 0.f, .5f);
+			glRotatef(-22.5f, 0, 1, 0);
+			drawGrassBillboard();
+		}
+		glPopMatrix();
+		drawGrassBillboard();
+	}
+	glPopMatrix();
 
 	//Create the room's walls
 	makeSeriousWalls();
@@ -807,7 +866,7 @@ void Scene::makeSeriousWalls()
 
 		glBindTexture(GL_TEXTURE_2D, glass);
 		glEnable(GL_BLEND);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ .2f, .2f, .2f, .4f }.data());
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
 		glBegin(GL_QUADS);
 		{
@@ -969,6 +1028,56 @@ void Scene::makeSeriousWalls()
 		glEnd();
 	}
 	glPopMatrix();
+}
+
+void Scene::drawGrassBillboard()
+{
+	glEnable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, grassBillboardTexture);
+	applyFilter();
+	glBegin(GL_QUADS);
+	{
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(0, 0);
+		glVertex3f(-2.5f, 0.f, -0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(0, 1);
+		glVertex3f(-2.5f, -3.f, 0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(1, 1);
+		glVertex3f(2.5f, -3.f, 0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(1, 0);
+		glVertex3f(2.5f, 0.f, 0.f);
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glDisable(GL_BLEND);
+}
+
+void Scene::drawTreeBillboard()
+{
+	glEnable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, treeBillboardTexture);
+	applyFilter();
+	glBegin(GL_QUADS);
+	{
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(0, 0);
+		glVertex3f(-2.f, 4.f, -0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(0, 1);
+		glVertex3f(-2.f, -3.f, 0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(1, 1);
+		glVertex3f(2.f, -3.f, 0.f);
+		glNormal3f(0.f, 0.f, 1.f);
+		glTexCoord2f(1, 0);
+		glVertex3f(2.f, 4.f, 0.f);
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glDisable(GL_BLEND);
 }
 
 void Scene::drawMirrorQuad()

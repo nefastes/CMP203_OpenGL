@@ -69,8 +69,7 @@ protected:
 	bool fullbright = false;
 
 	//Filtering
-	enum class Filters { POINT, BILINEAR, MIPMAPING, TRILINEAR };
-	Filters currentFilter;
+	enum class Filters { POINT, BILINEAR, MIPMAPING, TRILINEAR } currentFilter;
 	void applyFilter();
 
 	//Light stuff
@@ -81,9 +80,9 @@ protected:
 	Light* spotLight = new Light(3);
 	float flickerTimer;	//how much time has passed since the last flicker
 	float timeToFlicker;//how much time needs to pass until the next flicker
-	
 
 	//Camera stuff
+	enum class CameraTypes { FREE, THIRDPERSON, TRACKING } currentCameraType = CameraTypes::FREE;
 	Camera camera;
 
 	//Skybox stuff
@@ -129,6 +128,10 @@ protected:
 	void renderSeriousRoom(bool renderingReflection = false);
 	void makeSeriousWalls();
 
+	//Billboards
+	void drawGrassBillboard();
+	void drawTreeBillboard();
+
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;
 
@@ -146,6 +149,8 @@ protected:
 	GLuint moonTexture;
 	GLuint marsTexture;
 	GLuint transparentBox;
+	GLuint grassBillboardTexture;
+	GLuint treeBillboardTexture;
 };
 
 #endif
