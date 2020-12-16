@@ -75,6 +75,7 @@ public:
 	void setTextureRepeating() { fillTexture = false; }
 	void setTextureRepeating(float textureScaleX, float textureScaleY, float textureScaleZ);		//Function too big to be declared in header file only
 
+	void setAmbientMaterial(std::array<GLfloat, 4> ambientMat) { Material_Ambient = ambientMat; };
 	void setDiffuseMaterial(std::array<GLfloat, 4> diffuseMat) { Material_Diffuse = diffuseMat; };
 	void setSpecularMaterial(std::array<GLfloat, 4> specularMat) { Material_Specular = specularMat; };
 	void setShininess(GLint s) { shininess = s; };

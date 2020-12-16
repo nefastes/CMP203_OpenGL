@@ -17,7 +17,7 @@ BasicShape::BasicShape()
 	textureScale = Vector3(1.f, 1.f, 1.f);;
 	//Track the material properties of our shape, init with default values
 	shininess = 1;
-	BasicShape::Material_Ambient = { red / 5.f, green / 5.f, blue / 5.f, 1.f };
+	BasicShape::Material_Ambient = { red, green, blue, 1.f };
 	BasicShape::Material_Diffuse = { red, green, blue, 1.f };	//Initial the material color with the color of the shape
 	Material_Specular.fill(0.f);	//No specular by default
 }

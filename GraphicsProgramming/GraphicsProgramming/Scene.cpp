@@ -140,12 +140,14 @@ Scene::Scene(Input *in)
 	transparentCube2.setPosition(1.f, -.875f, -2.675f);
 	transparentCube2.setTexture(glass2);
 	transparentCube2.setScale(.25f, .25f, .25f);
+	transparentCube2.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
 	transparentCube2.generateShape();	//I did not set the transparency as the png file already contains this information
 	transparentCube3.setPosition(.375f, -.875f, -6.875f);
 	transparentCube3.setTexture(transparentBox);
 	transparentCube3.setScale(.25f, .25f, .25f);
 	transparentCube3.renderInsideShape(true);
-	transparentCube3.generateShape();
+	transparentCube3.setAmbientMaterial(std::array<GLfloat, 4> { .2f, .2f, .2f, 1.f});	//I'd like this cube to be darker so we can better see the lighting taking place
+	transparentCube3.generateShape();	//I did not set the transparency as the png file already contains this information
 	transparentCylinder1.setRadius(.125f);
 	transparentCylinder1.setStackResolution(2);
 	transparentCylinder1.setResolution(20);
