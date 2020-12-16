@@ -13,6 +13,7 @@ private:
 	std::array<GLfloat, 4> Direction;
 	float cutoff, exponent;
 	float constant_attenuation, linear_attenutation, quadratic_attenuation;
+	bool state; //ON, OFF
 
 public:
 	Light(unsigned type);

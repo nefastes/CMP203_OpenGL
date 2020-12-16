@@ -16,6 +16,7 @@ Light::Light(unsigned type)
 		if (!glIsEnabled(i))
 		{
 			glEnable(i);
+			state = true;
 			currentLight = i;
 			return;
 		}
@@ -30,25 +31,28 @@ Light::~Light()
 
 void Light::render()
 {
-	switch (type)
+	if (state)
 	{
-	case lightType::AMBIENT:
-		glLightfv(currentLight, GL_AMBIENT, Ambient.data());
-	case lightType::DIFFUSE:
-	case lightType::POINT:
-		break;
-	case lightType::SPOT:
-		glLightf(currentLight, GL_SPOT_CUTOFF, cutoff);
-		glLightfv(currentLight, GL_SPOT_DIRECTION, Direction.data());
-		glLightf(currentLight, GL_SPOT_EXPONENT, exponent);
-		break;
+		switch (type)
+		{
+		case lightType::AMBIENT:
+			glLightfv(currentLight, GL_AMBIENT, Ambient.data());
+		case lightType::DIFFUSE:
+		case lightType::POINT:
+			break;
+		case lightType::SPOT:
+			glLightf(currentLight, GL_SPOT_CUTOFF, cutoff);
+			glLightfv(currentLight, GL_SPOT_DIRECTION, Direction.data());
+			glLightf(currentLight, GL_SPOT_EXPONENT, exponent);
+			break;
+		}
+		glLightfv(currentLight, GL_DIFFUSE, Diffuse.data());
+		glLightfv(currentLight, GL_POSITION, Position.data());
+		glLightf(currentLight, GL_CONSTANT_ATTENUATION, constant_attenuation);
+		glLightf(currentLight, GL_LINEAR_ATTENUATION, linear_attenutation);
+		glLightf(currentLight, GL_QUADRATIC_ATTENUATION, quadratic_attenuation);
+		glEnable(currentLight);
 	}
-	glLightfv(currentLight, GL_DIFFUSE, Diffuse.data());
-	glLightfv(currentLight, GL_POSITION, Position.data());
-	glLightf(currentLight, GL_CONSTANT_ATTENUATION, constant_attenuation);
-	glLightf(currentLight, GL_LINEAR_ATTENUATION, linear_attenutation);
-	glLightf(currentLight, GL_QUADRATIC_ATTENUATION, quadratic_attenuation);
-	glEnable(currentLight);
 }
 
 void Light::makeAmbient(GLfloat* ambient)
@@ -112,11 +116,13 @@ void Light::setAttenuations(float constant_attenuation, float linear_attenutatio
 void Light::enable()
 {
 	glEnable(currentLight);
+	state = true;
 }
 
 void Light::disable()
 {
 	glDisable(currentLight);
+	state = false;
 }
 
 bool Light::isEnabled()

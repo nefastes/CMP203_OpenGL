@@ -16,6 +16,8 @@
 #include "SOIL.h"
 #include <vector>
 #include <array>
+#include <stdlib.h>
+#include <time.h>
 #include "Camera.h"
 #include "Skybox.h"
 #include "Cylinder.h"
@@ -54,7 +56,7 @@ protected:
 	float fov, nearPlane, farPlane;
 
 	// For FPS counter and mouse coordinate output.
-	int frame = 0, time, timebase = 0;
+	int frame = 0, frametime, timebase = 0;
 	char fps[40];
 	char mouseText[40];
 	char positionText[255];
@@ -74,7 +76,11 @@ protected:
 	//Light stuff
 	Light* ambientLight = new Light(0);
 	Light* pointLight = new Light(2);
+	std::array<GLfloat, 4> pointLightPosition;
+	Sphere pointLightSphere;
 	Light* spotLight = new Light(3);
+	float flickerTimer;	//how much time has passed since the last flicker
+	float timeToFlicker;//how much time needs to pass until the next flicker
 	
 
 	//Camera stuff

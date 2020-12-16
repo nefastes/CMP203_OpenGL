@@ -4,6 +4,9 @@
 // You should add further variables to need initilised.
 Scene::Scene(Input *in)
 {
+	//Seed the rng
+	srand(time(NULL));
+
 	// Store pointer for input class
 	input = in;
 	initialiseOpenGL();
@@ -22,15 +25,22 @@ Scene::Scene(Input *in)
 		std::array<GLfloat, 4>{.75f, .75f, .75f, 1.f}.data(),
 		std::array<GLfloat, 4>{-1.f, 1.f, 1.f, 0.f}.data(),
 		.5f, .25f, .125f);*/
+	Scene::pointLightPosition = { 0.f, -2.f, -8.5f, 1.f };
 	pointLight->makeDiffuse(
-		std::array<GLfloat, 4>{0.f, 0.f, 1.f, 1.f}.data(),
-		std::array<GLfloat, 4>{0.f, 2.f, -5.f, 1.f}.data(),
-		.5f, .25f, .125f);
+		std::array<GLfloat, 4>{0.f, .5f, .5f, 1.f}.data(),
+		pointLightPosition.data(),
+		1.f, .75f, .5f);
 	spotLight->makeSpot(
 		std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
 		std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
 		std::array<GLfloat, 4>{0.f, -1.f, 0.f, 0.f}.data(),
 		50.f, 5.f, .5f, .125f, .0675f);
+	pointLightSphere.setRadius(.125f);
+	pointLightSphere.setResolution(10);
+	pointLightSphere.setColor3f(0.f, 0.f, 1.f);
+	pointLightSphere.generateShape();
+	timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
+	flickerTimer = 0.f;
 
 	//Init Camera
 	camera.setInput(in);
@@ -203,7 +213,6 @@ void Scene::handleInput(float dt)
 		else currentFilter = static_cast<Filters>((int)currentFilter + 1);
 		applyFilter();
 	}
-
 	// Handle user input
 	camera.handleInput(dt);
 }
@@ -219,6 +228,25 @@ void Scene::update(float dt)
 			//We want to return true if the first shape is further to the camera than the second shape
 			return s1->getPosition() - camera.getPosition() > s2->getPosition() - camera.getPosition();
 		});
+
+	//Update the position of the point light (rotate around the Y axis)
+	pointLightPosition[0] = 3.5f * cosf(rotation / 10.f);
+	pointLightPosition[2] = 3.5f * sinf(rotation / 10.f) - 5.f;
+	pointLight->setPosition(pointLightPosition.data());
+
+	//Flicker the spot light
+	flickerTimer += dt;
+	if (flickerTimer >= timeToFlicker && spotLight->isEnabled() && !fullbright)
+	{
+		flickerTimer = 0;
+		spotLight->disable();
+		timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
+	}
+	else if (flickerTimer >= .1f && !spotLight->isEnabled() && !fullbright)
+	{
+		flickerTimer = 0;
+		spotLight->enable();
+	}
 
 	// Calculate FPS for output
 	calculateFPS();
@@ -323,11 +351,11 @@ void Scene::resize(int w, int h)
 void Scene::calculateFPS()
 {
 	frame++;
-	time = glutGet(GLUT_ELAPSED_TIME);
+	frametime = glutGet(GLUT_ELAPSED_TIME);
 
-	if (time - timebase > 1000) {
-		sprintf_s(fps, "FPS: %4.2f", frame*1000.0 / (time - timebase));
-		timebase = time;
+	if (frametime - timebase > 1000) {
+		sprintf_s(fps, "FPS: %4.2f", frame*1000.0 / (frametime - timebase));
+		timebase = frametime;
 		frame = 0;
 	}
 }
@@ -403,6 +431,13 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	if (!fullbright)
 	{
 		ambientLight->render();
+		pointLight->render();
+		glPushMatrix();
+		{
+			glTranslatef(pointLight->getPosition()[0], pointLight->getPosition()[1], pointLight->getPosition()[2]);
+			pointLightSphere.render();
+		}
+		glPopMatrix();
 		spotLight->render();
 	}
 
@@ -520,6 +555,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	glDisable(GL_BLEND);
 }
 
+//TODO: Use vertex arrays
 void Scene::makeSeriousWalls()
 {
 	//Left wall
