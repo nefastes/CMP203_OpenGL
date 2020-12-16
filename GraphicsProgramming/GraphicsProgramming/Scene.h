@@ -75,7 +75,7 @@ protected:
 	Light* ambientLight = new Light(0);
 	Light* pointLight = new Light(2);
 	Light* spotLight = new Light(3);
-	float lightRotation = 0.f;
+	
 
 	//Camera stuff
 	Camera camera;
@@ -89,21 +89,31 @@ protected:
 	Model lamp;
 
 	//Geometry for serious room
+	//Mirror stuff
 	Cylinder mirrorLeftEdge;
 	Cylinder mirrorRightEdge;
 	BasicShape mirrorBottomEdge;
 	BasicShape mirrorTopEdge;
 	void drawMirrorQuad();
+	//Window stuff
 	BasicShape windowLeftEdge;
 	BasicShape windowRightEdge;
 	BasicShape windowTopEdge;
 	BasicShape windowBottomEdge;
+	//Solar system stuff
 	Sphere sun;
 	Sphere planet1;
 	Sphere planet2;
 	Sphere moon1;
 	Sphere moonsMoon1;
 	void drawSolarSystem();
+	float rotation;
+	//Transparent cubes & cylinders
+	BasicShape transparentCube1;
+	BasicShape transparentCube2;
+	BasicShape transparentCube3;
+	Cylinder transparentCylinder1;
+	Disc transparentCylinderCap;
 
 	//Functions that will render their according room
 	void renderSeriousRoom();
@@ -121,6 +131,11 @@ protected:
 	GLuint seriousDoor;
 	GLuint wood;
 	GLuint glass;
+	GLuint glass2;
+	GLuint earthTexture;
+	GLuint moonTexture;
+	GLuint marsTexture;
+	GLuint transparentBox;
 };
 
 #endif

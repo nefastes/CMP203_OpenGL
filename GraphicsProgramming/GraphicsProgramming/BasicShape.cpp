@@ -57,11 +57,7 @@ void BasicShape::render(short unsigned textureFilteringMode)
 	glNormalPointer(GL_FLOAT, 0, normals.data());
 	glTexCoordPointer(2, GL_FLOAT, 0, texCoordinates.data());
 	glPushMatrix();
-	{
-		if (scriptable)
-			glLoadMatrixf(transformationMatrix.data());
-		shapeSpecificDrawingMode();	//Call the shape's specific render, will differ for every sort of shape.
-	}
+	shapeSpecificDrawingMode();	//Call the shape's specific render, will differ for every sort of shape.
 	glPopMatrix();
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -85,8 +81,10 @@ void BasicShape::shapeSpecificDrawingMode()
 	if (renderInside)
 	{
 		glCullFace(GL_FRONT);
+		glNormalPointer(GL_FLOAT, 0, invertedNormals.data());
 		glDrawArrays(GL_QUADS, 0, 24);
 		glCullFace(GL_BACK);
+		glNormalPointer(GL_FLOAT, 0, normals.data());
 	}
 	glDrawArrays(GL_QUADS, 0, 24);
 }
@@ -243,6 +241,9 @@ void BasicShape::generateShape()
 		};
 		for (unsigned i = 0; i < 48; ++i) texCoordinates.push_back(texcoords[i]);
 	}
+
+	//Assign the inverted normals
+	for (unsigned i = 0; i < normals.size(); ++i) invertedNormals.push_back(normals[i] * -1.f);
 }
 
 void BasicShape::setColor3f(float r, float g, float b)

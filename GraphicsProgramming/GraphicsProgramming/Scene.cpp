@@ -51,6 +51,11 @@ Scene::Scene(Input *in)
 	seriousDoor = SOIL_load_OGL_texture("gfx/halflife/GENERIC_113C.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	wood = SOIL_load_OGL_texture("gfx/wood.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	glass = SOIL_load_OGL_texture("gfx/halflife/GLASS_BRIGHT.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	glass2 = SOIL_load_OGL_texture("gfx/transparent-glass.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	earthTexture = SOIL_load_OGL_texture("gfx/earth-diffuse.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	moonTexture = SOIL_load_OGL_texture("gfx/moon-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	marsTexture = SOIL_load_OGL_texture("gfx/mars-diffuse.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	transparentBox = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
 	//Init skybox
 	skybox.setTexture(sky);
@@ -105,39 +110,62 @@ Scene::Scene(Input *in)
 	windowBottomEdge.setTextureRepeating();
 	windowBottomEdge.setTexture(wood);
 	windowBottomEdge.generateShape();
-	//Init spheres for solar system (i'm not initialising a position, as it would then be difficult to rotate, translate and scale the shapes, so their center is at 0,0,0)
+	//Init spheres for solar system (i'm not initialising a position except for the sun, as it would then be difficult to rotate, translate and scale the shapes, so their center is at 0,0,0)
 	sun.setRadius(.5f);
 	sun.setResolution(50);
 	sun.setColor4f(1.f, .65f, 0.f, .875f);		//Orange
-	sun.makeScriptObject();
+	sun.setPosition(0.f, -.5f, -5.f);
 	sun.generateShape();
 	planet1.setRadius(.125f);
-	planet1.setResolution(25);
-	planet1.setColor4f(.2f, .73f, 1.f, .25f);	//Cyan
-	planet1.makeScriptObject();
+	planet1.setResolution(50);
+	planet1.setTexture(earthTexture);
 	planet1.generateShape();
 	planet2.setRadius(.25f);
-	planet2.setResolution(20);
-	planet2.setColor4f(.4f, 0.f, .6f, .75f);	//Purple
-	planet2.makeScriptObject();
+	planet2.setResolution(50);
+	planet2.setTexture(marsTexture);
 	planet2.generateShape();
 	moon1.setRadius(.0675f);
-	moon1.setResolution(10);
-	moon1.setColor4f(0.f, 1.f, 0.f, .625f);	//Green
-	moon1.makeScriptObject();
+	moon1.setResolution(25);
+	moon1.setTexture(moonTexture);
 	moon1.generateShape();
 	moonsMoon1.setRadius(.05f);
-	moonsMoon1.setResolution(10);
-	moonsMoon1.setColor4f(1.f, 1.f, .2f, .375f);	//Yellow
-	moonsMoon1.makeScriptObject();
+	moonsMoon1.setResolution(25);
+	moonsMoon1.setColor3f(1.f, 1.f, .2f);	//Yellow
 	moonsMoon1.generateShape();
+	//Init transparent shapes
+	transparentCube1.setPosition(-1.125f, -1.f, -7.5f);
+	transparentCube1.setColor4f(.6f, .2f, .2f, .875f);
+	transparentCube1.setScale(.125f, .125f, .125f);
+	transparentCube1.generateShape();
+	transparentCube2.setPosition(1.f, -.875f, -2.675f);
+	transparentCube2.setTexture(glass2);
+	transparentCube2.setScale(.25f, .25f, .25f);
+	transparentCube2.generateShape();	//I did not set the transparency as the png file already contains this information
+	transparentCube3.setPosition(.375f, -.875f, -6.875f);
+	transparentCube3.setTexture(transparentBox);
+	transparentCube3.setScale(.25f, .25f, .25f);
+	transparentCube3.renderInsideShape(true);
+	transparentCube3.generateShape();
+	transparentCylinder1.setRadius(.125f);
+	transparentCylinder1.setStackResolution(2);
+	transparentCylinder1.setResolution(20);
+	transparentCylinder1.setColor4f(0.125f, .875f, .5f, .375f);
+	transparentCylinder1.setPosition(-1.f, -.625f, -4.f);
+	transparentCylinder1.generateShape();
+	transparentCylinderCap.setRadius(.125f);
+	transparentCylinderCap.setResolution(20);
+	transparentCylinderCap.setColor4f(.125f, .875f, .5f, .375f);
+	transparentCylinderCap.setPosition(-1.f, -.125f, -4.f);
+	transparentCylinderCap.renderInsideShape(true);
+	transparentCylinderCap.generateShape();
 
 	//Push references of all transparent shapes into the according vector
 	transparentShapes.push_back(&sun);
-	transparentShapes.push_back(&planet1);
-	transparentShapes.push_back(&planet2);
-	transparentShapes.push_back(&moon1);
-	transparentShapes.push_back(&moonsMoon1);
+	transparentShapes.push_back(&transparentCube1);
+	transparentShapes.push_back(&transparentCube2);
+	transparentShapes.push_back(&transparentCube3);
+	transparentShapes.push_back(&transparentCylinder1);
+	transparentShapes.push_back(&transparentCylinderCap);
 }
 
 Scene::~Scene()
@@ -193,7 +221,9 @@ void Scene::update(float dt)
 	// Calculate FPS for output
 	calculateFPS();
 
-	lightRotation += 10.f * dt;
+	//Update the rotation angle by 10 degrees per second
+	rotation += 10.f * dt;
+	if (rotation >= 360.f) rotation -= 360.f;
 }
 
 void Scene::render() {
@@ -423,8 +453,15 @@ void Scene::renderSeriousRoom()
 	}
 	glPopMatrix();
 
-	//Render solar system
+	//Render solar system hierchical animations
 	drawSolarSystem();
+
+	//Render all transparent shapes once everything else is rendered
+	glEnable(GL_BLEND);
+	for (unsigned i = 0; i < transparentShapes.size(); ++i)
+		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
+		else transparentShapes[i]->render();
+	glDisable(GL_BLEND);
 }
 
 void Scene::makeSeriousWalls()
@@ -836,35 +873,39 @@ void Scene::drawSolarSystem()
 {
 	glPushMatrix();
 	{
-		glTranslatef(0.f, -.5f, -5.f);
+		glTranslatef(0.f, -.5f, -5.f);	//Sun position
 		glPushMatrix();
 		{
-			glRotatef(4 * lightRotation, 0, 1, 0);
-			sun.assignCurrentTransformationMatrix();
-		}
-		glPopMatrix();
-		glPushMatrix();
-		{
-			glRotatef(lightRotation, 0, 1, 0);
+			glRotatef(rotation, 0, 1, 0);
 			glTranslatef(-1.f, 0.f, 0.f);
-			planet2.assignCurrentTransformationMatrix();
-		}
-		glPopMatrix();
-		glPushMatrix();
-		{
-			glRotatef(lightRotation, 0, 1, 0);
-			glTranslatef(1.f, 0.f, 0.f);
-			planet1.assignCurrentTransformationMatrix();
 			glPushMatrix();
 			{
-				glRotatef(2 * lightRotation, 0, 0, 1);
+				glRotatef(4 * rotation, 0, 1, 0);
+				planet2.render((short unsigned)currentFilter);
+			}
+			glPopMatrix();
+		}
+		glPopMatrix();
+		glPushMatrix();
+		{
+			glRotatef(rotation, 0, 1, 0);
+			glTranslatef(1.f, 0.f, 0.f);
+			glPushMatrix();
+			{
+				glRotatef(-4.f * rotation, 0, 1, 0);
+				planet1.render((short unsigned)currentFilter);
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glRotatef(2 * rotation, 0, 0, 1);
 				glTranslatef(-0.25f, 0.f, 0.f);
-				moon1.assignCurrentTransformationMatrix();
+				moon1.render((short unsigned)currentFilter);
 				glPushMatrix();
 				{
-					glRotatef(4 * lightRotation, 1, 1, 1);
+					glRotatef(4 * rotation, 1, 1, 1);
 					glTranslatef(-.125f, 0.f, 0.f);
-					moonsMoon1.assignCurrentTransformationMatrix();
+					moonsMoon1.render();
 				}
 				glPopMatrix();
 			}
@@ -873,9 +914,4 @@ void Scene::drawSolarSystem()
 		glPopMatrix();
 	}
 	glPopMatrix();
-	glEnable(GL_BLEND);
-	for (unsigned i = 0; i < transparentShapes.size(); ++i)
-		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
-		else transparentShapes[i]->render();
-	glDisable(GL_BLEND);
 }

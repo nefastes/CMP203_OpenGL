@@ -15,11 +15,11 @@ void Sphere::shapeSpecificDrawingMode()
 	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
-		glPushMatrix();
 		glCullFace(GL_FRONT);
+		glNormalPointer(GL_FLOAT, 0, invertedNormals.data());
 		glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
+		glNormalPointer(GL_FLOAT, 0, normals.data());
 		glCullFace(GL_BACK);
-		glPopMatrix();
 	}
 	glDrawArrays(GL_QUADS, 0, 4 * resolution * resolution);
 }
@@ -71,11 +71,13 @@ void Sphere::generateShape()
 				normals.push_back(y);
 				normals.push_back(z);
 				//TexCoords need 2 coordinates
-				texCoordinates.push_back((float)longitude / resolution);
-				texCoordinates.push_back((float)latitude / resolution);
+				latitude == resolution ? texCoordinates.push_back(1.f) : texCoordinates.push_back((float)latitude / resolution);
+				longitude == resolution ? texCoordinates.push_back(1.f) : texCoordinates.push_back((float)longitude / resolution);
 			}
 			//Since it has been incremented, set the longitude back to its original value
 			--longitude;
 		}
 	}
+	//Assign the inverted normals
+	for (unsigned i = 0; i < normals.size(); ++i) invertedNormals.push_back(normals[i] * -1.f);
 }

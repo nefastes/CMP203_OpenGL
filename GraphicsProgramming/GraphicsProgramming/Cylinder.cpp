@@ -16,11 +16,11 @@ void Cylinder::shapeSpecificDrawingMode()
 	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
-		glPushMatrix();
 		glCullFace(GL_FRONT);
+		glNormalPointer(GL_FLOAT, 0, invertedNormals.data());
 		glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, indices.data());
 		glCullFace(GL_BACK);
-		glPopMatrix();
+		glNormalPointer(GL_FLOAT, 0, normals.data());
 	}
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, indices.data());
 }
@@ -79,6 +79,9 @@ void Cylinder::generateShape()
 			indices.push_back((i + 1) * (resolution + 1) + j);
 		}
 	}
+
+	//Assign the inverted normals
+	for (unsigned i = 0; i < normals.size(); ++i) invertedNormals.push_back(normals[i] * -1.f);
 }
 
 void Cylinder::setStackResolution(unsigned r)
