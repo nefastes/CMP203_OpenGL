@@ -95,6 +95,8 @@ protected:
 	BasicShape mirrorBottomEdge;
 	BasicShape mirrorTopEdge;
 	void drawMirrorQuad();
+	void setupStencil();
+	void drawReflections();
 	//Window stuff
 	BasicShape windowLeftEdge;
 	BasicShape windowRightEdge;
@@ -116,7 +118,7 @@ protected:
 	Disc transparentCylinderCap;
 
 	//Functions that will render their according room
-	void renderSeriousRoom();
+	void renderSeriousRoom(bool renderingReflection = false);
 	void makeSeriousWalls();
 
 	//Vector to hold any transparent shape

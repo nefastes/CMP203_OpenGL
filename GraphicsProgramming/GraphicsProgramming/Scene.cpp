@@ -229,7 +229,7 @@ void Scene::update(float dt)
 void Scene::render() {
 
 	// Clear Color and Depth Buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Reset transformations
 	glLoadIdentity();
@@ -248,7 +248,11 @@ void Scene::render() {
 	skybox.draw((short unsigned)currentFilter);
 	glEnable(GL_DEPTH_TEST);
 
-	//RENDER GEOMETRY
+	//Initialise and setup the stencil
+	setupStencil();
+	//Draw floor reflections inside the stencil quad or mirror surface
+	drawReflections();
+	//Draw the real world
 	renderSeriousRoom();
 
 	// End render geometry --------------------------------------
@@ -391,21 +395,23 @@ void Scene::applyFilter()
 	}
 }
 
-void Scene::renderSeriousRoom()
+void Scene::renderSeriousRoom(bool renderingReflection)
 {
 	//RENDER LIGHTS
-	ambientLight->render();
+	if(!renderingReflection) ambientLight->render();
 	spotLight->render();
 
 	//Create the room's walls
 	makeSeriousWalls();
 
 	//Render mirror
-	mirrorLeftEdge.render((short unsigned)currentFilter);
-	mirrorRightEdge.render((short unsigned)currentFilter);
-	mirrorTopEdge.render((short unsigned)currentFilter);
-	mirrorBottomEdge.render((short unsigned)currentFilter);
-	drawMirrorQuad();
+	if (!renderingReflection)	//Dont render twice, or it will overlap and appear glitchy
+	{
+		mirrorLeftEdge.render((short unsigned)currentFilter);
+		mirrorRightEdge.render((short unsigned)currentFilter);
+		mirrorTopEdge.render((short unsigned)currentFilter);
+		mirrorBottomEdge.render((short unsigned)currentFilter);
+	}
 
 	//Render window
 	windowLeftEdge.render((short unsigned)currentFilter);
@@ -866,7 +872,18 @@ void Scene::makeSeriousWalls()
 
 void Scene::drawMirrorQuad()
 {
-
+	glBegin(GL_QUADS);
+	{
+		glNormal3f(1.f, 0.f, 0.f);
+		glVertex3f(-5.f, 2.f, -2.5f);
+		glNormal3f(1.f, 0.f, 0.f);
+		glVertex3f(-5.f, -2.f, -2.5f);
+		glNormal3f(1.f, 0.f, 0.f);
+		glVertex3f(-5.f, -2.f, -7.5f);
+		glNormal3f(1.f, 0.f, 0.f);
+		glVertex3f(-5.f, 2.f, -7.5f);
+	}
+	glEnd();
 }
 
 void Scene::drawSolarSystem()
@@ -914,4 +931,67 @@ void Scene::drawSolarSystem()
 		glPopMatrix();
 	}
 	glPopMatrix();
+}
+
+void Scene::setupStencil()
+{
+	//Turn off writing to the frame buffer
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	//Turn on stencil test
+	glEnable(GL_STENCIL_TEST);
+	//Set the stencil function to always pass
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	//Set the stencil operation to replace values when the test passes (basically always, we don't have any depth values initalised yet and the stencil test is set to always)
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	//Disable depth test (we don't want to write values to it)
+	glDisable(GL_DEPTH_TEST);
+	//Draw our mirror quad to the stencil buffer
+	drawMirrorQuad();
+	//Enable depth testing back
+	glEnable(GL_DEPTH_TEST);
+	//Turn on rendering to the frame buffer
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	//The stencil buffer is not initialised. The reflections to be produced by it are declared inside drawReflections().
+}
+
+void Scene::drawReflections()
+{
+	//Uncomment to debug the reflection iteslf, so it shows up even if out of the stencil
+	glDisable(GL_STENCIL_TEST);
+	//Set stencil function to test if the value is 1 (if we can draw basically)
+	glStencilFunc(GL_EQUAL, 1, 1);
+	//Set the stencil operation to keep all values (we don't want to write to the stencil now, just use it)
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	//The models will be rendered inside out because of the negative scaling, therefore we need to cull the front face and render the backface
+	glCullFace(GL_FRONT);
+	//Draw the room
+	glPushMatrix();
+	{
+		glScalef(-1.f, 1.f, 1.f);
+		glTranslatef(10.f, 0.f, 0.f);
+		renderSeriousRoom(true);
+	}
+	glPopMatrix();
+	glCullFace(GL_BACK);
+	//Disable the stencil test (no longer needed, reflections have been rendered)
+	glDisable(GL_STENCIL_TEST);
+	//Enable alpha blending (to combine the calculated reflection with our stencil quad (mirror quad))
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//Setup material and texture for mirror quad
+	/*glBindTexture(GL_TEXTURE_2D, glass);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ .2f, .2f, .2f, .4f }.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());*/
+	glDisable(GL_LIGHTING);
+	//Set the colour of the stencil quad (mirror)(note that we put an alpha value, since it's sort of transparent)
+	glColor4f(0.8f, 0.8f, 1.f, 0.6f);
+	//Draw the stencil quad (mirror)
+	drawMirrorQuad();
+	//Reset material and texture
+	/*glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());*/
+	if (!fullbright)  glEnable(GL_LIGHTING);
+	//Disable alpha blending (we rendered the mirror)
+	glDisable(GL_BLEND);
+	//Reflections have now been drawn correctly, next step is to draw the model inside drawModel()
 }
