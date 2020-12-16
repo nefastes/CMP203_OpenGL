@@ -469,11 +469,49 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	glEnable(GL_BLEND);
 	glPushMatrix();
 	{
-		if (renderingReflection) glScalef(-1.f, 1.f, 1.f);
-		for (unsigned i = 0; i < transparentShapes.size(); ++i)
+		//When rendering the reflection, apply the sorted render order would make no sense and all our transparent shapes would appear mad glitchy
+		//So instead, since the mirror is on one fixed place, it is safe to say that the render order will never change, as we wont be able
+		//to go around the table in the virtual world. Therefore, it is best to render them manually as follows.
+		if (renderingReflection)
 		{
-			if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
-			else transparentShapes[i]->render();
+			glScalef(-1.f, 1.f, 1.f);	//Reapply the original scale, otherwise objects are rendered insideout and glitchy
+			glCullFace(GL_BACK);		//Because we re-applied the original scale, need to make sure the backface is culled and not the front face
+			glPushMatrix();
+			{
+				glTranslatef(-2.f * transparentCube2.getPosition().x, 0.f, 0.f);
+				transparentCube2.render((short unsigned)currentFilter);
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glTranslatef(-2.f * transparentCube3.getPosition().x, 0.f, 0.f);
+				transparentCube3.render((short unsigned)currentFilter);
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glTranslatef(-2.f * transparentCylinder1.getPosition().x, 0.f, 0.f);
+				transparentCylinder1.render();
+				transparentCylinderCap.render();
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glTranslatef(-2.f * transparentCube1.getPosition().x, 0.f, 0.f);
+				transparentCube1.render();
+			}
+			glPopMatrix();
+			sun.render();
+			glCullFace(GL_FRONT);	//Re-enable front face culling in case any other geometry comes after
+		}
+		//In the real world, draw objects in a particular sorted by their position relative to the camera 
+		else
+		{
+			for (unsigned i = 0; i < transparentShapes.size(); ++i)
+			{
+				if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
+				else transparentShapes[i]->render();
+			}
 		}
 	}
 	glPopMatrix();
@@ -967,7 +1005,7 @@ void Scene::setupStencil()
 void Scene::drawReflections()
 {
 	//Uncomment to debug the reflection iteslf, so it shows up even if out of the stencil
-	glDisable(GL_STENCIL_TEST);
+	//glDisable(GL_STENCIL_TEST);
 	//Set stencil function to test if the value is 1 (if we can draw basically)
 	glStencilFunc(GL_EQUAL, 1, 1);
 	//Set the stencil operation to keep all values (we don't want to write to the stencil now, just use it)
