@@ -19,6 +19,11 @@ Scene::Scene(Input *in)
 	currentFilter = Filters::TRILINEAR;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
+	//Init rotations
+	rotation = 0.f;
+	rotationMultiplier = 1.f;
+	rotationSpeed = 10.f;
+
 	//Init lights
 	{
 		ambientLight->makeAmbient(std::array<GLfloat, 4>{.1f, .1f, .1f, 1.f}.data());
@@ -226,9 +231,11 @@ void Scene::handleInput(float dt)
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glPolygonMode(GL_BACK, GL_FILL);
 	}
+
 	//Toggle fullbright mode
 	if (!fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = true;
 	else if (fullbright && input->isKeyDownOnce(GLUT_KEY_F2)) fullbright = false;
+
 	//Change texture filtering mode
 	if (input->isKeyDownOnce(GLUT_KEY_F3))
 	{
@@ -236,12 +243,22 @@ void Scene::handleInput(float dt)
 		else currentFilter = static_cast<Filters>((int)currentFilter + 1);
 		applyFilter();
 	}
-	// Handle user input
+
+	//Other user interactions
+	if (input->isKeyDown('t') && rotationMultiplier > .75f) rotationMultiplier -= .1f * dt;
+	if (input->isKeyDown('y') && rotationMultiplier < 1.5f) rotationMultiplier += .1f * dt;
+	if (input->isKeyDown('g') && rotationSpeed > 10.f) rotationSpeed -= 50.f * dt;
+	if (input->isKeyDown('h') && rotationSpeed < 200.f) rotationSpeed += 50.f * dt;
+
+	// Handle camera input
 	camera.handleInput(dt);
 }
 
 void Scene::update(float dt)
 {
+	//Update the rotation angle by 10 degrees per second
+	rotation += rotationSpeed * dt;
+
 	// update scene related variables.
 	skybox.setPos(camera.getPosition());
 
@@ -253,8 +270,9 @@ void Scene::update(float dt)
 		});
 
 	//Update the position of the point light (rotate around the Y axis)
-	pointLightPosition[0] = 3.5f * cosf(rotation / 10.f);
-	pointLightPosition[2] = 3.5f * sinf(rotation / 10.f) - 5.f;
+	//In the form: radius * cosf(angle in radians) + translation.x;
+	pointLightPosition[0] = 3.5f * rotationMultiplier * cosf(rotation * PI / 180.f);
+	pointLightPosition[2] = 3.5f * rotationMultiplier * sinf(rotation * PI / 180.f) - 5.f;
 	pointLight->setPosition(pointLightPosition.data());
 
 	//Flicker the spot light
@@ -275,10 +293,6 @@ void Scene::update(float dt)
 
 	// Calculate FPS for output
 	calculateFPS();
-
-	//Update the rotation angle by 10 degrees per second
-	rotation += 10.f * dt;
-	if (rotation >= 360.f) rotation -= 360.f;
 }
 
 void Scene::render() {
@@ -392,6 +406,8 @@ void Scene::renderTextOutput()
 	sprintf_s(mouseText, "Mouse: %i, %i", input->getMouseX(), input->getMouseY());
 	sprintf_s(positionText, "Position: %g, %g, %g", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	sprintf_s(viewText, "View: %g, %g, %g", camera.getYaw(), camera.getPitch(), camera.getRoll());
+	sprintf_s(rotationMultiplierText, "Rotation radius multiplier: %g", rotationMultiplier);
+	sprintf_s(rotationSpeedText, "Rotation speed: %g degrees/s", rotationSpeed);
 	switch (currentFilter)
 	{
 	case Filters::POINT:		sprintf_s(filterMode, "Filter: POINT SAMPLE");	break;
@@ -405,6 +421,8 @@ void Scene::renderTextOutput()
 	displayText(-1.f, 0.84f, 1.f, 0.f, 0.f, positionText);
 	displayText(-1.f, 0.78f, 1.f, 0.f, 0.f, viewText);
 	displayText(-1.f, 0.72f, 1.f, 0.f, 0.f, filterMode);
+	displayText(-1.f, 0.66f, 1.f, 0.f, 0.f, rotationMultiplierText);
+	displayText(-1.f, 0.60f, 1.f, 0.f, 0.f, rotationSpeedText);
 }
 
 // Renders text to screen. Must be called last in render function (before swap buffers)
@@ -1104,7 +1122,7 @@ void Scene::drawSolarSystem()
 		glPushMatrix();
 		{
 			glRotatef(rotation, 0, 1, 0);
-			glTranslatef(-1.f, 0.f, 0.f);
+			glTranslatef(-1.f * rotationMultiplier, 0.f, 0.f);
 			glPushMatrix();
 			{
 				glRotatef(4 * rotation, 0, 1, 0);
@@ -1116,7 +1134,7 @@ void Scene::drawSolarSystem()
 		glPushMatrix();
 		{
 			glRotatef(rotation, 0, 1, 0);
-			glTranslatef(1.f, 0.f, 0.f);
+			glTranslatef(1.f * rotationMultiplier, 0.f, 0.f);
 			glPushMatrix();
 			{
 				glRotatef(-4.f * rotation, 0, 1, 0);
@@ -1126,12 +1144,12 @@ void Scene::drawSolarSystem()
 			glPushMatrix();
 			{
 				glRotatef(2 * rotation, 0, 0, 1);
-				glTranslatef(-0.25f, 0.f, 0.f);
+				glTranslatef(-0.25f * rotationMultiplier, 0.f, 0.f);
 				moon1.render((short unsigned)currentFilter);
 				glPushMatrix();
 				{
 					glRotatef(4 * rotation, 1, 1, 1);
-					glTranslatef(-.125f, 0.f, 0.f);
+					glTranslatef(-.125f * rotationMultiplier, 0.f, 0.f);
 					moonsMoon1.render();
 				}
 				glPopMatrix();

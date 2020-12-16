@@ -62,6 +62,8 @@ protected:
 	char positionText[255];
 	char viewText[255];
 	char filterMode[40];
+	char rotationMultiplierText[40];
+	char rotationSpeedText[40];
 
 	//Wireframe mode toggle
 	bool wireframeMode = false;
@@ -117,6 +119,8 @@ protected:
 	Sphere moonsMoon1;
 	void drawSolarSystem();
 	float rotation;
+	float rotationMultiplier;	//For user interaction
+	float rotationSpeed;		//For user interaction
 	//Transparent cubes & cylinders
 	BasicShape transparentCube1;
 	BasicShape transparentCube2;
