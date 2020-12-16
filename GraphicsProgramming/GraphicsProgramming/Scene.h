@@ -92,7 +92,8 @@ protected:
 	//Models
 	Model chair;
 	Model table;
-	Model lamp;
+	Model lamp_struct;
+	Model lamp_neons;
 	Model trump;
 
 	//Geometry for serious room

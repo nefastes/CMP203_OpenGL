@@ -24,7 +24,8 @@ class Model
 public:
 
 	bool load(char* modelFilename, char* textureFilename);
-	void render();
+	void render(short unsigned textureFilter);
+	void setAsLight(bool l) { lightSource = l; }
 
 private:
 
@@ -41,6 +42,8 @@ private:
 	unsigned numberTrianglesToRender = 0;
 	unsigned numberQuadsToRender = 0;
 
+	//Bool to track whether the model is intented to appear as a light source
+	bool lightSource = false;
 };
 
 #endif

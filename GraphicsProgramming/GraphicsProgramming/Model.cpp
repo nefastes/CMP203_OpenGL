@@ -24,15 +24,30 @@ bool Model::load(char* modelFilename, char* textureFilename)
 	return true;
 }
 
-void Model::render()
+void Model::render(short unsigned textureFilter)
 {
 	//Render the model with previously sorted vectors during the unroll_data section
 	//Also apply and set up how the model will be textured prior to rendering
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {4.f, 4.f, 4.f, 1.f}.data());
+	switch (textureFilter)
+	{
+	case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+	case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+	case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+	case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+	default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+	}
+	if (lightSource)
+	{
+		glMaterialfv(GL_FRONT, GL_EMISSION, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	}
+	else
+	{
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {4.f, 4.f, 4.f, 1.f}.data());
+	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -50,8 +65,15 @@ void Model::render()
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	if (lightSource)
+	{
+		glMaterialfv(GL_FRONT, GL_EMISSION, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
+	}
+	else
+	{
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	}
 }
 
 

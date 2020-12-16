@@ -73,7 +73,9 @@ Scene::Scene(Input *in)
 	//Init models
 	chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
 	table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
-	lamp.load("models/HangingLight_triangles.obj", "gfx/OldFlorecentLight.jpg");
+	lamp_struct.load("models/HangingLight_triangles_struct.obj", "gfx/OldFlorecentLight.jpg");
+	lamp_neons.load("models/HangingLight_triangles_neons.obj", "gfx/OldFlorecentLight.jpg");
+	lamp_neons.setAsLight(true);
 	trump.load("models/trump_centerfixed.obj", "gfx/trump.png");
 
 	//Init Shapes
@@ -241,12 +243,14 @@ void Scene::update(float dt)
 	{
 		flickerTimer = 0;
 		spotLight->disable();
+		lamp_neons.setAsLight(false);
 		timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
 	}
 	else if (flickerTimer >= .1f && !spotLight->isEnabled() && !fullbright)
 	{
 		flickerTimer = 0;
 		spotLight->enable();
+		lamp_neons.setAsLight(true);
 	}
 
 	// Calculate FPS for output
@@ -469,7 +473,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 			glRotatef(-90, 1, 0, 0);
 			glRotatef(-45, 0, 0, 1);
 			glScalef(.075f, .075f, .075f);
-			chair.render();
+			chair.render((short unsigned)currentFilter);
 		}
 		glPopMatrix();
 		glPushMatrix();
@@ -478,7 +482,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 			glRotatef(-90, 1, 0, 0);
 			glRotatef(-90, 0, 0, 1);
 			glScalef(.075f, .075f, .075f);
-			chair.render();
+			chair.render((short unsigned)currentFilter);
 		}
 		glPopMatrix();
 	}
@@ -488,7 +492,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		glTranslatef(0.f, -3.f, -5.f);
 		glRotatef(-90, 1, 0, 0);
 		glScalef(.025f, .025f, .025f);
-		table.render();
+		table.render((short unsigned)currentFilter);
 	}
 	glPopMatrix();
 	glPushMatrix();
@@ -496,22 +500,22 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		glTranslatef(0.f, 2.95f, -5.f);
 		glRotatef(-90, 0, 1, 0);
 		glScalef(20.f, 20.f, 20.f);
-		lamp.render();
+		lamp_struct.render((short unsigned)currentFilter);
+		lamp_neons.render((short unsigned)currentFilter);
+	}
+	glPopMatrix();
+	//Render trump based on the camera position
+	glPushMatrix();
+	{
+		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		glRotatef(180 - camera.getYaw(), 0, 1, 0);
+		glScalef(2.f, 2.f, 2.f);
+		trump.render((short unsigned)currentFilter);
 	}
 	glPopMatrix();
 
 	//Render solar system hierchical animations
 	drawSolarSystem();
-
-	//Render trump based on the camera position
-	glPushMatrix();
-	{
-		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-		glRotatef(180-camera.getYaw(), 0, 1, 0);
-		glScalef(2.f, 2.f, 2.f);
-		trump.render();
-	}
-	glPopMatrix();
 
 	//Render all transparent shapes once everything else is rendered
 	glEnable(GL_BLEND);
