@@ -398,8 +398,11 @@ void Scene::applyFilter()
 void Scene::renderSeriousRoom(bool renderingReflection)
 {
 	//RENDER LIGHTS
-	if(!renderingReflection) ambientLight->render();
-	spotLight->render();
+	if (!fullbright)
+	{
+		ambientLight->render();
+		spotLight->render();
+	}
 
 	//Create the room's walls
 	makeSeriousWalls();
@@ -464,9 +467,16 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 
 	//Render all transparent shapes once everything else is rendered
 	glEnable(GL_BLEND);
-	for (unsigned i = 0; i < transparentShapes.size(); ++i)
-		if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
-		else transparentShapes[i]->render();
+	glPushMatrix();
+	{
+		if (renderingReflection) glScalef(-1.f, 1.f, 1.f);
+		for (unsigned i = 0; i < transparentShapes.size(); ++i)
+		{
+			if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
+			else transparentShapes[i]->render();
+		}
+	}
+	glPopMatrix();
 	glDisable(GL_BLEND);
 }
 
@@ -984,7 +994,7 @@ void Scene::drawReflections()
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());*/
 	glDisable(GL_LIGHTING);
 	//Set the colour of the stencil quad (mirror)(note that we put an alpha value, since it's sort of transparent)
-	glColor4f(0.8f, 0.8f, 1.f, 0.6f);
+	glColor4f(0.8f, 0.8f, 1.f, 0.25f);
 	//Draw the stencil quad (mirror)
 	drawMirrorQuad();
 	//Reset material and texture

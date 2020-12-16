@@ -58,6 +58,7 @@ void Skybox::draw(short unsigned textureFilteringMode)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glPopMatrix();
 }

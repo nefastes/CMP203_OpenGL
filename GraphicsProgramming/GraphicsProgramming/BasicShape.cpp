@@ -67,7 +67,7 @@ void BasicShape::render(short unsigned textureFilteringMode)
 	//Reset color
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 	//Reset materials
-	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
 	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
 	glMateriali(GL_FRONT, GL_SHININESS, 1);
