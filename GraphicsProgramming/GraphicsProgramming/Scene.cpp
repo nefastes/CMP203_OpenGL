@@ -86,7 +86,7 @@ Scene::Scene(Input *in)
 
 	//Init models
 	{
-		chair.load("models/13494_Folding_Chairs_v1_L3.obj", "gfx/13494_Folding_Chairs_diff.jpg");
+		chair.load("models/13494_Folding_Chairs_v1_L3_lowpoly.obj", "gfx/13494_Folding_Chairs_diff.jpg");
 		table.load("models/10233_Kitchen_Table_v2_max2011_it2.obj", "gfx/10233_Kitchen_Table_v1_Diffuse.jpg");
 		lamp_struct.load("models/HangingLight_triangles_struct.obj", "gfx/OldFlorecentLight.jpg");
 		lamp_neons.load("models/HangingLight_triangles_neons.obj", "gfx/OldFlorecentLight.jpg");
@@ -555,6 +555,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	windowBottomEdge.render((short unsigned)currentFilter);
 
 	//Render models
+	glEnable(GL_NORMALIZE);	//Normalise the models, so that the lighting happens properly
 	glPushMatrix();
 	{
 		glPushMatrix();
@@ -582,9 +583,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		glTranslatef(0.f, -3.f, -5.f);
 		glRotatef(-90, 1, 0, 0);
 		glScalef(.025f, .025f, .025f);
-		glEnable(GL_NORMALIZE);
 		table.render((short unsigned)currentFilter);
-		glDisable(GL_NORMALIZE);
 	}
 	glPopMatrix();
 	glPushMatrix();
@@ -605,6 +604,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		trump.render((short unsigned)currentFilter);
 	}
 	glPopMatrix();
+	glDisable(GL_NORMALIZE);
 
 	//Render solar system hierchical animations
 	drawSolarSystem();
@@ -1137,9 +1137,9 @@ void Scene::drawSolarSystem(bool renderAsShadow)
 	glPushMatrix();
 	{
 		glTranslatef(0.f, -.5f, -5.f);	//Sun position
+		glRotatef(rotation, 0, 1, 0);
 		glPushMatrix();
 		{
-			glRotatef(rotation, 0, 1, 0);
 			glTranslatef(-1.f * rotationMultiplier, 0.f, 0.f);
 			glPushMatrix();
 			{
@@ -1153,14 +1153,15 @@ void Scene::drawSolarSystem(bool renderAsShadow)
 				glTranslatef(-.5f * rotationMultiplier, 0.f, 0.f);
 				glRotatef(-2.f * rotation, 1, 1, 0);
 				glScalef(.1f, .1f, .1f);
+				glEnable(GL_NORMALIZE);
 				trump.render((short unsigned)currentFilter, renderAsShadow);
+				glDisable(GL_NORMALIZE);
 			}
 			glPopMatrix();
 		}
 		glPopMatrix();
 		glPushMatrix();
 		{
-			glRotatef(rotation, 0, 1, 0);
 			glTranslatef(1.f * rotationMultiplier, 0.f, 0.f);
 			glPushMatrix();
 			{
@@ -1182,6 +1183,38 @@ void Scene::drawSolarSystem(bool renderAsShadow)
 				glPopMatrix();
 			}
 			glPopMatrix();
+		}
+		glPopMatrix();
+		glPushMatrix();
+		{
+			glTranslatef(0.f, 0.f, -1.f * rotationMultiplier);
+			glEnable(GL_NORMALIZE);	//Normalise models for proper lighting
+			glPushMatrix();
+			{
+				glRotatef(-4 * rotation, 0, 1, 1);
+				glScalef(0.0025f, 0.0025f, 0.0025f);
+				table.render((short unsigned)currentFilter, renderAsShadow);
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glRotatef(rotation, 0, 1, 0);
+				glTranslatef(-.5f * rotationMultiplier, 0.f, 0.f);
+				glRotatef(2.f * rotation, 1, 1, 1);
+				glScalef(0.0075f, 0.0075f, 0.0075f);
+				chair.render((short unsigned)currentFilter, renderAsShadow);
+			}
+			glPopMatrix();
+			glPushMatrix();
+			{
+				glRotatef(rotation, 0, 1, 0);
+				glTranslatef(.5f * rotationMultiplier, 0.f, 0.f);
+				glRotatef(2.f * rotation, 0, 1, 1);
+				glScalef(0.0075f, 0.0075f, 0.0075f);
+				chair.render((short unsigned)currentFilter, renderAsShadow);
+			}
+			glPopMatrix();
+			glDisable(GL_NORMALIZE);
 		}
 		glPopMatrix();
 	}
