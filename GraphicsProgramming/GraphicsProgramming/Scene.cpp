@@ -54,6 +54,7 @@ Scene::Scene(Input *in)
 		camera.setInput(in);
 		camera.setSpeed(10);
 		camera.setSensitivity(10);
+		currentCameraType = camera.getTypePointer();
 	}
 
 	// Initialise textures
@@ -244,14 +245,21 @@ void Scene::handleInput(float dt)
 		else currentFilter = static_cast<Filters>((int)currentFilter + 1);
 		applyFilter();
 	}
+	
+	//Change camera mode
+	if (input->isKeyDownOnce(GLUT_KEY_F4))
+	{
+		if (*currentCameraType == CameraTypes::TRACKING) *currentCameraType = CameraTypes::FREE;
+		else *currentCameraType = static_cast<CameraTypes>((int)*currentCameraType + 1);
+	}
 
 	//Toggle steve mode
-	if (!stevemode && input->isKeyDownOnce(GLUT_KEY_F4))
+	if (!stevemode && input->isKeyDownOnce(GLUT_KEY_F5))
 	{
 		stevemode = true;
 		updateTextures(stevemode);
 	}
-	else if (stevemode && input->isKeyDownOnce(GLUT_KEY_F4))
+	else if (stevemode && input->isKeyDownOnce(GLUT_KEY_F5))
 	{
 		stevemode = false;
 		updateTextures(stevemode);
@@ -429,13 +437,21 @@ void Scene::renderTextOutput()
 	case Filters::TRILINEAR:	sprintf_s(filterMode, "Filter: TRILINEAR");		break;
 	default:					sprintf_s(filterMode, "Filter: Error");			break;
 	}
+	switch (*currentCameraType)
+	{
+	case CameraTypes::FREE:			sprintf_s(cameraMode, "Camera: First Person");	break;
+	case CameraTypes::THIRDPERSON:	sprintf_s(cameraMode, "Camera: Third Person");	break;
+	case CameraTypes::TRACKING:		sprintf_s(cameraMode, "Camera: Tracking");		break;
+	default:						sprintf_s(cameraMode, "Camera: Error");			break;
+	}
 	displayText(-1.f, 0.96f, 1.f, 0.f, 0.f, mouseText);
 	displayText(-1.f, 0.90f, 1.f, 0.f, 0.f, fps);
 	displayText(-1.f, 0.84f, 1.f, 0.f, 0.f, positionText);
 	displayText(-1.f, 0.78f, 1.f, 0.f, 0.f, viewText);
 	displayText(-1.f, 0.72f, 1.f, 0.f, 0.f, filterMode);
-	displayText(-1.f, 0.66f, 1.f, 0.f, 0.f, rotationMultiplierText);
-	displayText(-1.f, 0.60f, 1.f, 0.f, 0.f, rotationSpeedText);
+	displayText(-1.f, 0.66f, 1.f, 0.f, 0.f, cameraMode);
+	displayText(-1.f, 0.60f, 1.f, 0.f, 0.f, rotationMultiplierText);
+	displayText(-1.f, 0.54f, 1.f, 0.f, 0.f, rotationSpeedText);
 }
 
 // Renders text to screen. Must be called last in render function (before swap buffers)
@@ -597,6 +613,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	glPopMatrix();
 	//Render trump based on the camera position
 	glPushMatrix();
+	if(*currentCameraType != CameraTypes::FREE || renderingReflection)	//That way we only see the model in the mirror while in first person, so it is not annoying our view
 	{
 		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		glRotatef(180 - camera.getYaw(), 0, 1, 0);
@@ -608,6 +625,9 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 
 	//Render solar system hierchical animations
 	drawSolarSystem();
+
+	//Draw shadows
+	if (spotLight->isEnabled() && !fullbright) renderShadows();
 
 	//Render all transparent shapes once everything else is rendered
 	if(!fullbright) glEnable(GL_BLEND);
@@ -652,17 +672,12 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		else
 		{
 			for (unsigned i = 0; i < transparentShapes.size(); ++i)
-			{
 				if (transparentShapes[i]->getTexture() != nullptr) transparentShapes[i]->render((short unsigned)currentFilter);
 				else transparentShapes[i]->render();
-			}
 		}
 	}
 	glPopMatrix();
 	glDisable(GL_BLEND);
-
-	//Draw shadows
-	if (spotLight->isEnabled() && !fullbright) renderShadows();
 }
 
 //TODO: Use vertex arrays

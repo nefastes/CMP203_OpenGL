@@ -3,6 +3,10 @@
 #include "Input.h"
 #include "glut.h"
 #define PI 3.1415
+
+//Camera type enum, to keep track of our current cameratype
+enum class CameraTypes { FREE, THIRDPERSON, TRACKING };
+
 class Camera
 {
 public:
@@ -29,6 +33,7 @@ public:
 	Vector3 getUp();
 
 	void setInput(Input* in) { input = in; }
+	CameraTypes* getTypePointer() { return &currentCameraType; }
 
 	//Set the center to a point x,y and make sure the mouse is also placed at said center
 	//It's important to also set it to the input class since glutWarpPointer does not update it itself, would end up having some sort of random displacement of mouse
@@ -57,5 +62,8 @@ private:
 		int centerX = 640, centerY = 360; //Default values from main()
 	};
 	centerWindow center;
+
+	//Camera type tracker
+	CameraTypes currentCameraType = CameraTypes::FREE;
 };
 

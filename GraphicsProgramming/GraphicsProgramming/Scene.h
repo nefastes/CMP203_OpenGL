@@ -63,6 +63,7 @@ protected:
 	char positionText[255];
 	char viewText[255];
 	char filterMode[40];
+	char cameraMode[40];
 	char rotationMultiplierText[40];
 	char rotationSpeedText[40];
 
@@ -88,7 +89,7 @@ protected:
 	float timeToFlicker;//how much time needs to pass until the next flicker
 
 	//Camera stuff
-	enum class CameraTypes { FREE, THIRDPERSON, TRACKING } currentCameraType = CameraTypes::FREE;
+	CameraTypes* currentCameraType;
 	Camera camera;
 
 	//Skybox stuff
