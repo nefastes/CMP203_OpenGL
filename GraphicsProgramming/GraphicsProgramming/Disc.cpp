@@ -14,7 +14,6 @@ Disc::~Disc()
 
 void Disc::shapeSpecificDrawingMode()
 {
-	if (transparent) glColor4f(red, green, blue, alpha);
 	if (renderInside)
 	{
 		glCullFace(GL_FRONT);

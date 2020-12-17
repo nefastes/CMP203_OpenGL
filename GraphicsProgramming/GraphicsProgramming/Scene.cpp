@@ -638,7 +638,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	drawSolarSystem();
 
 	//Draw shadows
-	if (spotLight->isEnabled() && !fullbright) renderShadows();
+	if (spotLight->isEnabled() && !fullbright && !renderingReflection) renderShadows();
 
 	//Render all transparent shapes once everything else is rendered
 	if(!fullbright) glEnable(GL_BLEND);
@@ -1406,7 +1406,7 @@ void Scene::renderShadows()
 		glMultMatrixf((GLfloat*)shadowMatrix);
 		//Render the shadows of every desired objects from here
 		//model.render()...
-		sun.render(false,true);
+		sun.render(false, true);
 		drawSolarSystem(true);
 	}
 	glPopMatrix();

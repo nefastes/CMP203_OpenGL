@@ -156,10 +156,10 @@ protected:
 
 	//Shadow
 	std::array<GLfloat, 12> tableShadowQuad{
-		-1.26875f, -1.1125f, -7.5f,
-		-1.26875f, -1.1125f, -2.5f,
-		1.26875f, -1.1125f, -2.5f,
-		1.26875f, -1.1125f, -7.5f
+		-1.26875f, -1.1125f, -7.625f,
+		-1.26875f, -1.1125f, -2.375f,
+		1.26875f, -1.1125f, -2.375f,
+		1.26875f, -1.1125f, -7.625f
 	};
 	float shadowMatrix[16];
 	void drawShadowPlane();

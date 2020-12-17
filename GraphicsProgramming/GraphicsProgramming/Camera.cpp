@@ -112,6 +112,8 @@ void Camera::setSensitivity(float s)
 void Camera::setYaw(float y)
 {
 	yaw = y;
+	if (yaw < 0) yaw += 360;
+	if (yaw > 360) yaw -= 360;
 }
 
 void Camera::setPosition(Vector3 pos)
