@@ -1313,8 +1313,8 @@ void Scene::renderShadows()
 {
 	Shadow::generateShadowMatrix(shadowMatrix, spotLight->getPosition(), tableShadowQuad.data());
 
-	//glClearStencil(0);
-	//glClear(GL_STENCIL_BUFFER_BIT);
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
