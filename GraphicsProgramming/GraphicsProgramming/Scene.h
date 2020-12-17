@@ -121,7 +121,7 @@ protected:
 	Sphere planet2;
 	Sphere moon1;
 	Sphere moonsMoon1;
-	void drawSolarSystem();
+	void drawSolarSystem(bool renderAsShadow = false);
 	float rotation;
 	float rotationMultiplier;	//For user interaction
 	float rotationSpeed;		//For user interaction

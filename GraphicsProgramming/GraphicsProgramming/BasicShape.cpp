@@ -27,28 +27,34 @@ BasicShape::~BasicShape()
 
 }
 
-void BasicShape::render(short unsigned textureFilteringMode)
+void BasicShape::render(short unsigned textureFilteringMode, bool renderAsShadow)
 {
-	//Color the shape with its color
-	glColor3f(red, green, blue);
-	//Setup material
-	glMaterialfv(GL_FRONT, GL_AMBIENT, Material_Ambient.data());
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
-	glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
-	glMateriali(GL_FRONT, GL_SHININESS, shininess);
-	//Texture the shape if a texture exists
-	if (texture != nullptr)
+	//If we render a shadow, no need to process any texture settings and we want a specific shadow color
+	if (!renderAsShadow)
 	{
-		glBindTexture(GL_TEXTURE_2D, *texture);
-		switch (textureFilteringMode)
+		//Color the shape with its color
+		if (transparent) glColor4f(red, green, blue, alpha);
+		else glColor3f(red, green, blue);
+		//Setup material
+		glMaterialfv(GL_FRONT, GL_AMBIENT, Material_Ambient.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, Material_Diffuse.data());
+		glMaterialfv(GL_FRONT, GL_SPECULAR, Material_Specular.data());
+		glMateriali(GL_FRONT, GL_SHININESS, shininess);
+		//Texture the shape if a texture exists
+		if (texture != nullptr)
 		{
-		case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
-		case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
-		case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
-		case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
-		default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+			glBindTexture(GL_TEXTURE_2D, *texture);
+			switch (textureFilteringMode)
+			{
+			case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+			case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+			case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+			case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+			default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+			}
 		}
 	}
+	else glColor4f(0.f, 0.f, 0.f, alpha);
 	//Render using ordered arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -62,15 +68,18 @@ void BasicShape::render(short unsigned textureFilteringMode)
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//If a texture has been applied, remove it
-	if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	if (!renderAsShadow)
+	{
+		//If a texture has been applied, remove it
+		if (texture != nullptr) glBindTexture(GL_TEXTURE_2D, GL_NONE);
+		//Reset materials
+		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+		glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
+		glMateriali(GL_FRONT, GL_SHININESS, 1);
+	}
 	//Reset color
 	glColor4f(1.f, 1.f, 1.f, 1.f);
-	//Reset materials
-	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat,4 > {1.f, 1.f, 1.f, 1.f}.data());
-	glMaterialfv(GL_FRONT, GL_SPECULAR, std::array<GLfloat, 4 > {0.f, 0.f, 0.f, 0.f}.data());
-	glMateriali(GL_FRONT, GL_SHININESS, 1);
 }
 
 void BasicShape::shapeSpecificDrawingMode()

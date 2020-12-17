@@ -1130,7 +1130,7 @@ void Scene::drawMirrorQuad()
 	glEnd();
 }
 
-void Scene::drawSolarSystem()
+void Scene::drawSolarSystem(bool renderAsShadow)
 {
 	glPushMatrix();
 	{
@@ -1142,7 +1142,7 @@ void Scene::drawSolarSystem()
 			glPushMatrix();
 			{
 				glRotatef(4 * rotation, 0, 1, 0);
-				planet2.render((short unsigned)currentFilter);
+				planet2.render((short unsigned)currentFilter, renderAsShadow);
 			}
 			glPopMatrix();
 		}
@@ -1154,19 +1154,19 @@ void Scene::drawSolarSystem()
 			glPushMatrix();
 			{
 				glRotatef(-4.f * rotation, 0, 1, 0);
-				planet1.render((short unsigned)currentFilter);
+				planet1.render((short unsigned)currentFilter, renderAsShadow);
 			}
 			glPopMatrix();
 			glPushMatrix();
 			{
 				glRotatef(2 * rotation, 0, 0, 1);
 				glTranslatef(-0.25f * rotationMultiplier, 0.f, 0.f);
-				moon1.render((short unsigned)currentFilter);
+				moon1.render((short unsigned)currentFilter, renderAsShadow);
 				glPushMatrix();
 				{
 					glRotatef(4 * rotation, 1, 1, 1);
 					glTranslatef(-.125f * rotationMultiplier, 0.f, 0.f);
-					moonsMoon1.render();
+					moonsMoon1.render(false, renderAsShadow);
 				}
 				glPopMatrix();
 			}
@@ -1303,7 +1303,6 @@ void Scene::updateTextures(bool sm)
 
 void Scene::drawShadowPlane()
 {
-	glColor4f(1.f, 1.f, 1.f, 1.f);
 	glBegin(GL_QUADS);
 	for (unsigned char i = 0; i < 12; i += 3) glVertex3f(tableShadowQuad[i], tableShadowQuad[i + 1], tableShadowQuad[i + 2]);
 	glEnd();
@@ -1320,7 +1319,6 @@ void Scene::renderShadows()
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
-	glColor3f(0.1f, 0.1f, 0.1f);
 
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glEnable(GL_STENCIL_TEST);
@@ -1339,8 +1337,8 @@ void Scene::renderShadows()
 		glMultMatrixf((GLfloat*)shadowMatrix);
 		//Render the shadows of every desired objects from here
 		//model.render()...
-		sun.render();
-		drawSolarSystem();
+		sun.render(false,true);
+		drawSolarSystem(true);
 	}
 	glPopMatrix();
 	glDisable(GL_STENCIL_TEST);
