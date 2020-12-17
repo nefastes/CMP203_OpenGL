@@ -24,30 +24,34 @@ bool Model::load(char* modelFilename, char* textureFilename)
 	return true;
 }
 
-void Model::render(short unsigned textureFilter)
+void Model::render(short unsigned textureFilter, bool renderAsShadow)
 {
-	//Render the model with previously sorted vectors during the unroll_data section
-	//Also apply and set up how the model will be textured prior to rendering
-	glBindTexture(GL_TEXTURE_2D, *texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	switch (textureFilter)
+	if (!renderAsShadow)
 	{
-	case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
-	case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
-	case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
-	case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
-	default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		//Render the model with previously sorted vectors during the unroll_data section
+		//Also apply and set up how the model will be textured prior to rendering
+		glBindTexture(GL_TEXTURE_2D, *texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		switch (textureFilter)
+		{
+		case 0:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		case 1:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					break;
+		case 2:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	break;
+		case 3:		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		break;
+		default:	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);					break;
+		}
+		if (lightSource)
+		{
+			glMaterialfv(GL_FRONT, GL_EMISSION, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+		}
+		else
+		{
+			glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
+		}
 	}
-	if (lightSource)
-	{
-		glMaterialfv(GL_FRONT, GL_EMISSION, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
-	}
-	else
-	{
-		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
-	}
+	else glColor3f(0.f, 0.f, 0.f);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -74,6 +78,8 @@ void Model::render(short unsigned textureFilter)
 		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 	}
+	//Reset color
+	glColor4f(1.f, 1.f, 1.f, 1.f);
 }
 
 

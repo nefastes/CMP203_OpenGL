@@ -582,7 +582,9 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		glTranslatef(0.f, -3.f, -5.f);
 		glRotatef(-90, 1, 0, 0);
 		glScalef(.025f, .025f, .025f);
+		glEnable(GL_NORMALIZE);
 		table.render((short unsigned)currentFilter);
+		glDisable(GL_NORMALIZE);
 	}
 	glPopMatrix();
 	glPushMatrix();
@@ -1145,6 +1147,15 @@ void Scene::drawSolarSystem(bool renderAsShadow)
 				planet2.render((short unsigned)currentFilter, renderAsShadow);
 			}
 			glPopMatrix();
+			glPushMatrix();
+			{
+				glRotatef(-2.f * rotation, 0, 1, 0);
+				glTranslatef(-.5f * rotationMultiplier, 0.f, 0.f);
+				glRotatef(-2.f * rotation, 1, 1, 0);
+				glScalef(.1f, .1f, .1f);
+				trump.render((short unsigned)currentFilter, renderAsShadow);
+			}
+			glPopMatrix();
 		}
 		glPopMatrix();
 		glPushMatrix();
@@ -1317,7 +1328,6 @@ void Scene::renderShadows()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -1345,7 +1355,6 @@ void Scene::renderShadows()
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 	glColor3f(1.f, 1.f, 1.f);
 }

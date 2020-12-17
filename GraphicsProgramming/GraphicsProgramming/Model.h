@@ -24,7 +24,7 @@ class Model
 public:
 
 	bool load(char* modelFilename, char* textureFilename);
-	void render(short unsigned textureFilter);
+	void render(short unsigned textureFilter, bool renderAsShadow = false);
 	void setAsLight(bool l) { lightSource = l; }
 	void reloadTexture(GLuint* tex = nullptr);
 
