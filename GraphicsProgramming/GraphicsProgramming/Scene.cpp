@@ -35,7 +35,7 @@ Scene::Scene(Input *in)
 		pointLight->makeDiffuse(
 			std::array<GLfloat, 4>{0.f, .25f, .25f, 1.f}.data(),
 			pointLightPosition.data(),
-			1.f, 1.5f, 2.f);
+			.125f, .25f, .5f);
 		spotLight->makeSpot(
 			std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
 			std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
@@ -333,7 +333,7 @@ void Scene::render() {
 	//Initialise and setup the stencil
 	setupStencil();
 	//Draw floor reflections inside the stencil quad or mirror surface
-	drawReflections();
+	if(!fullbright) drawReflections();
 	//Draw the real world
 	renderSeriousRoom();
 
@@ -609,9 +609,6 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	//Render solar system hierchical animations
 	drawSolarSystem();
 
-	//Draw shadows
-	if (spotLight->isEnabled()) renderShadows();
-
 	//Render all transparent shapes once everything else is rendered
 	if(!fullbright) glEnable(GL_BLEND);
 	glPushMatrix();
@@ -663,6 +660,9 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	}
 	glPopMatrix();
 	glDisable(GL_BLEND);
+
+	//Draw shadows
+	if (spotLight->isEnabled() && !fullbright) renderShadows();
 }
 
 //TODO: Use vertex arrays
