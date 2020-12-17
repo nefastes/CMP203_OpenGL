@@ -7,6 +7,7 @@ Camera::Camera()
 	yaw = 0.f;
 	pitch = 0.f;
 	roll = 0.f;
+	thirdPersonDistanceMultiplier = 5.f;
 	update();
 }
 
@@ -26,25 +27,21 @@ void Camera::handleInput(float dt)
 	if (input->isKeyDown('2'))	position += up * speed * dt;
 	if (input->isKeyDown('q'))
 	{
-		yaw -= sensitivity * dt;
-		update();
+		yaw -= 5.f * sensitivity * dt;
 	}
 	if (input->isKeyDown('e'))
 	{
-		yaw += sensitivity * dt;
-		update();
+		yaw += 5.f * sensitivity * dt;
 	}
 	if (input->isKeyDown('r'))
 	{
-		pitch += sensitivity * dt;
+		pitch += 5.f * sensitivity * dt;
 		if (pitch > 95.f) pitch = 95.f;	//Avoid Gimbal lock
-		update();
 	}
 	if (input->isKeyDown('f'))
 	{
-		pitch -= sensitivity * dt;
+		pitch -= 5.f * sensitivity * dt;
 		if (pitch < -95.f) pitch = -95.f; //Avoid Gimbal lock
-		update();
 	}
 
 	//Mouse inputs
@@ -56,7 +53,6 @@ void Camera::handleInput(float dt)
 	{
 		//We should rotate the camera in yaw since the mouse travelled in X
 		yaw += (mouseX - center.centerX) * sensitivity * dt;
-		update();
 	}
 	if (mouseY != center.centerY)
 	{
@@ -65,7 +61,6 @@ void Camera::handleInput(float dt)
 		pitch -= (mouseY - center.centerY) * sensitivity * dt;
 		if (pitch < -95.f) pitch = -95.f;
 		if (pitch > 95.f) pitch = 95.f;
-		update();
 	}
 	//Leave the yaw in-between 0 - 360 degrees
 	if (yaw < 0) yaw += 360;
@@ -114,6 +109,11 @@ void Camera::setSensitivity(float s)
 	sensitivity = s;
 }
 
+void Camera::setYaw(float y)
+{
+	yaw = y;
+}
+
 void Camera::setPosition(Vector3 pos)
 {
 	position = pos;
@@ -156,14 +156,25 @@ float Camera::getRoll()
 	return roll;
 }
 
-Vector3 Camera::getPosition()
+Vector3 Camera::getPosition(bool gluLookAt)
 {
-	return position;
+	//The gluLookAt bool allows us to get a false position when 3rd person is enabled
+	//Thanks to that, we can still get the real position when used by other objects (such as the trump model) as well as for the hud element,
+	//but send the false third person camera position to the gluLookAt() function and to the skybox position
+	if (currentCameraType == CameraTypes::THIRDPERSON &&  gluLookAt)
+	{
+		return position - forward * thirdPersonDistanceMultiplier;
+	}
+	else return position;
 }
 
 Vector3 Camera::getLookAt()
 {
-	return position + forward;
+	if (currentCameraType == CameraTypes::THIRDPERSON)
+	{
+		return position;
+	}
+	else return position + forward;
 }
 
 Vector3 Camera::getUp()

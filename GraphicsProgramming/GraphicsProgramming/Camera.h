@@ -19,6 +19,7 @@ public:
 
 	void setSpeed(float s);
 	void setSensitivity(float s);
+	void setYaw(float y);
 	void setPosition(Vector3);
 	void setLookAt(Vector3);
 	void setUp(Vector3);
@@ -28,7 +29,7 @@ public:
 	float getYaw();
 	float getPitch();
 	float getRoll();
-	Vector3 getPosition();
+	Vector3 getPosition(bool gluLookAt = false);
 	Vector3 getLookAt();
 	Vector3 getUp();
 
@@ -65,5 +66,8 @@ private:
 
 	//Camera type tracker
 	CameraTypes currentCameraType = CameraTypes::FREE;
+	//A multiplier used to make the third person camera further or closer to it's real position
+	//To be changed manually in the Camera() constructor, as we do not require change in real time
+	float thirdPersonDistanceMultiplier;
 };
 

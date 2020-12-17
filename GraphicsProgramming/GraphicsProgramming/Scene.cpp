@@ -251,6 +251,7 @@ void Scene::handleInput(float dt)
 	{
 		if (*currentCameraType == CameraTypes::TRACKING) *currentCameraType = CameraTypes::FREE;
 		else *currentCameraType = static_cast<CameraTypes>((int)*currentCameraType + 1);
+		camera.update();
 	}
 
 	//Toggle steve mode
@@ -271,8 +272,8 @@ void Scene::handleInput(float dt)
 	if (input->isKeyDown('g') && rotationSpeed > 10.f) rotationSpeed -= 50.f * dt;
 	if (input->isKeyDown('h') && rotationSpeed < 200.f) rotationSpeed += 50.f * dt;
 
-	// Handle camera input
-	camera.handleInput(dt);
+	//Handle camera input, but not for tracking since we dont want to
+	if(*currentCameraType != CameraTypes::TRACKING) camera.handleInput(dt);
 }
 
 void Scene::update(float dt)
@@ -280,8 +281,23 @@ void Scene::update(float dt)
 	//Update the rotation angle by 10 degrees per second
 	rotation += rotationSpeed * dt;
 
+	//Update the position of the point light (rotate around the Y axis)
+	//In the form: radius * cosf(angle in radians) + translation.x;
+	pointLightPosition[0] = 3.5f * rotationMultiplier * cosf(rotation * PI / 180.f);
+	pointLightPosition[2] = 3.5f * rotationMultiplier * sinf(rotation * PI / 180.f) - 5.f;
+	pointLight->setPosition(pointLightPosition.data());
+	//Update the camera position in the case of Tracking mode by reusing the light's rotation coordinates
+	if (*currentCameraType == CameraTypes::TRACKING)
+	{
+		camera.setPosition(Vector3(-pointLightPosition[0], -.5f, -pointLightPosition[2] - 10.f));
+		//We need to define the angle so that it looks at the target
+		camera.setYaw(rotation + 90);
+	}
+	//Update camera with the new inputs
+	camera.update();
+
 	// update scene related variables.
-	skybox.setPos(camera.getPosition());
+	skybox.setPos(camera.getPosition(true));
 
 	//Update the transparent shapes order of rendering relative to the camera position (furthest to be rendered first, closest to be rendered last)
 	std::sort(transparentShapes.begin(), transparentShapes.end(), [=](BasicShape* s1, BasicShape* s2)
@@ -289,12 +305,6 @@ void Scene::update(float dt)
 			//We want to return true if the first shape is further to the camera than the second shape
 			return s1->getPosition() - camera.getPosition() > s2->getPosition() - camera.getPosition();
 		});
-
-	//Update the position of the point light (rotate around the Y axis)
-	//In the form: radius * cosf(angle in radians) + translation.x;
-	pointLightPosition[0] = 3.5f * rotationMultiplier * cosf(rotation * PI / 180.f);
-	pointLightPosition[2] = 3.5f * rotationMultiplier * sinf(rotation * PI / 180.f) - 5.f;
-	pointLight->setPosition(pointLightPosition.data());
 
 	//Flicker the spot light
 	flickerTimer += dt;
@@ -325,7 +335,7 @@ void Scene::render() {
 	glLoadIdentity();
 	// Set the camera
 	gluLookAt(
-		camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
+		camera.getPosition(true).x, camera.getPosition(true).y, camera.getPosition(true).z,
 		camera.getLookAt().x, camera.getLookAt().y, camera.getLookAt().z,
 		camera.getUp().x, camera.getUp().y, camera.getUp().z
 	);
@@ -613,7 +623,8 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	glPopMatrix();
 	//Render trump based on the camera position
 	glPushMatrix();
-	if(*currentCameraType != CameraTypes::FREE || renderingReflection)	//That way we only see the model in the mirror while in first person, so it is not annoying our view
+	//That way we only see the model in the mirror while in first person, so it is not annoying our view
+	if(*currentCameraType == CameraTypes::THIRDPERSON || renderingReflection && *currentCameraType != CameraTypes::TRACKING)
 	{
 		glTranslatef(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		glRotatef(180 - camera.getYaw(), 0, 1, 0);
