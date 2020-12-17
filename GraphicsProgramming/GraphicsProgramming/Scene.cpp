@@ -35,7 +35,7 @@ Scene::Scene(Input *in)
 		pointLight->makeDiffuse(
 			std::array<GLfloat, 4>{0.f, .25f, .25f, 1.f}.data(),
 			pointLightPosition.data(),
-			1.f, .875f, .75f);
+			1.f, 1.5f, 2.f);
 		spotLight->makeSpot(
 			std::array<GLfloat, 4>{1.f, 1.f, 1.f, 1.f}.data(),
 			std::array<GLfloat, 4>{0.f, 2.125f, -5.f, 1.f}.data(),
@@ -78,6 +78,7 @@ Scene::Scene(Input *in)
 		transparentBox = SOIL_load_OGL_texture("gfx/transparentCrate.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		grassBillboardTexture = SOIL_load_OGL_texture("gfx/bush-billboard.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		treeBillboardTexture = SOIL_load_OGL_texture("gfx/tree-billboard.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		steveTexture = SOIL_load_OGL_texture("gfx/Steve.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	}
 
 	//Init skybox
@@ -242,6 +243,18 @@ void Scene::handleInput(float dt)
 		if (currentFilter == Filters::TRILINEAR) currentFilter = Filters::POINT;
 		else currentFilter = static_cast<Filters>((int)currentFilter + 1);
 		applyFilter();
+	}
+
+	//Toggle steve mode
+	if (!stevemode && input->isKeyDownOnce(GLUT_KEY_F4))
+	{
+		stevemode = true;
+		updateTextures(stevemode);
+	}
+	else if (stevemode && input->isKeyDownOnce(GLUT_KEY_F4))
+	{
+		stevemode = false;
+		updateTextures(stevemode);
 	}
 
 	//Other user interactions
@@ -594,8 +607,11 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	//Render solar system hierchical animations
 	drawSolarSystem();
 
+	//Draw shadows
+	if (spotLight->isEnabled()) renderShadows();
+
 	//Render all transparent shapes once everything else is rendered
-	glEnable(GL_BLEND);
+	if(!fullbright) glEnable(GL_BLEND);
 	glPushMatrix();
 	{
 		//When rendering the reflection, apply the sorted render order would make no sense and all our transparent shapes would appear mad glitchy
@@ -883,7 +899,7 @@ void Scene::makeSeriousWalls()
 		glEnd();
 
 		glBindTexture(GL_TEXTURE_2D, glass);
-		glEnable(GL_BLEND);
+		if(!fullbright) glEnable(GL_BLEND);
 		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
 		glBegin(GL_QUADS);
@@ -1050,7 +1066,7 @@ void Scene::makeSeriousWalls()
 
 void Scene::drawGrassBillboard()
 {
-	glEnable(GL_BLEND);
+	if(!fullbright) glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, grassBillboardTexture);
 	applyFilter();
 	glBegin(GL_QUADS);
@@ -1075,7 +1091,7 @@ void Scene::drawGrassBillboard()
 
 void Scene::drawTreeBillboard()
 {
-	glEnable(GL_BLEND);
+	if(!fullbright) glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, treeBillboardTexture);
 	applyFilter();
 	glBegin(GL_QUADS);
@@ -1194,6 +1210,7 @@ void Scene::drawReflections()
 	glCullFace(GL_FRONT);
 	//Draw the room
 	glPushMatrix();
+	if(!fullbright)
 	{
 		glScalef(-1.f, 1.f, 1.f);
 		glTranslatef(10.f, 0.f, 0.f);
@@ -1204,7 +1221,7 @@ void Scene::drawReflections()
 	//Disable the stencil test (no longer needed, reflections have been rendered)
 	glDisable(GL_STENCIL_TEST);
 	//Enable alpha blending (to combine the calculated reflection with our stencil quad (mirror quad))
-	glEnable(GL_BLEND);
+	if(!fullbright) glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//Setup material and texture for mirror quad
 	/*glBindTexture(GL_TEXTURE_2D, glass);
@@ -1222,4 +1239,115 @@ void Scene::drawReflections()
 	//Disable alpha blending (we rendered the mirror)
 	glDisable(GL_BLEND);
 	//Reflections have now been drawn correctly, next step is to draw the model inside drawModel()
+}
+
+void Scene::updateTextures(bool sm)
+{
+	if (sm)
+	{
+		sky[0] = steveTexture;
+		sky[1] = steveTexture;
+		sky[2] = steveTexture;
+		sky[3] = steveTexture;
+		sky[4] = steveTexture;
+		sky[5] = steveTexture;
+		seriousWallBase = steveTexture;
+		seriousWallTop = steveTexture;
+		seriousFloor = steveTexture;
+		seriousCeiling = steveTexture;
+		seriousDoor = steveTexture;
+		wood = steveTexture;
+		glass = steveTexture;
+		glass2 = steveTexture;
+		earthTexture = steveTexture;
+		moonTexture = steveTexture;
+		marsTexture = steveTexture;
+		transparentBox = steveTexture;
+		grassBillboardTexture = steveTexture;
+		treeBillboardTexture = steveTexture;
+		chair.reloadTexture(&steveTexture);
+		table.reloadTexture(&steveTexture);
+		lamp_neons.reloadTexture(&steveTexture);
+		lamp_struct.reloadTexture(&steveTexture);
+		trump.reloadTexture(&steveTexture);
+	}
+	else
+	{
+		sky[0] = 1;
+		sky[1] = 2;
+		sky[2] = 3;
+		sky[3] = 4;
+		sky[4] = 5;
+		sky[5] = 6;
+		seriousWallBase = 7;
+		seriousWallTop = 8;
+		seriousFloor = 9;
+		seriousCeiling = 10;
+		seriousDoor = 11;
+		wood = 12;
+		glass = 13;
+		glass2 = 14;
+		earthTexture = 15;
+		moonTexture = 16;
+		marsTexture = 17;
+		transparentBox = 18;
+		grassBillboardTexture = 19;
+		treeBillboardTexture = 20;
+		chair.reloadTexture();
+		table.reloadTexture();
+		lamp_neons.reloadTexture();
+		lamp_struct.reloadTexture();
+		trump.reloadTexture();
+	}
+}
+
+void Scene::drawShadowPlane()
+{
+	glColor4f(1.f, 1.f, 1.f, 1.f);
+	glBegin(GL_QUADS);
+	for (unsigned char i = 0; i < 12; i += 3) glVertex3f(tableShadowQuad[i], tableShadowQuad[i + 1], tableShadowQuad[i + 2]);
+	glEnd();
+}
+
+void Scene::renderShadows()
+{
+	Shadow::generateShadowMatrix(shadowMatrix, spotLight->getPosition(), tableShadowQuad.data());
+
+	//glClearStencil(0);
+	//glClear(GL_STENCIL_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glColor3f(0.1f, 0.1f, 0.1f);
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	drawShadowPlane();
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glStencilFunc(GL_LEQUAL, 1, 1);
+	glEnable(GL_DEPTH_TEST);
+
+	glPushMatrix();
+	{
+		glMultMatrixf((GLfloat*)shadowMatrix);
+		//Render the shadows of every desired objects from here
+		//model.render()...
+		sun.render();
+		drawSolarSystem();
+	}
+	glPopMatrix();
+	glDisable(GL_STENCIL_TEST);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glColor3f(1.f, 1.f, 1.f);
 }

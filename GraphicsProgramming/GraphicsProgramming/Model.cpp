@@ -28,7 +28,7 @@ void Model::render(short unsigned textureFilter)
 {
 	//Render the model with previously sorted vectors during the unroll_data section
 	//Also apply and set up how the model will be textured prior to rendering
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, *texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	switch (textureFilter)
@@ -46,7 +46,7 @@ void Model::render(short unsigned textureFilter)
 	else
 	{
 		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4 > {.2f, .2f, .2f, 1.f}.data());
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {4.f, 4.f, 4.f, 1.f}.data());
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4 > {1.f, 1.f, 1.f, 1.f}.data());
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -196,7 +196,7 @@ bool Model::loadModel(char* filename)
 
 void Model::loadTexture(char* filename)
 {
-	texture = SOIL_load_OGL_texture
+	originalTexture = SOIL_load_OGL_texture
 	(
 		filename,
 		SOIL_LOAD_AUTO,
@@ -205,12 +205,17 @@ void Model::loadTexture(char* filename)
 	);
 
 	//check for an error during the load process
-	if (texture == 0)
+	if (originalTexture == 0)
 	{
 		printf("SOIL loading error: '%s'\n", SOIL_last_result());
 	}
+	else texture = &originalTexture;
 
 }
 
-
+void Model::reloadTexture(GLuint* tex)
+{
+	if (tex == nullptr) texture = &originalTexture;
+	else texture = tex;
+}
 

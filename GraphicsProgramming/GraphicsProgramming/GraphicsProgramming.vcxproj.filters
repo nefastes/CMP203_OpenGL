@@ -81,6 +81,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\Global Visuals</Filter>
     </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>Source Files\Frameworks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicShape.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Header Files\Global Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>Header Files\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

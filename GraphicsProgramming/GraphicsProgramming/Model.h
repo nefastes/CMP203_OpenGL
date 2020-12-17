@@ -26,6 +26,7 @@ public:
 	bool load(char* modelFilename, char* textureFilename);
 	void render(short unsigned textureFilter);
 	void setAsLight(bool l) { lightSource = l; }
+	void reloadTexture(GLuint* tex = nullptr);
 
 private:
 
@@ -33,7 +34,8 @@ private:
 	bool loadModel(char*);
 
 	// model texture
-	GLuint texture;
+	GLuint originalTexture;
+	GLuint* texture;
 
 	// Stoagre for sorted data
 	vector<float> vertex, normals, texCoords;

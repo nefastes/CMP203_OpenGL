@@ -24,6 +24,7 @@
 #include "Sphere.h"
 #include "Model.h"
 #include "Light.h"
+#include "Shadow.h"
 
 class Scene{
 
@@ -69,6 +70,9 @@ protected:
 	bool wireframeMode = false;
 	//A fullbright mode toggle
 	bool fullbright = false;
+	//Steve mode toogle
+	bool stevemode = false;
+	void updateTextures(bool sm);
 
 	//Filtering
 	enum class Filters { POINT, BILINEAR, MIPMAPING, TRILINEAR } currentFilter;
@@ -127,6 +131,19 @@ protected:
 	BasicShape transparentCube3;
 	Cylinder transparentCylinder1;
 	Disc transparentCylinderCap;
+	//Vertex/Normals/Tex arrays to generate the seriousRoom
+	std::array<GLfloat, 16> lowerWallsVertices;
+	std::array<GLfloat, 40> upperWallsVertices;
+	std::array<GLfloat, 4> ceilingVertices;
+	std::vector<GLfloat> floorVertices;
+	std::array<GLfloat, 16> lowerWallsNormals;
+	std::array<GLfloat, 40> upperWallsNormals;
+	std::array<GLfloat, 4> ceilingNormals;
+	std::vector<GLfloat> floorNormals;
+	std::array<GLfloat, 16> lowerWallsTexcoords;
+	std::array<GLfloat, 40> upperWallsTexcoords;
+	std::array<GLfloat, 4> ceilingTexcoords;
+	std::vector<GLfloat> floorTexcoords;
 
 	//Functions that will render their according room
 	void renderSeriousRoom(bool renderingReflection = false);
@@ -135,6 +152,17 @@ protected:
 	//Billboards
 	void drawGrassBillboard();
 	void drawTreeBillboard();
+
+	//Shadow
+	std::array<GLfloat, 12> tableShadowQuad{
+		-1.25f, -1.1125f, -7.5f,
+		-1.25f, -1.1125f, -2.5f,
+		1.25f, -1.1125f, -2.5f,
+		1.25f, -1.1125f, -7.5f
+	};
+	float shadowMatrix[16];
+	void drawShadowPlane();
+	void renderShadows();
 
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;
@@ -155,6 +183,7 @@ protected:
 	GLuint transparentBox;
 	GLuint grassBillboardTexture;
 	GLuint treeBillboardTexture;
+	GLuint steveTexture;
 };
 
 #endif

@@ -20,7 +20,7 @@ protected:
 	float alpha;
 	//A simple bool to track if we want to render the inside of the shape (true)
 	bool renderInside;
-	//The shape's texture, to stay NULL if none is wanted
+	//The shape's texture, to stay nullptr if none is wanted
 	GLuint* texture;
 	//Vectors used for procedural generation
 	std::vector<float> vertices;

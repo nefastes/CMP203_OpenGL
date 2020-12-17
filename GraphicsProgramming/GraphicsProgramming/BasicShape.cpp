@@ -8,7 +8,7 @@ BasicShape::BasicShape()
 	alpha = 1.f;
 	//A simple bool to track if we want to render the inside of the shape (true)
 	renderInside = false;
-	//The shape's texture, to stay NULL if none is wanted
+	//The shape's texture, to stay nullptr if none is wanted
 	texture = nullptr;
 	//Scale of the shape
 	scale = Vector3(1.f, 1.f, 1.f);
