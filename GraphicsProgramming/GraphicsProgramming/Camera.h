@@ -19,7 +19,7 @@ public:
 
 	void setSpeed(float s);
 	void setSensitivity(float s);
-	void setYaw(float y);
+	void setAngles(float yaw, float pitch, float roll);
 	void setPosition(Vector3);
 	void setLookAt(Vector3);
 	void setUp(Vector3);

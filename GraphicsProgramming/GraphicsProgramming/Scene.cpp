@@ -291,7 +291,7 @@ void Scene::update(float dt)
 	{
 		camera.setPosition(Vector3(-pointLightPosition[0], -.5f, -pointLightPosition[2] - 10.f));
 		//We need to define the angle so that it looks at the target
-		camera.setYaw(rotation + 90);
+		camera.setAngles(rotation + 90, 0.f, 0.f);
 	}
 	//Update camera with the new inputs
 	camera.update();

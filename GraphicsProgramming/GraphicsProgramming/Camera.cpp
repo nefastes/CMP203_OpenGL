@@ -109,11 +109,18 @@ void Camera::setSensitivity(float s)
 	sensitivity = s;
 }
 
-void Camera::setYaw(float y)
+void Camera::setAngles(float yaw, float pitch, float roll)
 {
-	yaw = y;
 	if (yaw < 0) yaw += 360;
 	if (yaw > 360) yaw -= 360;
+	if (pitch < 0) pitch += 360;
+	if (pitch > 360) pitch -= 360;
+	if (roll < 0) roll += 360;
+	if (roll > 360) roll -= 360;
+
+	this->yaw = yaw;
+	this->pitch = pitch;
+	this->roll = roll;
 }
 
 void Camera::setPosition(Vector3 pos)
