@@ -198,7 +198,6 @@ Scene::Scene(Input *in)
 		transparentCylinderCap.renderInsideShape(true);
 		transparentCylinderCap.generateShape();
 	}
-
 	//Push references of all transparent shapes into the according vector
 	{
 		transparentShapes.push_back(&sun);
@@ -207,6 +206,304 @@ Scene::Scene(Input *in)
 		transparentShapes.push_back(&transparentCube3);
 		transparentShapes.push_back(&transparentCylinder1);
 		transparentShapes.push_back(&transparentCylinderCap);
+	}
+
+	//Init room vertex arrays
+	{
+		//Billboards init
+		Scene::billboardVerts = {
+			-2.5f, 0.f, -0.f,
+			-2.5f, -3.f, 0.f,
+			2.5f, -3.f, 0.f,
+			2.5f, 0.f, 0.f,
+			-2.f, 4.f, -0.f,
+			-2.f, -3.f, 0.f,
+			2.f, -3.f, 0.f,
+			2.f, 4.f, 0.f
+		};
+		Scene::billboardTexcoords = {
+			0, 0,
+			0, 1,
+			1, 1,
+			1, 0,
+			0, 0,
+			0, 1,
+			1, 1,
+			1, 0
+		};
+		Scene::billboardNormals = {
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f
+		};
+
+		//Room init
+		Scene::seriousRoomVerts = {
+			//Bottom walls
+			-5.f, -2.f, 0.f,
+			-5.f, -3.f, 0.f,
+			-5.f, -3.f, -10.f,
+			-5.f, -2.f, -10.f,
+			5.f, -2.f, -10.f,
+			5.f, -3.f, -10.f,
+			5.f, -3.f, -2.f,
+			5.f, -2.f, -2.f,
+			-5.f, -2.f, -10.f,
+			-5.f, -3.f, -10.f,
+			5.f, -3.f, -10.f,
+			5.f, -2.f, -10.f,
+			5.f, -2.f, 0.f,
+			5.f, -3.f, 0.f,
+			-5.f, -3.f, 0.f,
+			-5.f, -2.f, 0.f,
+			//Top walls
+			-5.f, 3.f, 0.f,
+			-5.f, -2.f, 0.f,
+			-5.f, -2.f, -2.5f,
+			-5.f, 3.f, -2.5f,
+			-5.f, 3.f, -2.5f,
+			-5.f, 2.f, -2.5f,
+			-5.f, 2.f, -7.5f,
+			-5.f, 3.f, -7.5f,
+			-5.f, 3.f, -7.5f,
+			-5.f, -2.f, -7.5f,
+			-5.f, -2.f, -10.f,
+			-5.f, 3.f, -10.f,
+			5.f, 3.f, -10.f,
+			5.f, -2.f, -10.f,
+			5.f, -2.f, -2.f,
+			5.f, 3.f, -2.f,
+			5.f, 3.f, -2.f,
+			5.f, 1.f, -2.f,
+			5.f, 1.f, 0.f,
+			5.f, 3.f, 0.f,
+			-5.f, 3.f, -10.f,
+			-5.f, -2.f, -10.f,
+			-1.5f, -2.f, -10.f,
+			-1.5f, 3.f, -10.f,
+			-1.5f, 3.f, -10.f,
+			-1.5f, 2.f, -10.f,
+			1.5f, 2.f, -10.f,
+			1.5f, 3.f, -10.f,
+			-1.5f, -1.f, -10.f,
+			-1.5f, -2.f, -10.f,
+			1.5f, -2.f, -10.f,
+			1.5f, -1.f, -10.f,
+			1.5f, 3.f, -10.f,
+			1.5f, -2.f, -10.f,
+			5.f, -2.f, -10.f,
+			5.f, 3.f, -10.f,
+			5.f, 3.f, 0.f,
+			5.f, -2.f, 0.f,
+			-5.f, -2.f, 0.f,
+			-5.f, 3.f, 0.f,
+			//Ceiling
+			5.f, 3.f, -10.f,
+			5.f, 3.f, 0.f,
+			-5.f, 3.f, 0.f,
+			-5.f, 3.f, -10.f,
+			//Glass
+			-1.25f, 1.75f, -10.f,
+			-1.25f, -0.75f, -10.f,
+			1.25f, -0.75f, -10.f,
+			1.25f, 1.75f, -10.f,
+			//Door
+			5.f, 1.f, -2.f,
+			5.f, -3.f, -2.f,
+			5.f, -3.f, 0.f,
+			5.f, 1.f, 0.f
+		};
+		Scene::seriousRoomTexcoords = {
+			//Bottom walls
+			0, 0,
+			0, 1,
+			10, 1,
+			10, 0,
+			8, 0,
+			8, 1,
+			0, 1,
+			0, 0,
+			0, 0,
+			0, 1,
+			10, 1,
+			10, 0,
+			10, 0,
+			10, 1,
+			0, 1,
+			0, 0,
+			//Top walls
+			0, 0,
+			0, 1,
+			2.5f, 1,
+			2.5f, 0,
+			2.5f, 0,
+			2.5f, .2f,
+			7.5f, .2f,
+			7.5f, 0,
+			7.5f, 0,
+			7.5f, 1,
+			10, 1,
+			10, 0,
+			8, 0,
+			8, 1,
+			0, 1,
+			0, 0,
+			2, 0,
+			2, .4f,
+			0, .4f,
+			0, 0,
+			0, 0,
+			0, 1,
+			3.5f, 1,
+			3.5f, 0,
+			3.5f, 0,
+			3.5f, .2f,
+			6.5f, .2f,
+			6.5f, 0,
+			3.5f, .8f,
+			3.5f, 1,
+			6.5f, 1,
+			6.5f, .8f,
+			6.5f, 0,
+			6.5f, 1,
+			10, 1,
+			10, 0,
+			10, 0,
+			10, 1,
+			0, 1,
+			0, 0,
+			//Ceiling
+			0, 0,
+			0, 10,
+			10, 10,
+			10, 0,
+			//Glass
+			0, 0,
+			0, 1,
+			1, 1,
+			1, 0,
+			//Door
+			0, 0,
+			0, 1,
+			1, 1,
+			1, 0
+		};
+		Scene::seriousRoomNormals = {
+			//Bottom walls
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			//Top walls
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, -1.f,
+			//Ceiling
+			0.f, -1.f, 0.f,
+			0.f, -1.f, 0.f,
+			0.f, -1.f, 0.f,
+			0.f, -1.f, 0.f,
+			//Glass
+			0.f, 0.f, 1.f,
+			0.f, 0.f, 1.f,
+			0.f, 0.f, -1.f,
+			0.f, 0.f, 1.f,
+			//Door
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f,
+			-1.f, 0.f, 0.f
+		};
+
+		//Floor init
+		for (float z = -10.f; z < 0.f; z += .1f)
+		{
+			for (float x = -5.f; x < 5.f - .1f; x += .1f)
+			{
+				for (unsigned char i = 0; i < 4; ++i)
+				{
+					seriousFloorNormals.push_back(0.f);
+					seriousFloorNormals.push_back(1.f);
+					seriousFloorNormals.push_back(0.f);
+				}
+
+				seriousFloorTexcoords.push_back(x + 5.f);
+				seriousFloorTexcoords.push_back(z + 10.f);
+				seriousFloorTexcoords.push_back(x + 5.f);
+				seriousFloorTexcoords.push_back(z + 10.1f);
+				seriousFloorTexcoords.push_back(x + 5.1f);
+				seriousFloorTexcoords.push_back(z + 10.1f);
+				seriousFloorTexcoords.push_back(x + 5.1f);
+				seriousFloorTexcoords.push_back(z + 10.f);
+
+				seriousFloorVerts.push_back(x);
+				seriousFloorVerts.push_back(-3.f);
+				seriousFloorVerts.push_back(z);
+				seriousFloorVerts.push_back(x);
+				seriousFloorVerts.push_back(-3.f);
+				seriousFloorVerts.push_back(z + .1f);
+				seriousFloorVerts.push_back(x + .1f);
+				seriousFloorVerts.push_back(-3.f);
+				seriousFloorVerts.push_back(z + .1f);
+				seriousFloorVerts.push_back(x + .1f);
+				seriousFloorVerts.push_back(-3.f);
+				seriousFloorVerts.push_back(z);
+			}
+		}
 	}
 }
 
@@ -433,7 +730,7 @@ void Scene::calculateFPS()
 // Compiles standard output text including FPS and current mouse position.
 void Scene::renderTextOutput()
 {
-	// Render current mouse position and frames per second.
+	// Render current mouse position and frames per second, and every other UI elements
 	sprintf_s(mouseText, "Mouse: %i, %i", input->getMouseX(), input->getMouseY());
 	sprintf_s(positionText, "Position: %g, %g, %g", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	sprintf_s(viewText, "View: %g, %g, %g", camera.getYaw(), camera.getPitch(), camera.getRoll());
@@ -694,425 +991,76 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 //TODO: Use vertex arrays
 void Scene::makeSeriousWalls()
 {
-	//Left wall
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, -2.f, 0.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -3.f, 0.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(-5.f, -3.f, -10.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(-5.f, -2.f, -10.f);
-		}
-		glEnd();
-		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, 3.f, 0.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -2.f, 0.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(2.5f, 1);
-			glVertex3f(-5.f, -2.f, -2.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(2.5f, 0);
-			glVertex3f(-5.f, 3.f, -2.5f);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, seriousRoomVerts.data());
+	glNormalPointer(GL_FLOAT, 0, seriousRoomNormals.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, seriousRoomTexcoords.data());
 
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(2.5f, 0);
-			glVertex3f(-5.f, 3.f, -2.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(2.5f, .2f);
-			glVertex3f(-5.f, 2.f, -2.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(7.5f, .2f);
-			glVertex3f(-5.f, 2.f, -7.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(7.5f, 0);
-			glVertex3f(-5.f, 3.f, -7.5f);
+	glBindTexture(GL_TEXTURE_2D, seriousWallBase);
+	applyFilter();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDrawArrays(GL_QUADS, 0, 16);
 
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(7.5f, 0);
-			glVertex3f(-5.f, 3.f, -7.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(7.5f, 1);
-			glVertex3f(-5.f, -2.f, -7.5f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(-5.f, -2.f, -10.f);
-			glNormal3f(1.f, 0.f, 0.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(-5.f, 3.f, -10.f);
-		}
-		glEnd();
-	}
-	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, seriousWallTop);
+	applyFilter();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDrawArrays(GL_QUADS, 16, 40);
 
-	//Right wall
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, -2.f, -10.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(5.f, -3.f, -10.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(5.f, -3.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(5.f, -2.f, -2.f);
-		}
-		glEnd();
-		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(8, 0);
-			glVertex3f(5.f, 3.f, -10.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(8, 1);
-			glVertex3f(5.f, -2.f, -10.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(5.f, -2.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(5.f, 3.f, -2.f);
+	glBindTexture(GL_TEXTURE_2D, seriousCeiling);
+	applyFilter();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDrawArrays(GL_QUADS, 56, 4);
 
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(2, 0);
-			glVertex3f(5.f, 3.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(2, .4f);
-			glVertex3f(5.f, 1.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, .4f);
-			glVertex3f(5.f, 1.f, 0.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(5.f, 3.f, 0.f);
-		}
-		glEnd();
-		glBindTexture(GL_TEXTURE_2D, seriousDoor);
-		applyFilter();
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(5.f, 1.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(5.f, -3.f, -2.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(1, 1);
-			glVertex3f(5.f, -3.f, 0.f);
-			glNormal3f(-1.f, 0.f, 0.f);
-			glTexCoord2f(1, 0);
-			glVertex3f(5.f, 1.f, 0.f);
-		}
-		glEnd();
-	}
-	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, glass);
+	if (!fullbright) glEnable(GL_BLEND);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
+	glDrawArrays(GL_QUADS, 60, 4);
+	glDisable(GL_BLEND);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
 
-	//Front wall
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -3.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(5.f, -3.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, -2.f, -10.f);
-		}
-		glEnd();
-		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, 3.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, 1);
-			glVertex3f(-1.5f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, 0);
-			glVertex3f(-1.5f, 3.f, -10.f);
+	glBindTexture(GL_TEXTURE_2D, seriousDoor);
+	applyFilter();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDrawArrays(GL_QUADS, 64, 4);
 
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, 0);
-			glVertex3f(-1.5f, 3.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, .2f);
-			glVertex3f(-1.5f, 2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, .2f);
-			glVertex3f(1.5f, 2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, 0);
-			glVertex3f(1.5f, 3.f, -10.f);
+	glVertexPointer(3, GL_FLOAT, 0, seriousFloorVerts.data());
+	glNormalPointer(GL_FLOAT, 0, seriousFloorNormals.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, seriousFloorTexcoords.data());
+	glBindTexture(GL_TEXTURE_2D, seriousFloor);
+	applyFilter();
+	glDrawArrays(GL_QUADS, 0, seriousFloorVerts.size() / 3);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, .8f);
-			glVertex3f(-1.5f, -1.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(3.5f, 1);
-			glVertex3f(-1.5f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, 1);
-			glVertex3f(1.5f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, .8f);
-			glVertex3f(1.5f, -1.f, -10.f);
-
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, 0);
-			glVertex3f(1.5f, 3.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(6.5f, 1);
-			glVertex3f(1.5f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(5.f, -2.f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, 3.f, -10.f);
-		}
-		glEnd();
-
-		glBindTexture(GL_TEXTURE_2D, glass);
-		if(!fullbright) glEnable(GL_BLEND);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, .4f }.data());
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-1.25f, 1.75f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-1.25f, -0.75f, -10.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(1, 1);
-			glVertex3f(1.25f, -0.75f, -10.f);
-			glNormal3f(0.f, 0.f, 1.f);
-			glTexCoord2f(1, 0);
-			glVertex3f(1.25f, 1.75f, -10.f);
-		}
-		glEnd();
-		glDisable(GL_BLEND);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 4>{ 1.f, 1.f, 1.f, 1.f }.data());
-	}
-	glPopMatrix();
-
-	//Back wall
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousWallBase);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, -2.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(5.f, -3.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -3.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, -2.f, 0.f);
-		}
-		glEnd();
-		glBindTexture(GL_TEXTURE_2D, seriousWallTop);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, 3.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(10, 1);
-			glVertex3f(5.f, -2.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(0, 1);
-			glVertex3f(-5.f, -2.f, 0.f);
-			glNormal3f(0.f, 0.f, -1.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, 3.f, 0.f);
-		}
-		glEnd();
-	}
-	glPopMatrix();
-
-	//Floor
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousFloor);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		//drawPlane(Vector3(-5.f, -3.f, -10.f), Vector3(5.f, -3.f, 0.f), Vector3(0.f, 1.f, 0.f));
-		glBegin(GL_QUADS);
-		for (float z = -10.f; z < 0.f; z += .1f)
-		{
-			for (float x = -5.f; x < 5.f - .1f; x += .1f)
-			{
-				glNormal3f(0.f, 1.f, 0.f);
-				glTexCoord2f(x + 5.f, z + 10.f);
-				glVertex3f(x, -3.f, z);
-				glNormal3f(0.f, 1.f, 0.f);
-				glTexCoord2f(x + 5.f, z + 10.1f);
-				glVertex3f(x, -3.f, z + .1f);
-				glNormal3f(0.f, 1.f, 0.f);
-				glTexCoord2f(x + 5.1f, z + 10.1f);
-				glVertex3f(x + .1f, -3.f, z + .1f);
-				glNormal3f(0.f, 1.f, 0.f);
-				glTexCoord2f(x + 5.1f, z + 10.f);
-				glVertex3f(x + .1f, -3.f, z);
-			}
-		}
-		glEnd();
-		/*glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, 1.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(-5.f, -3.f, -10.f);
-			glNormal3f(0.f, 1.f, 0.f);
-			glTexCoord2f(0, 10);
-			glVertex3f(-5.f, -3.f, 0.f);
-			glNormal3f(0.f, 1.f, 0.f);
-			glTexCoord2f(10, 10);
-			glVertex3f(5.f, -3.f, 0.f);
-			glNormal3f(0.f, 1.f, 0.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(5.f, -3.f, -10.f);
-		}
-		glEnd();*/
-	}
-	glPopMatrix();
-
-	//Ceiling
-	glPushMatrix();
-	{
-		glBindTexture(GL_TEXTURE_2D, seriousCeiling);
-		applyFilter();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		/*glBegin(GL_QUADS);
-		for (float z = 0.f; z > -10.f; z -= .1f)
-		{
-			for (float x = 5.f; x > -5.f + .1f; x -= .1f)
-			{
-				glNormal3f(0.f, -1.f, 0.f);
-				glTexCoord2f(x - 5.1f, z - 10.f);
-				glVertex3f(x - .1f, 3.f, z);
-				glNormal3f(0.f, -1.f, 0.f);
-				glTexCoord2f(x - 5.1f, z - 10.1f);
-				glVertex3f(x - .1f, 3.f, z - .1f);
-				glNormal3f(0.f, -1.f, 0.f);
-				glTexCoord2f(x - 5.f, z - 10.1f);
-				glVertex3f(x, 3.f, z - .1f);
-				glNormal3f(0.f, -1.f, 0.f);
-				glTexCoord2f(x - 5.f, z - 10.f);
-				glVertex3f(x, 3.f, z);
-			}
-		}
-		glEnd();*/
-		glBegin(GL_QUADS);
-		{
-			glNormal3f(0.f, -1.f, 0.f);
-			glTexCoord2f(0, 0);
-			glVertex3f(5.f, 3.f, -10.f);
-			glNormal3f(0.f, -1.f, 0.f);
-			glTexCoord2f(0, 10);
-			glVertex3f(5.f, 3.f, 0.f);
-			glNormal3f(0.f, -1.f, 0.f);
-			glTexCoord2f(10, 10);
-			glVertex3f(-5.f, 3.f, 0.f);
-			glNormal3f(0.f, -1.f, 0.f);
-			glTexCoord2f(10, 0);
-			glVertex3f(-5.f, 3.f, -10.f);
-		}
-		glEnd();
-	}
-	glPopMatrix();
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
 void Scene::drawGrassBillboard()
 {
-	if(!fullbright) glEnable(GL_BLEND);
+	if (!fullbright) glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, grassBillboardTexture);
 	applyFilter();
-	glBegin(GL_QUADS);
-	{
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(0, 0);
-		glVertex3f(-2.5f, 0.f, -0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(0, 1);
-		glVertex3f(-2.5f, -3.f, 0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(1, 1);
-		glVertex3f(2.5f, -3.f, 0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(1, 0);
-		glVertex3f(2.5f, 0.f, 0.f);
-	}
-	glEnd();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, billboardVerts.data());
+	glNormalPointer(GL_FLOAT, 0, billboardNormals.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, billboardTexcoords.data());
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glDisable(GL_BLEND);
 }
@@ -1122,22 +1070,16 @@ void Scene::drawTreeBillboard()
 	if(!fullbright) glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, treeBillboardTexture);
 	applyFilter();
-	glBegin(GL_QUADS);
-	{
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(0, 0);
-		glVertex3f(-2.f, 4.f, -0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(0, 1);
-		glVertex3f(-2.f, -3.f, 0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(1, 1);
-		glVertex3f(2.f, -3.f, 0.f);
-		glNormal3f(0.f, 0.f, 1.f);
-		glTexCoord2f(1, 0);
-		glVertex3f(2.f, 4.f, 0.f);
-	}
-	glEnd();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, billboardVerts.data());
+	glNormalPointer(GL_FLOAT, 0, billboardNormals.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, billboardTexcoords.data());
+	glDrawArrays(GL_QUADS, 4, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glDisable(GL_BLEND);
 }

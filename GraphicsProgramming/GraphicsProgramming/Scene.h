@@ -185,6 +185,17 @@ protected:
 	GLuint grassBillboardTexture;
 	GLuint treeBillboardTexture;
 	GLuint steveTexture;
+
+	//Vertex array for the room
+	std::array<float, 204> seriousRoomVerts;
+	std::array<float, 136> seriousRoomTexcoords;
+	std::array<float, 204> seriousRoomNormals;
+	std::vector<float> seriousFloorVerts;
+	std::vector<float> seriousFloorTexcoords;
+	std::vector<float> seriousFloorNormals;
+	std::array<float, 24> billboardVerts;
+	std::array<float, 16> billboardTexcoords;
+	std::array<float, 24> billboardNormals;
 };
 
 #endif
