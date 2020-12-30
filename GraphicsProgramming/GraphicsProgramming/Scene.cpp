@@ -645,8 +645,6 @@ void Scene::render() {
 	skybox.draw((short unsigned)currentFilter);
 	glEnable(GL_DEPTH_TEST);
 
-	//Initialise and setup the stencil
-	setupStencil();
 	//Draw floor reflections inside the stencil quad or mirror surface
 	if(!fullbright) drawReflections();
 	//Draw the real world
@@ -935,7 +933,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	drawSolarSystem();
 
 	//Draw shadows
-	if (spotLight->isEnabled() && !fullbright && !renderingReflection) renderShadows();
+	if (spotLight->isEnabled() && !fullbright) renderShadows(renderingReflection);
 
 	//Render all transparent shapes once everything else is rendered
 	if(!fullbright) glEnable(GL_BLEND);
@@ -1191,6 +1189,9 @@ void Scene::drawSolarSystem(bool renderAsShadow)
 
 void Scene::setupStencil()
 {
+	//Clear stencil
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
 	//Turn off writing to the frame buffer
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	//Turn on stencil test
@@ -1214,6 +1215,8 @@ void Scene::drawReflections()
 {
 	//Uncomment to debug the reflection iteslf, so it shows up even if out of the stencil
 	//glDisable(GL_STENCIL_TEST);
+	//Initialise and setup the stencil
+	setupStencil();
 	//Set stencil function to test if the value is 1 (if we can draw basically)
 	glStencilFunc(GL_EQUAL, 1, 1);
 	//Set the stencil operation to keep all values (we don't want to write to the stencil now, just use it)
@@ -1320,7 +1323,7 @@ void Scene::drawShadowPlane()
 	glEnd();
 }
 
-void Scene::renderShadows()
+void Scene::renderShadows(bool drawingReflection)
 {
 	Shadow::generateShadowMatrix(shadowMatrix, spotLight->getPosition(), tableShadowQuad.data());
 
@@ -1330,17 +1333,17 @@ void Scene::renderShadows()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-
+	
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glEnable(GL_STENCIL_TEST);
+
 	glStencilFunc(GL_ALWAYS, 1, 1);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
 	drawShadowPlane();
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	glStencilFunc(GL_LEQUAL, 1, 1);
+	glStencilFunc(GL_EQUAL, 1, 1);
 	glEnable(GL_DEPTH_TEST);
 
 	glPushMatrix();
@@ -1352,7 +1355,7 @@ void Scene::renderShadows()
 		drawSolarSystem(true);
 	}
 	glPopMatrix();
-	glDisable(GL_STENCIL_TEST);
+	if(!drawingReflection) glDisable(GL_STENCIL_TEST);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);

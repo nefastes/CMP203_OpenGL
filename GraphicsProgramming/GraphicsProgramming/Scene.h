@@ -163,7 +163,7 @@ protected:
 	};
 	float shadowMatrix[16];
 	void drawShadowPlane();
-	void renderShadows();
+	void renderShadows(bool drawingReflection);
 
 	//Vector to hold any transparent shape
 	std::vector<BasicShape*> transparentShapes;
