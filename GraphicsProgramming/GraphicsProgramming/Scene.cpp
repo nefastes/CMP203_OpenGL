@@ -1337,23 +1337,25 @@ void Scene::renderShadows(bool drawingReflection)
 
 	if (drawingReflection)
 	{
+		//We are drawing this stencil inside a used stencil buffer, so we want to make sure we write into this stencil buffer, i.e. the stencil value equals 1
+		//Then we dont want to replace, but instead increment the values by 1, so that the area marked by the shadow plane will have values of 2
+		// and the rest of the mirror area keeps their values of 1
 		glStencilFunc(GL_EQUAL, 1, 1);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-
 		drawShadowPlane();
-
+		//Now we want to only render our shadows, so test for a value of 2 in the stencil buffer
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glStencilFunc(GL_EQUAL, 2, 2);
 	}
 	else
 	{
+		//We are not drawing inside another stencil, so we can reset it and only write ones like we would have done for the mirror
 		glClearStencil(0);
 		glClear(GL_STENCIL_BUFFER_BIT);
 		glStencilFunc(GL_ALWAYS, 1, 1);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
 		drawShadowPlane();
-
+		//If we're not drawing the reflection, the only value we have written is 1, thus only test for that
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glStencilFunc(GL_EQUAL, 1, 1);
 	}
@@ -1372,10 +1374,12 @@ void Scene::renderShadows(bool drawingReflection)
 	glPopMatrix();
 	//Disable the stencil test if we are rendering the real world
 	if(!drawingReflection) glDisable(GL_STENCIL_TEST);
-	else
-	{
-		glStencilFunc(GL_LESS, 0, 1 | 2);
-	}
+	//Else, we want to draw the shapes only if the stencil value is either 1 or 2
+	//With the following GL_LESS test : ( ref & mask ) < ( stencil & mask )
+	//if we put the reference value to be 0 (the value we want to avoid), and a mask which is a bitwise OR of the two values we want,
+	//Then if the stencil value is 0 the test fails, if it is 1 it succeeds, if it is 2 it succeeds, if it is 3 it succeeds, if it is 4 it fails, etc.
+	//Basically if we represent them into bytes, we get ( 00000000 & 00000011 ) < ( 00000001 & 00000011 ), ( 00000000 & 00000011 ) < ( 00000010 & 00000011 ) for both stencil values of 1 and 2
+	else glStencilFunc(GL_LESS, 0, 1 | 2);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
