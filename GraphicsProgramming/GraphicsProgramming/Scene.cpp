@@ -927,7 +927,7 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 		trump.render((short unsigned)currentFilter);
 	}
 	glPopMatrix();
-	glDisable(GL_NORMALIZE);
+	glDisable(GL_NORMALIZE);	//Finihed rendering models, undo normalize
 
 	//Render solar system hierchical animations
 	drawSolarSystem();
@@ -986,7 +986,6 @@ void Scene::renderSeriousRoom(bool renderingReflection)
 	glDisable(GL_BLEND);
 }
 
-//TODO: Use vertex arrays
 void Scene::makeSeriousWalls()
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -1325,10 +1324,9 @@ void Scene::drawShadowPlane()
 
 void Scene::renderShadows(bool drawingReflection)
 {
+	//Generate the shadow matrix
 	Shadow::generateShadowMatrix(shadowMatrix, spotLight->getPosition(), tableShadowQuad.data());
 
-	glClearStencil(0);
-	glClear(GL_STENCIL_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
@@ -1337,13 +1335,30 @@ void Scene::renderShadows(bool drawingReflection)
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glEnable(GL_STENCIL_TEST);
 
-	glStencilFunc(GL_ALWAYS, 1, 1);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	drawShadowPlane();
+	if (drawingReflection)
+	{
+		glStencilFunc(GL_EQUAL, 1, 1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+
+		drawShadowPlane();
+
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilFunc(GL_EQUAL, 2, 2);
+	}
+	else
+	{
+		glClearStencil(0);
+		glClear(GL_STENCIL_BUFFER_BIT);
+		glStencilFunc(GL_ALWAYS, 1, 1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+		drawShadowPlane();
+
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilFunc(GL_EQUAL, 1, 1);
+	}
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	glStencilFunc(GL_EQUAL, 1, 1);
 	glEnable(GL_DEPTH_TEST);
 
 	glPushMatrix();
@@ -1355,7 +1370,12 @@ void Scene::renderShadows(bool drawingReflection)
 		drawSolarSystem(true);
 	}
 	glPopMatrix();
+	//Disable the stencil test if we are rendering the real world
 	if(!drawingReflection) glDisable(GL_STENCIL_TEST);
+	else
+	{
+		glStencilFunc(GL_LESS, 0, 1 | 2);
+	}
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
