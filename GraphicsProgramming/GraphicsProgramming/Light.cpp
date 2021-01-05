@@ -21,7 +21,7 @@ Light::Light(unsigned type)
 			return;
 		}
 	}
-	MessageBox(NULL, "Attempted to create too many (more than 8) lights", "Error", MB_OK);
+	MessageBox(NULL, L"Attempted to create too many (more than 8) lights", L"Error", MB_OK);
 }
 
 Light::~Light()

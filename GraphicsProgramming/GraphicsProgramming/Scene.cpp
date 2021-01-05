@@ -610,7 +610,7 @@ void Scene::update(float dt)
 		flickerTimer = 0;
 		spotLight->disable();
 		lamp_neons.setAsLight(false);
-		timeToFlicker = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
+		timeToFlicker = static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / 10.f));	//Generate time to the next flicker between 0 and 10 seconds
 	}
 	else if (flickerTimer >= .1f && !spotLight->isEnabled() && !fullbright)
 	{
@@ -1376,10 +1376,10 @@ void Scene::renderShadows(bool drawingReflection)
 	if(!drawingReflection) glDisable(GL_STENCIL_TEST);
 	//Else, we want to draw the shapes only if the stencil value is either 1 or 2
 	//With the following GL_LESS test : ( ref & mask ) < ( stencil & mask )
-	//if we put the reference value to be 0 (the value we want to avoid), and a mask which is a bitwise OR of the two values we want,
-	//Then if the stencil value is 0 the test fails, if it is 1 it succeeds, if it is 2 it succeeds, if it is 3 it succeeds, if it is 4 it fails, etc.
-	//Basically if we represent them into bytes, we get ( 00000000 & 00000011 ) < ( 00000001 & 00000011 ), ( 00000000 & 00000011 ) < ( 00000010 & 00000011 ) for both stencil values of 1 and 2
-	else glStencilFunc(GL_LESS, 0, 1 | 2);
+	//if we put the reference value to be 0 (the value we want to avoid), and a mask which is 0xFF (111111111 11111111),
+	//then the test will succed for all values that are non 0.
+	//Basically if we represent them into bytes, we get ( 00000000 & 11111111 ) < ( 00000001 & 11111111 ), ( 00000000 & 11111111 ) < ( 00000010 & 11111111 ) for both stencil values of 1 and 2
+	else glStencilFunc(GL_LESS, 0, 0xFF);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);

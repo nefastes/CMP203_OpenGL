@@ -167,22 +167,14 @@ float Camera::getRoll()
 
 Vector3 Camera::getPosition(bool gluLookAt)
 {
-	//The gluLookAt bool allows us to get a false position when 3rd person is enabled
-	//Thanks to that, we can still get the real position when used by other objects (such as the trump model) as well as for the hud element,
-	//but send the false third person camera position to the gluLookAt() function and to the skybox position
-	if (currentCameraType == CameraTypes::THIRDPERSON &&  gluLookAt)
-	{
-		return position - forward * thirdPersonDistanceMultiplier;
-	}
+	//The currentCameraType variable allows us to get a "false" position when 3rd person is enabled
+	if (currentCameraType == CameraTypes::THIRDPERSON &&  gluLookAt) return position - forward * thirdPersonDistanceMultiplier;
 	else return position;
 }
 
 Vector3 Camera::getLookAt()
 {
-	if (currentCameraType == CameraTypes::THIRDPERSON)
-	{
-		return position;
-	}
+	if (currentCameraType == CameraTypes::THIRDPERSON) return position;
 	else return position + forward;
 }
 

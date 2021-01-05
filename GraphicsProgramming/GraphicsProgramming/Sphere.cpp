@@ -38,7 +38,7 @@ void Sphere::generateShape()
 	//Declare the starting theta
 	float theta = 0;
 	float gamma = 0;
-	for (unsigned longitude = 0; longitude < resolution;++longitude)
+	for (unsigned longitude = 0; longitude < resolution; ++longitude)
 	{
 		for (unsigned latitude = 0; latitude < resolution; ++latitude)
 		{
@@ -52,6 +52,7 @@ void Sphere::generateShape()
 				case 1:		++latitude;		break;
 				case 2:		++longitude;	break;
 				case 3:		--latitude;		break;
+				default:	break;
 				}
 
 				//Need this to make sure the last vertices match with the first ones, avoiding a little transparent artefact 
